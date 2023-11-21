@@ -1,23 +1,26 @@
 import { ImageCanvas, ImageCapture } from '@/components';
 import { Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
-import { RefObject, forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { RefObject, forwardRef, useImperativeHandle, useRef} from 'react';
 
 type ImageViewRef = {
   onCapture: () => void;
 };
+interface imageProps {
+  imageRef: RefObject<HTMLImageElement>;
+  canvasImageRef: RefObject<HTMLCanvasElement>;
+  image:string|null;
+  setImage:(image:string)=>void;
+}
 
-export const OcrView = forwardRef((_, ref) => {
+export const OcrView = forwardRef((props:imageProps, ref) => {
 
+  const { imageRef, canvasImageRef,image,setImage } = props
   // OCR
   const imageCaptureRef = useRef<ImageViewRef | null>(null);
   useImperativeHandle(ref, () => ({
     onCapture: () => imageCaptureRef.current!.onCapture(),
   }));
-  // IMAGE CANVAS
-  const [imageCapture, setImageCapture] = useState<string | null>(null);
-  const imageRef: RefObject<HTMLImageElement> = useRef(null);
-  const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null);
 
   return (
     <Stack spacing={2}  >
@@ -28,15 +31,15 @@ export const OcrView = forwardRef((_, ref) => {
         Coloque su Cédula de identidad
       </Typography>
       {
-        imageCapture == null ?
+        image == null ?
           <ImageCapture
-            onChange={(file: string) => setImageCapture(file)}
+            onChange={(file: string) => setImage(file)}
             ref={imageCaptureRef}
           /> :
           <ImageCanvas
             imageRef={imageRef}
             canvasImageRef={canvasImageRef}
-            src={imageCapture}
+            src={image}
           />
       }
     </Stack>

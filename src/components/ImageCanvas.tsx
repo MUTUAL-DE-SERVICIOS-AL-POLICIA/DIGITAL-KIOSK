@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material";
 import { RefObject } from "react";
 
 interface imageProps {
@@ -14,7 +15,7 @@ export const ImageCanvas = (props: imageProps) => {
   } = props;
 
   return (
-    <>
+    <Stack>
       <img
         ref={imageRef}
         src={src}
@@ -27,9 +28,11 @@ export const ImageCanvas = (props: imageProps) => {
       <canvas
         ref={canvasImageRef}
         style={{
+          borderRadius: '30px',
           position: "absolute",
+          padding: '10px',
         }}
       />
-    </>
+    </Stack>
   )
 }

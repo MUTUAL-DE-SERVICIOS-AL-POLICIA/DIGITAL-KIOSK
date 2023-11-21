@@ -40,7 +40,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
       ref={webcamRef}
       screenshotFormat="image/jpeg"
       videoConstraints={{
-        facingMode: 'environment'
+        facingMode: 'enviroment'
       }}
       style={{
         transform: "scaleX(1)",
