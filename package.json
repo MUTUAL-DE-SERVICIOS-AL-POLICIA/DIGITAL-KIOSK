@@ -17,10 +17,13 @@
     "@mui/material": "^5.14.18",
     "axios": "^1.6.2",
     "face-api.js": "0.22.2",
+    "image-js": "^0.35.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.19.0",
-    "sweetalert2": "^11.10.1"
+    "react-webcam": "^7.2.0",
+    "sweetalert2": "^11.10.1",
+    "tesseract.js": "^5.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.9.2",
