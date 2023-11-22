@@ -3,6 +3,7 @@ import { ComponentButton } from "@/components";
 import { Grid, Stack, Typography } from "@mui/material";
 import { RefObject, useRef, useState } from "react";
 import { FaceRecognition, OcrView } from ".";
+import Webcam from "react-webcam";
 
 type OcrViewRef = {
   onCapture: () => void;
@@ -22,6 +23,10 @@ export const RecognitionView = () => {
   const [imageCapture, setImageCapture] = useState<string | null>(null);
 
 
+  const webcamRef:RefObject<Webcam> = useRef(null);
+  const canvasWebcamRef: RefObject<HTMLCanvasElement> = useRef(null)
+
+
   const setImage = async (image:string) => {
     setImageCapture(image);
     await new Promise((resolve) => setTimeout(resolve, 0)); // Pequeña pausa para asegurar que setImageCapture se complete
@@ -34,7 +39,7 @@ export const RecognitionView = () => {
   return (
     <Stack style={{ alignItems: 'center' }}>
       <Typography style={{ fontSize: 80 }}>Reconocimiento</Typography>
-      <Grid container style={{}}>
+      <Grid container style={{paddingBottom: '2em'}} spacing={2}>
         <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center">
           {/* OCR */}
           <OcrView
@@ -43,6 +48,8 @@ export const RecognitionView = () => {
           canvasImageRef={canvasImageRef}
           image={imageCapture}
           setImage={setImage}
+          webcamRef={webcamRef}
+          canvasWebcamRef={canvasWebcamRef}
           />
         </Grid>
         <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center">
@@ -52,6 +59,8 @@ export const RecognitionView = () => {
           imageRef={imageRef}
           canvasImageRef={canvasImageRef}
           image={imageCapture}
+          webcamRef={webcamRef}
+          canvasWebcamRef={canvasWebcamRef}
            />
         </Grid>
       </Grid>

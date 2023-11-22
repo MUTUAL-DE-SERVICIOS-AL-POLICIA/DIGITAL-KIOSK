@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react"
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import * as faceapi from "face-api.js"
 import { Stack, Typography } from "@mui/material";
 
@@ -17,6 +17,9 @@ interface videoProps {
   // canvasImageRef: RefObject<HTMLCanvasElement>;
   canvasImageRef: any;
   image: string | null;
+
+  webcamRef: any;
+  canvasWebcamRef: any
 }
 
 
@@ -30,18 +33,20 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
     },
   }));
 
-  const { imageRef, canvasImageRef, image } = props
+  const { imageRef, canvasImageRef, image, webcamRef, canvasWebcamRef } = props
 
   const videoRef: any = useRef()
   const canvasVideoRef: any = useRef()
+  const [isPerson, setIsPerson] = useState(0)
 
   useEffect(() => {
     loadModels().then(async () => {
       await scanFace()
       getLocalUserVideo()
+      await scanWebcam()
     })
   }, [])
-  
+
   const loadModels = async () => {
     const uri = "/models"
     await faceapi.nets.tinyFaceDetector.loadFromUri(uri)
@@ -49,7 +54,7 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
     await faceapi.nets.faceLandmark68Net.loadFromUri(uri)
     await faceapi.nets.faceRecognitionNet.loadFromUri(uri)
   }
-  
+
   const getLocalUserVideo = async () => {
     navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } })
       .then((stream) => {
@@ -99,7 +104,6 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
           return new faceapi.LabeledFaceDescriptors(name, groupedDescriptors[name])
         })
         if (labeledDescriptors.length > 0) {
-          console.log("entra aca")
           faceMatcher = new faceapi.FaceMatcher(labeledDescriptors)
           const dims = faceapi.matchDimensions(canvasVideoRef.current, videoRef.current, true)
           const resizedDetections = faceapi.resizeResults(detections, dims)
@@ -118,7 +122,6 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
           faceapi.draw.drawFaceLandmarks(canvasVideoRef.current, resizedDetections)
 
         } else {
-          console.log("ahora entra aca")
           const ctx = canvasVideoRef.current.getContext('2d')
           ctx.clearRect(0, 0, canvasVideoRef.current.width, canvasVideoRef.current.height)
         }
@@ -127,7 +130,6 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
   }
 
   const scanPhoto = async () => {
-    console.log(`image ${image}`)
     if(image==null)return;
     if (isFaceDetectionModelLoad()) {
       const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 608, scoreThreshold: 0.6 })
@@ -143,26 +145,56 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
         faceapi.matchDimensions(canvas, imageRef.current)
         const resizeResults = faceapi.resizeResults(detections, imageRef.current)
 
-        resizeResults.forEach(({ detection, descriptor }) => {
-          const label = faceMatcher.findBestMatch(descriptor).toString()
-          let options = null
-          if (!label.includes('unknown')) {
-            options = { label, boxColor: 'green' }
-          } else {
-            options = { label }
-          }
-          const drawBox = new faceapi.draw.DrawBox(detection.box, options)
-          drawBox.draw(canvas)
-        })
-        faceapi.draw.drawFaceLandmarks(canvasImageRef.current, resizeResults)
+        if(resizeResults.length != 0) {
+          resizeResults.forEach(({ detection, descriptor }) => {
+            let label = faceMatcher.findBestMatch(descriptor).toString()
+            let options = null
+            console.log(label)
+            if (!label.includes('unknown')) {
+              label = `Persona encontrada`
+              options = { label, boxColor: 'green' }
+              setIsPerson(isPerson + 1)
+            } else {
+              label = `Persona no encontrada`
+              options = { label }
+            }
+            const drawBox = new faceapi.draw.DrawBox(detection.box, options)
+            drawBox.draw(canvas)
+          })
+          faceapi.draw.drawFaceLandmarks(canvasImageRef.current, resizeResults)
+        }
       }
+    }
+  }
+
+  const scanWebcam = async() => {
+    if(isFaceDetectionModelLoad()) {
+      const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS)
+      setInterval(async () => {
+        if(webcamRef && webcamRef.current != null) {
+          const imageSrc = webcamRef.current.getScreenshot()
+          if(imageSrc) {
+            const img = await faceapi.fetchImage(imageSrc)
+            const detections = await faceapi
+              .detectAllFaces(img, options)
+              .withFaceLandmarks()
+              .withFaceDescriptors()
+            if(canvasWebcamRef.current && img) {
+              const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true)
+              const resizedDetections = faceapi.resizeResults(detections, dims)
+              faceapi.draw.drawDetections(canvasWebcamRef.current, resizedDetections)
+            }
+          }
+        }
+      }, 60)
     }
   }
 
   return (
     <Stack spacing={3}>
       <Typography style={{ fontSize: 40 }} >
-       Reconocimiento Facial
+        <br/>
+        Reconocimiento Facial
       </Typography>
       <Stack>
         <video
