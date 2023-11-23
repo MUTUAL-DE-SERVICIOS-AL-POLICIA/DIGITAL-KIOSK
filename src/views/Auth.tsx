@@ -3,6 +3,7 @@ import { Grid, Typography } from '@mui/material';
 import { ComponentButton, ComponentInput } from '@/components';
 import { useForm } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
+import { KeyboardSimple } from '@/components';
 
 const loginFormFields = {
   identityCard: '',
@@ -37,9 +38,9 @@ export const AuthView = () => {
         <Grid item xs={12} sm={6}>
           {/* Puedes agregar contenido aquí si es necesario */}
         </Grid>
-        <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center">
-          <form >
-            <ComponentInput
+        <Grid item xs={12} sm={6} alignContent='center' alignItems='center'>
+          {/* <form > */}
+            {/* <ComponentInput
               type="text"
               label="Carnet"
               name="identityCard"
@@ -66,8 +67,8 @@ export const AuthView = () => {
                   '&:hover fieldset': { borderColor: '#0B815A' },
                 },
               }}
-            />
-            <Grid container spacing={1}>
+            /> */}
+            {/* <Grid container spacing={1}>
               {[1, 2, 3, 'Borrar', 4, 5, 6, 7, 8, 9, 0].map((text, index) => (
                 <Grid item key={index} xs={12} sm={3}>
                   <ComponentButton
@@ -81,8 +82,9 @@ export const AuthView = () => {
                   />
                 </Grid>
               ))}
-            </Grid>
-          </form>
+            </Grid> */}
+            <KeyboardSimple />
+          {/* </form> */}
         </Grid>
       </Grid>
       <ComponentButton onClick={() => loginSubmit()} text="INGRESAR" sx={{ fontSize: 70 }} />
