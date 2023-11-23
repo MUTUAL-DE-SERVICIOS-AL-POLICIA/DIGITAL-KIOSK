@@ -1,5 +1,6 @@
 import { SxProps, TextField, Theme } from "@mui/material"
 import { memo } from "react"
+import { AlphaNumeric } from ".";
 
 export const ComponentInput = memo((
   {
@@ -9,7 +10,7 @@ export const ComponentInput = memo((
     onChange,
     type,
     label,
-    endAdornment = null,
+    endAdornment = AlphaNumeric(),
     multiline = false,
     error = false,
     helperText = '',
@@ -54,18 +55,10 @@ export const ComponentInput = memo((
         },
       }}
       sx={{
-
         ...{
-          // padding: '2px',
-          // margin: '0px',
           '& label.Mui-focused': {
             color: 'black',
           },
-          // '& label:not(.Mui-focused)': {
-          //   color: 'black', // Cambia el color del texto del Label a negro cuando no está enfocado
-          // },
-
-
         },
         ...customSx,
       }}
