@@ -24,13 +24,10 @@ interface videoProps {
 
 
 
-export const FaceRecognition = forwardRef((props: videoProps,ref) => {
+export const FaceRecognition = forwardRef((props: videoProps, ref) => {
 
   useImperativeHandle(ref, () => ({
-    onScanImage: () =>{
-      // console.log('hi')
-      scanPhoto()
-    },
+    onScanImage: () => scanPhoto(),
   }));
 
   const { imageRef, canvasImageRef, image, webcamRef, canvasWebcamRef } = props
@@ -42,8 +39,8 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
   useEffect(() => {
     loadModels().then(async () => {
       await scanFace()
-      getLocalUserVideo()
-      await scanWebcam()
+      await getLocalUserVideo()
+      // await scanWebcam()
     })
   }, [])
 
@@ -56,6 +53,15 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
   }
 
   const getLocalUserVideo = async () => {
+    navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "eviroment" } })
+      .then((stream) => {
+        if (webcamRef && webcamRef.current != null) {
+          webcamRef.current.srcObject = stream
+        }
+      })
+      .catch((err) => {
+        console.error("error: ", err)
+      })
     navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } })
       .then((stream) => {
         if (videoRef && videoRef.current != null) {
@@ -65,6 +71,7 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
       .catch((err) => {
         console.error("error: ", err)
       })
+
   }
 
 
@@ -130,7 +137,7 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
   }
 
   const scanPhoto = async () => {
-    if(image==null)return;
+    if (image == null) return;
     if (isFaceDetectionModelLoad()) {
       const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 608, scoreThreshold: 0.6 })
       const img = await faceapi.fetchImage(image!)
@@ -145,7 +152,7 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
         faceapi.matchDimensions(canvas, imageRef.current)
         const resizeResults = faceapi.resizeResults(detections, imageRef.current)
 
-        if(resizeResults.length != 0) {
+        if (resizeResults.length != 0) {
           resizeResults.forEach(({ detection, descriptor }) => {
             let label = faceMatcher.findBestMatch(descriptor).toString()
             let options = null
@@ -167,19 +174,19 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
     }
   }
 
-  const scanWebcam = async() => {
-    if(isFaceDetectionModelLoad()) {
+  const scanWebcam = async () => {
+    if (isFaceDetectionModelLoad()) {
       const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS)
       setInterval(async () => {
-        if(webcamRef && webcamRef.current != null) {
+        if (webcamRef && webcamRef.current != null) {
           const imageSrc = webcamRef.current.getScreenshot()
-          if(imageSrc) {
+          if (imageSrc) {
             const img = await faceapi.fetchImage(imageSrc)
             const detections = await faceapi
               .detectAllFaces(img, options)
               .withFaceLandmarks()
               .withFaceDescriptors()
-            if(canvasWebcamRef.current && img) {
+            if (canvasWebcamRef.current && img) {
               const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true)
               const resizedDetections = faceapi.resizeResults(detections, dims)
               faceapi.draw.drawDetections(canvasWebcamRef.current, resizedDetections)
@@ -191,9 +198,8 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
   }
 
   return (
-    <Stack spacing={3}>
-      <Typography style={{ fontSize: 40 }} >
-        <br/>
+    <Stack spacing={2}>
+      <Typography style={{ fontSize: '2vw' }} >
         Reconocimiento Facial
       </Typography>
       <Stack>
@@ -206,6 +212,7 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
             borderRadius: '30px',
             backgroundColor: '#fff',
             padding: '10px',
+            // border: '2px solid orange',
           }}
         />
         <canvas
@@ -214,6 +221,7 @@ export const FaceRecognition = forwardRef((props: videoProps,ref) => {
             position: "absolute",
             pointerEvents: "none",
             padding: '10px',
+            // border: '2px solid blue',
           }}
         />
       </Stack>

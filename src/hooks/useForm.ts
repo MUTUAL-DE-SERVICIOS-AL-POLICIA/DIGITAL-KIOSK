@@ -26,7 +26,6 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
 
 
     const onInputChange = ({ target }: { target: any }, uppercase = false, onlynumber = false) => {
-        console.log(target)
         const { name, value } = target;
         if (onlynumber) {
             const regex = /^[0-9\b]+$/;
@@ -54,7 +53,12 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
             [name]: file
         })
     }
-
+    const onValueChange = (name: string, state: any) => {
+        setFormState({
+            ...formState,
+            [name]: state
+        })
+    }
 
     const onResetForm = () => {
         setFormState(initialForm);
@@ -79,6 +83,7 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
         formState,
         onInputChange,
         onFileChange,
+        onValueChange,
         onImage64Change,
         onResetForm,
 

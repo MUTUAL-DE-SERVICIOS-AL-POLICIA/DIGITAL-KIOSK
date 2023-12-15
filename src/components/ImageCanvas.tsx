@@ -20,17 +20,20 @@ export const ImageCanvas = (props: imageProps) => {
         ref={imageRef}
         src={src}
         style={{
+          objectFit: "fill",
           borderRadius: '30px',
           backgroundColor: '#fff',
           padding: '10px',
+          // border: '2px solid orange',
         }}
       />
       <canvas
         ref={canvasImageRef}
         style={{
-          borderRadius: '30px',
           position: "absolute",
+          pointerEvents: "none",
           padding: '10px',
+          // border: '2px solid red',
         }}
       />
     </Stack>

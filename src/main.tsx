@@ -25,9 +25,26 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '30px',
+          borderRadius: '10px',
         },
       },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
+          color: '#594C51'
+        }
+      }
+    },
+    MuiToolbar: {
+      styleOverrides: {
+        root: {
+          flexDirection: 'row',
+          justifyContent: "space-between"
+        }
+      }
     },
   },
 });

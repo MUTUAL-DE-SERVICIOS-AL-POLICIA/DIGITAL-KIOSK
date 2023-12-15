@@ -1,6 +1,5 @@
 import { SxProps, TextField, Theme } from "@mui/material"
 import { memo } from "react"
-import { AlphaNumeric } from ".";
 
 export const ComponentInput = memo((
   {
@@ -10,7 +9,7 @@ export const ComponentInput = memo((
     onChange,
     type,
     label,
-    endAdornment = AlphaNumeric(),
+    endAdornment,
     multiline = false,
     error = false,
     helperText = '',

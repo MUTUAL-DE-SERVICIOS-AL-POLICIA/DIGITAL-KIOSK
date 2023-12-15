@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getEnvVariables } from '../helpers';
 
-const { VITE_HOST } = getEnvVariables();
+const { VITE_HOST_BACKEND } = getEnvVariables();
 
 // Creamos una función que devuelve la instancia de axios con el host deseado
 const createAxiosInstance = (baseURL: string) => {
@@ -10,12 +10,12 @@ const createAxiosInstance = (baseURL: string) => {
     });
 
     instance.interceptors.request.use((request) => {
-        // const token = localStorage.getItem(`token`);
-        // if (token) request.headers.set('token', token);
+        const token = localStorage.getItem(`token`);
+        if (token) request.headers.set('Authorization', `Bearer ${token}`);
         return request;
     });
 
     return instance;
 };
 
-export const coffeApi = createAxiosInstance(VITE_HOST);
+export const coffeApi = createAxiosInstance(VITE_HOST_BACKEND);

@@ -2,17 +2,26 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 /* Rutas */
-import { AuthView } from '@/views/Auth';
-import { RecognitionView } from '@/views/recognition';
+import { AuthView } from '@/views/auth/Auth';
+import { useEffect } from 'react';
+import { useAuthStore } from '@/hooks/useAuthStore';
+import { LoanView } from '@/views/loans/LoanView';
 
 export const AppRouter = () => {
 
+  const { status, checkAuthToken } = useAuthStore();
+  useEffect(() => {
+    checkAuthToken();
+  }, []);
+
+
   return (
-    <Routes>
-      <Route path="/" element={<AuthView />} />
-      <Route path="/recognition" element={<RecognitionView />} />
-      {/*  */}
-      <Route path="/*" element={<Navigate to={"/"} />} />
-    </Routes>
+    (
+      status === 'not-authenticated') ?
+      <AuthView /> :
+      <Routes>
+        <Route path="/page" element={<LoanView />} />
+        <Route path="/*" element={<Navigate to={"/page"} />} />
+      </Routes>
   )
 }

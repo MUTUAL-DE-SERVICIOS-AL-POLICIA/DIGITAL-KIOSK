@@ -5,7 +5,7 @@ import { createWorker } from 'tesseract.js';
 import Stack from '@mui/material/Stack';
 
 interface captureProps {
-  onChange: (image: any) => void;
+  onChange: (image: string, text: string) => void;
   webcamRef: RefObject<Webcam>
   canvasWebcamRef: RefObject<HTMLCanvasElement>;
   // webcamRef: any;
@@ -27,15 +27,15 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
   const capture = async () => {
     console.log("capturando una foto")
     const worker = await createWorker('eng');
-    if(webcamRef.current !== null) {
+    if (webcamRef.current !== null) {
       const imageSrc = webcamRef.current.getScreenshot();
-      if(imageSrc !== null) {
+      if (imageSrc !== null) {
         const image = await Image.load(imageSrc);
         const greyImage = image.grey();
         const ret = await worker.recognize(greyImage.toDataURL());
         console.log(ret.data.text);
         await worker.terminate();
-        onChange(imageSrc);
+        onChange(imageSrc, ret.data.text);
       }
     }
   };
@@ -56,14 +56,16 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           borderRadius: '30px',
           backgroundColor: '#fff',
           padding: '10px',
+          // border: '2px solid orange',
         }}
       />
       <canvas
         ref={canvasWebcamRef}
         style={{
           position: "absolute",
-          pointerEvents:"none",
-          padding: '10px'
+          pointerEvents: "none",
+          // padding: '10px',
+          // border: '2px solid blue',
         }}
       />
     </Stack>
