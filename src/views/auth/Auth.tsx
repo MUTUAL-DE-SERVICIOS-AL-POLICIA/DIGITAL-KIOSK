@@ -2,49 +2,73 @@ import { AppBar, Toolbar, Typography } from '@mui/material';
 
 import { IdentityCard } from './IdentityCard';
 import { RecognitionView } from './recognition';
-import { useEffect, useState } from 'react';
-import logo from '@/assets/images/muserpol.png';
+import { useEffect, useRef } from 'react';
 import { useCredentialStore } from '@/hooks';
+import { InstructionCard } from './InstructionCard';
+import imageLogoBlanco from '@/assets/images/muserpol-logo-blanco.png';
+import { HomeScreen } from './HomeScreen';
+
+type reconigtionViewRef = {
+  onRemoveCam: () => void;
+};
 
 export const AuthView = () => {
 
-  const [timer, setTimer] = useState(10);
-  const { identityCard, changeIdentityCard } = useCredentialStore();
+  const reconigtionViewRef = useRef<reconigtionViewRef | null>(null);
+  const { step, identityCard, timer = 0, InstructionState, changeIdentityCard, changeIdentifyUser, changeTimer, changeStateInstruction } = useCredentialStore();
 
   useEffect(() => {
-    // if (identityCard != '') setStateInit(false)
     let interval: NodeJS.Timeout;
 
-    // Si identityCard está presente y el temporizador es mayor que 0, inicia el temporizador
     if (identityCard != '' && timer > 0) {
       interval = setInterval(() => {
-        setTimer((prevTimer) => prevTimer - 1);
+        changeTimer(timer - 1);
         if (timer == 1) {
+          reconigtionViewRef.current?.onRemoveCam();
           changeIdentityCard('')
-          setTimer(10)
+          changeIdentifyUser(false)
+          changeStateInstruction(true)
+          changeTimer(20)
         }
       }, 1000);
     }
-
-    // Limpia el temporizador cuando el componente se desmonta o cuando el temporizador llega a 0
     return () => clearInterval(interval);
 
   }, [identityCard, timer]);
 
-
+  const handlePressedInstructionCard = (state: boolean) => {
+    changeTimer(20)
+    if (state) {
+      changeStateInstruction(false);
+    } else {
+      changeIdentityCard('')
+      changeIdentifyUser(false)
+      changeStateInstruction(true)
+    }
+  }
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          <img src={logo} alt="Descripción de la imagen" style={{ width: '30vw' }} />
-          <Typography style={{ fontSize: '4vw', fontWeight: 700 }}>Bienvenidos al Kiosco Digital {timer}</Typography>
+      {step != 'home' && <AppBar position="static" style={{ background: '#008698' }}>
+        <Toolbar sx={{ py: .5 }}>
+          <img src={imageLogoBlanco} alt="Descripción de la imagen" style={{ width: '10vw' }} />
         </Toolbar>
-      </AppBar>
+      </AppBar>}
       {
-        identityCard == '' ?
-          <IdentityCard /> :
-          <RecognitionView />
+        step == 'home' && <HomeScreen />
       }
+      {
+        step == 'identityCard' && <IdentityCard />
+      }
+      {
+        step == '' && <InstructionCard onPressed={handlePressedInstructionCard} />
+      }
+      {/* {
+        identityCard != '' && (
+          InstructionState ?
+            <InstructionCard onPressed={handlePressedInstructionCard} /> :
+            <RecognitionView ref={reconigtionViewRef} />
+        )
+      } */}
     </>
   );
 };

@@ -8,7 +8,6 @@ export const ComponentInput = memo((
     value,
     onChange,
     type,
-    label,
     endAdornment,
     multiline = false,
     error = false,
@@ -23,7 +22,6 @@ export const ComponentInput = memo((
       value: any,
       onChange?: any,
       type: any,
-      label: string,
       endAdornment?: any,
       multiline?: boolean
       error?: boolean,
@@ -37,7 +35,6 @@ export const ComponentInput = memo((
       id={id}
       type={type}
       multiline={multiline}
-      label={label}
       name={name}
       value={value}
       disabled={disabled}

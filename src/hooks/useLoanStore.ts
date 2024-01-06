@@ -12,7 +12,7 @@ export const useLoanStore = () => {
   const dispatch = useDispatch();
 
   const getLoans = async (loanId: number) => {
-    const { data } = await api.get(`/app/get_information_loan/${loanId}`);
+    const { data } = await api.get(`/poa/get_affiliate_loans/${loanId}`);
     console.log(data.payload)
     dispatch(setLoans({ loans: data.payload }));
   }
@@ -26,7 +26,7 @@ export const useLoanStore = () => {
 
   const printKardexLoan = async (loanId: number) => {
     try {
-      const { data } = await api.get(`/app/loan/${loanId}/print/kardex`, {
+      const { data } = await api.get(`/poa/loan/${loanId}/print/kardex`, {
         responseType: 'arraybuffer'
       });
       const blob = new Blob([data], { type: 'application/pdf' });

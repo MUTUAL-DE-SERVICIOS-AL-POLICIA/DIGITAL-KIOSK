@@ -24,7 +24,6 @@ export const ImageCanvas = (props: imageProps) => {
           borderRadius: '30px',
           backgroundColor: '#fff',
           padding: '10px',
-          // border: '2px solid orange',
         }}
       />
       <canvas
@@ -33,7 +32,6 @@ export const ImageCanvas = (props: imageProps) => {
           position: "absolute",
           pointerEvents: "none",
           padding: '10px',
-          // border: '2px solid red',
         }}
       />
     </Stack>

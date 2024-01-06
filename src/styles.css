@@ -11,9 +11,10 @@
 
 html,
 body {
-  background-color: #C6D4D3;
+  background-color: #EEEEEE;
   font-family: 'poppins';
-  /* padding: 70px; */
+  padding: 0px;
+  margin: 0px;
 }
 
 

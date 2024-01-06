@@ -32,7 +32,7 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: 'transparent',
+          // backgroundColor: 'transparent',
           boxShadow: 'none',
           color: '#594C51'
         }

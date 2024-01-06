@@ -1,28 +1,20 @@
-import { useLoanStore } from "@/hooks/useLoanStore";
 import { Card, Paper, Stack, Typography } from "@mui/material"
 import logo from '@/assets/images/coin.png';
 
 interface Props {
   title: string;
-  loanId: number;
+  onPressed: () => void;
 }
 export const CardLoan = (props: Props) => {
   const {
     title,
-    loanId,
+    onPressed,
   } = props;
-
-  const { printKardexLoan } = useLoanStore();
-  const handlePaperClick = () => {
-    // Lógica que deseas ejecutar cuando el Paper es clicado
-    console.log('hola')
-    printKardexLoan(loanId)
-  };
 
   return (
     <Paper
       sx={{ p: 8, m: 8, backgroundColor: '#9BC5B8', borderRadius: '30px' }}
-      onClick={handlePaperClick}
+      onClick={() => onPressed()}
     >
       <Stack>
         <img src={logo} alt="Descripción de la imagen" style={{ width: '10vw' }} />

@@ -5,31 +5,35 @@ import {
   onLogin,
   onLogout,
 } from "@/store";
+import { useCredentialStore } from ".";
 
 export const useAuthStore = () => {
   const { status, user } = useSelector((state: any) => state.auth);
+  const { changeIdentityCard } = useCredentialStore();
   const dispatch = useDispatch();
 
-  const startLogin = async () => {
-    console.log('login')
+  const startLogin = async (identityCard: string) => {
     try {
-      const { data } = await coffeApi.post('/affiliate/auth', {
-        "username": "4362223",
-        "password": "123123",
-        "device_id": "60b0e0e023c75fd5",
-        "firebase_token": "cxKZ1zqgR7KAEdOAR-z2fX:APA91bHeBQ9Pyc-SkeTyuRcYUDXqWIy2MSaB90qcN7aj5EbfFcxe2ihUUCXWu1wMaefekUXsFrxxIZvJuD6krjExqG9MHC_9TnBLVyhQck8hwOZ5Hcd_ra-PeME9kn1TXCyWMujLTJbv",
-        "birth_date": "28-12-1947",
-        "is_new_app": true
+      const { data } = await coffeApi.post('/poa/get_session', {
+        "device_name": "54:BF:64:61:D7:95",
+        "identity_card": "4362223"
+        // "identity_card": identityCard
+
       });
-      console.log(data)
-      localStorage.setItem('token', data.data.api_token);
-      // localStorage.setItem('refresh', data.refresh);
-      const user = `${JSON.stringify(data.data.user)}`;
+      localStorage.setItem('token', data.payload.access_token);
+      const dataUser = {
+        "nup": data.payload.nup,
+        "fullName": data.payload.full_name,
+        "degree": data.payload.degree
+      }
+      const user = `${JSON.stringify(dataUser)}`;
       localStorage.setItem('user', user);
-      dispatch(onLogin(user));
+      changeIdentityCard(identityCard)
+      dispatch(onLogin(dataUser));
     } catch (error: any) {
+      if (!error.response) return Swal.fire('Intentalo nuevamente', 'Error en el servidor', 'error')
       dispatch(onLogout());
-      const message = error.response.data.error
+      const message = error.response.data.message
       Swal.fire('Error', message, 'error')
     }
   }
@@ -39,7 +43,7 @@ export const useAuthStore = () => {
 
     if (token) {
       const user = localStorage.getItem('user')
-      return dispatch(onLogin(user));
+      return dispatch(onLogin(JSON.parse(user!)));
     } else {
       localStorage.clear();
       dispatch(onLogout());
@@ -57,7 +61,6 @@ export const useAuthStore = () => {
     //* Propiedades
     status,
     user,
-
     //* Métodos
     startLogin,
     checkAuthToken,

@@ -8,8 +8,6 @@ interface captureProps {
   onChange: (image: string, text: string) => void;
   webcamRef: RefObject<Webcam>
   canvasWebcamRef: RefObject<HTMLCanvasElement>;
-  // webcamRef: any;
-  // canvasWebcamRef: any;
 }
 
 export const ImageCapture = forwardRef((props: captureProps, ref) => {
@@ -33,7 +31,6 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         const image = await Image.load(imageSrc);
         const greyImage = image.grey();
         const ret = await worker.recognize(greyImage.toDataURL());
-        console.log(ret.data.text);
         await worker.terminate();
         onChange(imageSrc, ret.data.text);
       }
@@ -42,7 +39,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
 
 
   return (
-    <Stack>
+    <Stack >
       <Webcam
         audio={false}
         mirrored={false}
@@ -56,7 +53,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           borderRadius: '30px',
           backgroundColor: '#fff',
           padding: '10px',
-          // border: '2px solid orange',
+          width: '20vw'
         }}
       />
       <canvas
@@ -64,8 +61,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         style={{
           position: "absolute",
           pointerEvents: "none",
-          // padding: '10px',
-          // border: '2px solid blue',
+          width: '20vw'
         }}
       />
     </Stack>
