@@ -67,8 +67,8 @@ export const RecognitionView = forwardRef((_, ref) => {
         Hola {user.degree} {user.fullName}
       </Typography>
 
-      <Grid container >
-        <Grid sx={{ p: .5 }} item container sm={3} direction="column" justifyContent="center">
+      <Grid container  justifyContent="center">
+        <Grid sx={{ p: .5 }} item container sm={6} justifyContent="center">
           {/* OCR */}
           <OcrView
             ref={ocrViewRef}
@@ -99,26 +99,14 @@ export const RecognitionView = forwardRef((_, ref) => {
             isPerson={(state: boolean) => setStatePerson(state)}
           />
         </Grid>
-        <Grid item container sm={3} direction="column" justifyContent="center">
-          <Stack spacing={2} sx={{ p: 2 }}>
-            <ComponentButton
-              color="warning"
-              onClick={() => {
-                changeIdentityCard('');
-                changeIdentifyUser(false);
-                changeTimer(20);
-                reconigtionViewRef.current!.onRemoveCam();
-                changeStateInstruction(true)
-              }}
-              text="CANCELAR"
-              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%' }}
-            />
-            <ComponentButton
-              onClick={() => captureImage()}
-              text="RECONOCER"
-              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%' }}
-            />
-          </Stack>
+      </Grid>
+      <Grid container justifyContent="center" sx={{marginTop: '10vh'}}>
+        <Grid item>
+          <ComponentButton
+            onClick={() => captureImage()}
+            text="RECONOCER"
+            sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%' }}
+          />
         </Grid>
       </Grid>
     </Stack>

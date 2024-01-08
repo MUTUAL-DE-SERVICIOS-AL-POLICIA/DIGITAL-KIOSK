@@ -9,7 +9,7 @@ import { useCredentialStore } from ".";
 
 export const useAuthStore = () => {
   const { status, user } = useSelector((state: any) => state.auth);
-  const { changeIdentityCard } = useCredentialStore();
+  const { changeIdentityCard, changeStep } = useCredentialStore();
   const dispatch = useDispatch();
 
   const startLogin = async (identityCard: string) => {
@@ -30,6 +30,7 @@ export const useAuthStore = () => {
       localStorage.setItem('user', user);
       changeIdentityCard(identityCard)
       dispatch(onLogin(dataUser));
+      changeStep('instructionCard')
     } catch (error: any) {
       if (!error.response) return Swal.fire('Intentalo nuevamente', 'Error en el servidor', 'error')
       dispatch(onLogout());
