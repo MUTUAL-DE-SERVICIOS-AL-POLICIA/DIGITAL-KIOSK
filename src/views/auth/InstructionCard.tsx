@@ -1,6 +1,6 @@
 import { ComponentButton } from "@/components";
 import { Box, Grid, Typography } from "@mui/material";
-import imageLogo from '@/assets/images/muserpol.png';
+import imageLogo from '@/assets/images/carnet.png';
 
 
 interface Props {
@@ -19,7 +19,7 @@ export const InstructionCard = (props: Props) => {
       </Grid>
       <Grid item container sm={6} direction="column">
         <Box display="flex" justifyContent="center">
-          <img src={imageLogo} alt="Descripción de la imagen" style={{ width: '40vw' }} />
+          <img src={imageLogo} alt="Descripción de la imagen" style={{ width: '30vw' }} />
         </Box>
       </Grid>
       <Grid container justifyContent="center" sx={{marginTop: '10vh'}}>
