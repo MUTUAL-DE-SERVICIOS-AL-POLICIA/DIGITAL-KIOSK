@@ -1,10 +1,11 @@
-import { AppBar, Toolbar, Typography } from '@mui/material';
+import { AppBar, Toolbar } from '@mui/material';
 
 import { IdentityCard } from './IdentityCard';
-import { RecognitionView } from './recognition';
+// import { RecognitionView } from './recognition';
 import { useEffect, useRef } from 'react';
 import { useCredentialStore } from '@/hooks';
 import { InstructionCard } from './InstructionCard';
+
 import imageLogoBlanco from '@/assets/images/muserpol-logo-blanco.png';
 import { HomeScreen } from './HomeScreen';
 
@@ -15,7 +16,7 @@ type reconigtionViewRef = {
 export const AuthView = () => {
 
   const reconigtionViewRef = useRef<reconigtionViewRef | null>(null);
-  const { step, identityCard, timer = 0, InstructionState, changeIdentityCard, changeIdentifyUser, changeTimer, changeStateInstruction } = useCredentialStore();
+  const { step, identityCard, timer = 0, changeIdentityCard, changeIdentifyUser, changeTimer, changeStateInstruction } = useCredentialStore();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -56,11 +57,11 @@ export const AuthView = () => {
       {
         step == 'home' && <HomeScreen />
       }
-      {
+      {/* {
         step == 'identityCard' && <IdentityCard />
-      }
+      } */}
       {
-        step == '' && <InstructionCard onPressed={handlePressedInstructionCard} />
+        step == 'identityCard' && <InstructionCard onPressed={handlePressedInstructionCard} />
       }
       {/* {
         identityCard != '' && (

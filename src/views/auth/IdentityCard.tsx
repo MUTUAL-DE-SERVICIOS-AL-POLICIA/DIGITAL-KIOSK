@@ -1,7 +1,7 @@
 import { AlphaNumeric, ComponentButton, ComponentInput, KeyboardSimple } from '@/components';
 import { useForm } from '@/hooks';
 import { useAuthStore } from '@/hooks/useAuthStore';
-import { Grid, Stack, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
 
 const loginFormFields = {
@@ -25,7 +25,7 @@ export const IdentityCard = () => {
 
   const keyboardRef = useRef<KeyboardRef | null>(null);
 
-  const { identityCard, onInputChange, isFormValid, onValueChange, identityCardValid, onResetForm } = useForm(
+  const { identityCard, onInputChange, isFormValid, onValueChange, identityCardValid } = useForm(
     loginFormFields,
     formValidations
   );
@@ -82,29 +82,17 @@ export const IdentityCard = () => {
             keyboardComplete={keyboardComplete}
           />
         </Grid>
-        {/* <Grid item container sm={3}
-          direction="column"
+        <Grid container
           justifyContent="center"
         >
-          <Stack spacing={2} sx={{ p: 2 }}>
-            <ComponentButton
-              color="warning"
-              onClick={async () => {
-                if (identityCard != '') {
-                  onResetForm();
-                  await keyboardRef.current!.onClearInput();
-                }
-              }}
-              text="LIMPIAR"
-              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%' }}
-            />
+          <Grid item>
             <ComponentButton
               onClick={() => loginSubmit()}
               text="INGRESAR"
-              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%' }}
+              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%', padding: "0px 25px" }}
             />
-          </Stack>
-        </Grid> */}
+          </Grid>
+        </Grid>
       </Grid>
     </form>
   )
