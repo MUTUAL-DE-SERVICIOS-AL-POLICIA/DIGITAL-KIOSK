@@ -1,14 +1,16 @@
 .simple-keyboard.hg-theme-default.myTheme {
   margin-top: 10px;
   margin-bottom: 10px;
-  width: 45%;
   font-weight: bold;
   background-color: #00FF0000;
+  /* background-color: #008698; */
+  width: calc(100% - 100px);
 }
 
 .simple-keyboard.hg-layout-default .hg-button.hg-green {
   transition: transform 0.3s ease;
   background: white;
+  background-color: #008698;
   color: #008698;
   height: 130px;
   border-radius: 300px;

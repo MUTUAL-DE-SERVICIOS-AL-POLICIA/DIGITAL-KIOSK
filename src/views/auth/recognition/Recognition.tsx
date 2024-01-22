@@ -5,7 +5,7 @@ import { RefObject, forwardRef, useEffect, useImperativeHandle, useRef, useState
 import { FaceRecognition, OcrView } from ".";
 import Webcam from "react-webcam";
 import { useCredentialStore } from "@/hooks";
-import { useAuthStore } from "@/hooks/useAuthStore";
+// import { useAuthStore } from "@/hooks/useAuthStore";
 
 type OcrViewRef = {
   onCapture: () => void;
@@ -35,7 +35,7 @@ export const RecognitionView = forwardRef((_, ref) => {
   const [stateIdentityCard, setStateIdentityCard] = useState(false);
   const [statePerson, setStatePerson] = useState(false);
   const { changeIdentityCard, changeIdentifyUser, changeTimer, changeStateInstruction } = useCredentialStore();
-  const { user } = useAuthStore();
+  // const { user } = useAuthStore();
 
 
 
@@ -64,7 +64,7 @@ export const RecognitionView = forwardRef((_, ref) => {
   return (
     <Stack >
       <Typography style={{ fontSize: '1.5vw' }} >
-        Hola {user.degree} {user.fullName}
+        {/* Hola {user.degree} {user.fullName} */}
       </Typography>
 
       <Grid container  justifyContent="center">

@@ -1,5 +1,5 @@
 import { AlphaNumeric, ComponentButton, ComponentInput, KeyboardSimple } from '@/components';
-import { useForm } from '@/hooks';
+import { useCredentialStore, useForm } from '@/hooks';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { Grid, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
@@ -29,12 +29,16 @@ export const IdentityCard = () => {
     loginFormFields,
     formValidations
   );
+  
+  const { changeStep, changeIdentityCard } = useCredentialStore()
 
 
   const loginSubmit = () => {
+    changeIdentityCard(identityCard)
     setFormSubmitted(true);
     if (!isFormValid) return;
-    startLogin(identityCard);
+    // startLogin(identityCard);
+    changeStep('instructionCard')
   };
 
   return (
@@ -76,11 +80,13 @@ export const IdentityCard = () => {
           <Typography sx={{ px: 5 }} align="center" style={{ fontSize: '3vw', fontWeight: 700 }}>Por favor ingrese su número de carnet de identidad</Typography>
         </Grid>
         <Grid item container sm={6} justifyContent="center" alignItems="center">
-          <KeyboardSimple
-            ref={keyboardRef}
-            onChange={(value: string) => onValueChange('identityCard', value)}
-            keyboardComplete={keyboardComplete}
-          />
+          <div style={{width: '100%', height: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <KeyboardSimple
+              ref={keyboardRef}
+              onChange={(value: string) => onValueChange('identityCard', value)}
+              keyboardComplete={keyboardComplete}
+            />
+          </div>
         </Grid>
         <Grid container
           justifyContent="center"
