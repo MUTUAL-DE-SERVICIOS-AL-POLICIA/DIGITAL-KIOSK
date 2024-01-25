@@ -2,7 +2,7 @@ import { AlphaNumeric, ComponentButton, ComponentInput, KeyboardSimple } from '@
 import { useCredentialStore, useForm } from '@/hooks';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { Grid, Typography } from '@mui/material';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const loginFormFields = {
   identityCard: '',
@@ -16,7 +16,15 @@ type KeyboardRef = {
   onClearInput: () => void;
 };
 
-export const IdentityCard = () => {
+
+interface Props {
+  onChange: () => void;
+}
+
+export const IdentityCard = (props: Props) => {
+  const {
+    onChange,
+  } = props;
 
   const [keyboardComplete, setkeyboardComplete] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -29,17 +37,22 @@ export const IdentityCard = () => {
     loginFormFields,
     formValidations
   );
-  
-  const { changeStep, changeIdentityCard } = useCredentialStore()
+
+  const { changeIdentityCard } = useCredentialStore()
 
 
   const loginSubmit = () => {
     changeIdentityCard(identityCard)
     setFormSubmitted(true);
     if (!isFormValid) return;
-    // startLogin(identityCard);
-    changeStep('instructionCard')
+    startLogin(identityCard);
+    onChange();
   };
+
+  useEffect(() => {
+    onChange();
+  }, [identityCard])
+
 
   return (
     <form style={{ paddingTop: 80 }}>
@@ -80,7 +93,7 @@ export const IdentityCard = () => {
           <Typography sx={{ px: 5 }} align="center" style={{ fontSize: '3vw', fontWeight: 700 }}>Por favor ingrese su número de carnet de identidad</Typography>
         </Grid>
         <Grid item container sm={6} justifyContent="center" alignItems="center">
-          <div style={{width: '100%', height: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div style={{ width: '100%', height: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <KeyboardSimple
               ref={keyboardRef}
               onChange={(value: string) => onValueChange('identityCard', value)}

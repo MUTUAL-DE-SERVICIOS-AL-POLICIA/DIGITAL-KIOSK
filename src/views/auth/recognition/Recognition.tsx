@@ -34,7 +34,7 @@ export const RecognitionView = forwardRef((_, ref) => {
   const canvasWebcamRef: RefObject<HTMLCanvasElement> = useRef(null);
   const [stateIdentityCard, setStateIdentityCard] = useState(false);
   const [statePerson, setStatePerson] = useState(false);
-  const { changeIdentityCard, changeIdentifyUser, changeTimer, changeStateInstruction } = useCredentialStore();
+  const { changeIdentityCard, changeIdentifyUser, changeTimer, changeStateInstruction, changeStep } = useCredentialStore();
   // const { user } = useAuthStore();
 
 
@@ -47,7 +47,6 @@ export const RecognitionView = forwardRef((_, ref) => {
 
   const captureImage = async () => {
     await ocrViewRef.current!.onCapture();
-
   };
 
 
@@ -55,6 +54,7 @@ export const RecognitionView = forwardRef((_, ref) => {
     console.log('OCR ', stateIdentityCard)
     console.log('RECONOCIMIENTO', statePerson)
     if (stateIdentityCard && statePerson) {
+      changeStep('home')
       reconigtionViewRef.current!.onRemoveCam()
       changeIdentifyUser(true);
       changeTimer(20);
@@ -67,7 +67,7 @@ export const RecognitionView = forwardRef((_, ref) => {
         {/* Hola {user.degree} {user.fullName} */}
       </Typography>
 
-      <Grid container  justifyContent="center">
+      <Grid container justifyContent="center" sx={{ marginTop: '50px' }}>
         <Grid sx={{ p: .5 }} item container sm={6} justifyContent="center">
           {/* OCR */}
           <OcrView
@@ -100,7 +100,7 @@ export const RecognitionView = forwardRef((_, ref) => {
           />
         </Grid>
       </Grid>
-      <Grid container justifyContent="center" sx={{marginTop: '10vh'}}>
+      <Grid container justifyContent="center" sx={{ marginTop: '5vh' }}>
         <Grid item>
           <ComponentButton
             onClick={() => captureImage()}

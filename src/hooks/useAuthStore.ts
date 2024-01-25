@@ -27,6 +27,7 @@ export const useAuthStore = () => {
         "degree": data.payload.degree
       }
       const user = `${JSON.stringify(dataUser)}`;
+      console.log(dataUser)
       localStorage.setItem('user', user);
       changeIdentityCard(identityCard)
       dispatch(onLogin(dataUser));
