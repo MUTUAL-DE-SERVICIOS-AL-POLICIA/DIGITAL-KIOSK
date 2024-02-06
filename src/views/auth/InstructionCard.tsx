@@ -1,13 +1,30 @@
-import { ComponentButton } from "@/components";
 import { Box, Grid, Typography } from "@mui/material";
+// @ts-ignore
 import imageLogo from '@/assets/images/carnet.png';
-
+import { useCredentialStore } from "@/hooks";
+import { forwardRef, useImperativeHandle } from "react";
 
 interface Props {
-  onPressed: (state: boolean) => void;
+  onChange: () => void;
 }
-export const InstructionCard = (props: Props) => {
-  const { onPressed } = props;
+export const InstructionCard = forwardRef((props: Props, ref) => {
+
+  const { onChange } = props;
+  const { changeIdentityCard, changeIdentifyUser, changeStateInstruction, changeStep } = useCredentialStore();
+
+  useImperativeHandle(ref, () => ({
+    action: (state: boolean) => {
+      onChange()
+      if(state) {
+        changeStateInstruction(false)
+        changeStep('recognitionCard')
+      } else {
+        changeIdentityCard('')
+        changeIdentifyUser(false)
+        changeStateInstruction(true)
+      }
+    }
+  }))
 
   return (
     <Grid container alignItems="center" style={{ marginTop: '10vh' }}>
@@ -22,15 +39,6 @@ export const InstructionCard = (props: Props) => {
           <img src={imageLogo} alt="Descripción de la imagen" style={{ width: '30vw' }} />
         </Box>
       </Grid>
-      <Grid container justifyContent="center" sx={{marginTop: '10vh'}}>
-        <Grid item>
-          <ComponentButton
-            onClick={() => onPressed(true)}
-            text="CONTINUAR"
-            sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%' }}
-          />
-        </Grid>
-      </Grid>
     </Grid>
   )
-}
+})

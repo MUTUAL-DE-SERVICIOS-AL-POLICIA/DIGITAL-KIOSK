@@ -128,17 +128,18 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
     const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS);
     intervalWebCam = setInterval(async () => {
       if (!webcamRef.current) clearInterval(intervalWebCam);
-      const imageSrc = webcamRef.current.getScreenshot();
-      if (!imageSrc) return;
-      const img = await faceapi.fetchImage(imageSrc);
-      const detections = await faceapi.detectAllFaces(img, options)
-        .withFaceLandmarks()
-        .withFaceDescriptors();
-
-      if (canvasWebcamRef.current && img) {
-        const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true);
-        const resizedDetections = faceapi.resizeResults(detections, dims);
-        faceapi.draw.drawDetections(canvasWebcamRef.current, resizedDetections);
+      if(webcamRef.current) {
+        const imageSrc = webcamRef.current.getScreenshot();
+        if (!imageSrc) return;
+        const img = await faceapi.fetchImage(imageSrc);
+        const detections = await faceapi.detectAllFaces(img, options)
+          .withFaceLandmarks()
+          .withFaceDescriptors();
+        if (canvasWebcamRef.current && img) {
+          const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true);
+          const resizedDetections = faceapi.resizeResults(detections, dims);
+          faceapi.draw.drawDetections(canvasWebcamRef.current, resizedDetections);
+        }
       }
     }, 60);
   }

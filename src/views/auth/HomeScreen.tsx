@@ -1,13 +1,14 @@
 import { Box, Grid, Typography } from "@mui/material";
+//@ts-ignore
 import logo from '@/assets/images/muserpol_casa.jpg';
+//@ts-ignore
 import imageLogo from '@/assets/images/muserpol.png';
 import { useEffect, useState } from "react";
 import { useCredentialStore } from "@/hooks";
 
 export const HomeScreen = () => {
 
-  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
-
+  const [ screenHeight, setScreenHeight ] = useState(window.innerHeight);
   const { changeStep } = useCredentialStore();
 
   useEffect(() => {

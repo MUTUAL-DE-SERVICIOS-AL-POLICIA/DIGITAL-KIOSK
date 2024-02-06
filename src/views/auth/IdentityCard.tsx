@@ -1,8 +1,8 @@
-import { AlphaNumeric, ComponentButton, ComponentInput, KeyboardSimple } from '@/components';
+import { AlphaNumeric, ComponentInput, KeyboardSimple } from '@/components';
 import { useCredentialStore, useForm } from '@/hooks';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { Grid, Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 const loginFormFields = {
   identityCard: '',
@@ -16,23 +16,18 @@ type KeyboardRef = {
   onClearInput: () => void;
 };
 
-
 interface Props {
   onChange: () => void;
 }
 
-export const IdentityCard = (props: Props) => {
-  const {
-    onChange,
-  } = props;
+export const IdentityCard = forwardRef((props:Props, ref) => {
 
-  const [keyboardComplete, setkeyboardComplete] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const { startLogin } = useAuthStore();
-
-
+  const { onChange } = props;
+  const [ keyboardComplete, setkeyboardComplete ] = useState(false);
+  const [ formSubmitted, setFormSubmitted ]       = useState(false);
   const keyboardRef = useRef<KeyboardRef | null>(null);
 
+  const { startLogin } = useAuthStore();
   const { identityCard, onInputChange, isFormValid, onValueChange, identityCardValid } = useForm(
     loginFormFields,
     formValidations
@@ -40,19 +35,20 @@ export const IdentityCard = (props: Props) => {
 
   const { changeIdentityCard } = useCredentialStore()
 
-
-  const loginSubmit = () => {
-    changeIdentityCard(identityCard)
-    setFormSubmitted(true);
-    if (!isFormValid) return;
-    startLogin(identityCard);
-    onChange();
-  };
+  useImperativeHandle(ref, () => ({
+    //@ts-expect-error
+    action: (state?: boolean) => {
+      changeIdentityCard(identityCard)
+      setFormSubmitted(true);
+      if (!isFormValid) return;
+      startLogin(identityCard);
+      onChange();
+    }
+  }))
 
   useEffect(() => {
     onChange();
   }, [identityCard])
-
 
   return (
     <form style={{ paddingTop: 80 }}>
@@ -101,18 +97,7 @@ export const IdentityCard = (props: Props) => {
             />
           </div>
         </Grid>
-        <Grid container
-          justifyContent="center"
-        >
-          <Grid item>
-            <ComponentButton
-              onClick={() => loginSubmit()}
-              text="INGRESAR"
-              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%', padding: "0px 25px" }}
-            />
-          </Grid>
-        </Grid>
       </Grid>
     </form>
   )
-}
+})
