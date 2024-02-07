@@ -43,7 +43,8 @@ export const IdentityCard = forwardRef((props:Props, ref) => {
       if (!isFormValid) return;
       startLogin(identityCard);
       onChange();
-    }
+    },
+    onRemoveCam: () => {}
   }))
 
   useEffect(() => {

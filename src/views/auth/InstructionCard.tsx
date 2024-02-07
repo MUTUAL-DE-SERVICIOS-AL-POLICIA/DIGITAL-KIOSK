@@ -23,7 +23,8 @@ export const InstructionCard = forwardRef((props: Props, ref) => {
         changeIdentifyUser(false)
         changeStateInstruction(true)
       }
-    }
+    },
+    onRemoveCam: () => {}
   }))
 
   return (

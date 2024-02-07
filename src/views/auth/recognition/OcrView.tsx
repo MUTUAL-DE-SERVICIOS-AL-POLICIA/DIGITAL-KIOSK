@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { RefObject, forwardRef, useImperativeHandle, useRef } from 'react';
 import Swal from 'sweetalert2';
-// import Webcam from 'react-webcam';
+import './styles.css'
 
 type ImageViewRef = {
   onCapture: () => void;
@@ -14,7 +14,7 @@ interface imageProps {
   imageRef: RefObject<HTMLImageElement>;
   canvasImageRef: RefObject<HTMLCanvasElement>;
   image: string | null;
-  setImage: (image: string) => void;
+  setImage: (image: string | null) => void;
   webcamRef: any;
   canvasWebcamRef: RefObject<HTMLCanvasElement>;
   isIdentityCard: (state: boolean) => void;
@@ -27,13 +27,14 @@ export const OcrView = forwardRef((props: imageProps, ref) => {
   const imageCaptureRef = useRef<ImageViewRef | null>(null);
   useImperativeHandle(ref, () => ({
     onCapture: () => imageCaptureRef.current!.onCapture(),
+    onPlaying: () => getLocalUserVideo(),
   }));
 
   // Función para verificar si dos cadenas están dentro del rango de error permitido
   const isWithinErrorRange = (texto1: string, str2: string): boolean => {
     const texto2 = str2.replace(/[^a-zA-Z0-9-]/g, '');
-    console.log('ci consultado', texto1)
-    console.log('texto obtenido', texto2)
+    // console.log('texto1', texto1)
+    // console.log('texto2', texto2)
     if (texto2.includes(texto1)) return true;
     let coincidencia = 0;
     for (let i = 0; i < texto2.length; i++) {
@@ -46,21 +47,38 @@ export const OcrView = forwardRef((props: imageProps, ref) => {
     if (coincidencia < texto1.length - 3) {
       return false;
     }
+    else if(coincidencia == 0) return false
     return true;
   }
   const handleImageCapture = (image: string, text: string) => {
-    setImage(image);
     if (isWithinErrorRange(identityCard, text)) {
       isIdentityCard(true);
+      setImage(image);
     } else {
-      Swal.fire('Intente nuevamente', 'No coincide con el numero de carnet de identidad', 'error');
+      Swal.fire({
+        title: 'Intente nuevamente',
+        text: 'El carnet de identidad no coincide',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        buttonsStyling: true,
+      });
       isIdentityCard(false);
+      setImage(null);
+    }
+  }
+
+  const getLocalUserVideo = async () => {
+    try {
+      const environmentStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "environment" } });
+      webcamRef?.current && (webcamRef.current.srcObject = environmentStream);
+    } catch(error) {
+      console.log("Error:", error)
     }
   }
   return (
     <Stack spacing={2} style={{ width: '45vh' }} sx={{ paddingLeft: 5 }}>
       <Typography style={{ fontSize: '1.5vw' }} >
-        Coloque su Cédula de identidad
+        Coloque su Cédula de identidad {image == null ? 'true' : 'false'}
       </Typography>
       {
         image == null ?
@@ -69,7 +87,8 @@ export const OcrView = forwardRef((props: imageProps, ref) => {
             ref={imageCaptureRef}
             webcamRef={webcamRef}
             canvasWebcamRef={canvasWebcamRef}
-          /> :
+          />
+          :
           <ImageCanvas
             imageRef={imageRef}
             canvasImageRef={canvasImageRef}

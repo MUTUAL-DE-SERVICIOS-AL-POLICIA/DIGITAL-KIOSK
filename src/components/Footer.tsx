@@ -10,7 +10,7 @@ const Footer = (props: Props) => {
   const { action } = props
 
   return (
-    <AppBar position="static" sx={{pb: 0, mb: 0, backgroundColor: 'white'}} style={{flex: '0 0 20%'}}>
+    <AppBar position="static" sx={{pb: 0, mb: 0, backgroundColor: '#EEEEEE'}} style={{flex: '0 0 20%'}}>
       <Toolbar>
         <Grid container
           justifyContent="center"

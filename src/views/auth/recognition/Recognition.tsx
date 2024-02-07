@@ -1,5 +1,5 @@
 
-import { Grid, Stack, Typography } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import { RefObject, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FaceRecognition, OcrView } from ".";
 import Webcam from "react-webcam";
@@ -7,20 +7,20 @@ import { useCredentialStore } from "@/hooks";
 
 type OcrViewRef = {
   onCapture: () => void;
+  onPlaying: () => void;
 };
 
 type reconigtionViewRef = {
   onScanImage: () => void;
   onRemoveCam: () => void;
+  onPlaying:   () => void;
 };
 
 export const RecognitionView = forwardRef((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     onRemoveCam: () => reconigtionViewRef.current!.onRemoveCam(),
-    action: async () => {
-      await ocrViewRef.current!.onCapture()
-    }
+    action: async () => await ocrViewRef.current!.onCapture()
   }));
 
   const ocrViewRef                                    = useRef<OcrViewRef | null>(null);
@@ -30,21 +30,20 @@ export const RecognitionView = forwardRef((_, ref) => {
   const webcamRef: RefObject<Webcam>                  = useRef(null);
   const canvasWebcamRef: RefObject<HTMLCanvasElement> = useRef(null);
 
-  const [imageCapture, setImageCapture]           = useState<string | null>(null);
-  const [stateIdentityCard, setStateIdentityCard] = useState(false);
-  const [statePerson, setStatePerson]             = useState(false);
+  const [ imageCapture, setImageCapture ]           = useState<string | null>(null);
+  const [ stateIdentityCard, setStateIdentityCard ] = useState(false);
+  const [ statePerson, setStatePerson ]             = useState(false);
 
-  const { changeIdentityCard, changeIdentifyUser, changeTimer, changeStep } = useCredentialStore();
+  const { changeIdentifyUser, changeTimer, changeStep } = useCredentialStore();
 
-  const setImage = async (image: string) => {
+  const setImage = async (image: string | null) => {
     setImageCapture(image);
     await new Promise((resolve) => setTimeout(resolve, 0));
     reconigtionViewRef.current!.onScanImage();
   };
 
+  // Si el reconocimiento fue todo bien
   useEffect(() => {
-    console.log('OCR ', stateIdentityCard)
-    console.log('RECONOCIMIENTO', statePerson)
     if (stateIdentityCard && statePerson) {
       changeStep('home')
       reconigtionViewRef.current!.onRemoveCam()
@@ -55,10 +54,6 @@ export const RecognitionView = forwardRef((_, ref) => {
 
   return (
     <Stack >
-      <Typography style={{ fontSize: '1.5vw' }} >
-        {/* Hola {user.degree} {user.fullName} */}
-      </Typography>
-
       <Grid container justifyContent="center" sx={{ marginTop: '50px' }}>
         <Grid sx={{ p: .5 }} item container sm={6} justifyContent="center">
           <OcrView
@@ -72,8 +67,8 @@ export const RecognitionView = forwardRef((_, ref) => {
             isIdentityCard={(state: boolean) => {
               setStateIdentityCard(state);
               if (!state) {
-                changeIdentityCard('')
-                reconigtionViewRef.current!.onRemoveCam();
+                // reconigtionViewRef.current!.onRemoveCam()
+                ocrViewRef.current!.onPlaying()
               }
             }}
           />
@@ -86,7 +81,7 @@ export const RecognitionView = forwardRef((_, ref) => {
             image={imageCapture}
             webcamRef={webcamRef}
             canvasWebcamRef={canvasWebcamRef}
-            isPerson={(state: boolean) => setStatePerson(state)}
+            isPerson={(state: boolean) => setStatePerson(state) }
           />
         </Grid>
       </Grid>

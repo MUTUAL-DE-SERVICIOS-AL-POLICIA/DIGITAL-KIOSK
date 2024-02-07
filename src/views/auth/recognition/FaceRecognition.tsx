@@ -23,16 +23,17 @@ interface VideoProps {
 }
 
 export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
+
   const { imageRef, canvasImageRef, image, webcamRef, canvasWebcamRef, isPerson } = props;
   const videoRef: any = useRef();
   const canvasVideoRef: any = useRef();
   let intervalVideo: NodeJS.Timeout;
   let intervalWebCam: NodeJS.Timeout;
 
-
   useImperativeHandle(ref, () => ({
     onScanImage: () => scanPhoto(),
-    onRemoveCam: () => cleanup()
+    onRemoveCam: () => cleanup(),
+    onPlaying: () => getLocalUserVideo()
   }));
 
   const cleanup = useCallback(() => {
@@ -101,24 +102,27 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
 
       if (labeledDescriptors.length > 0) {
         faceMatcher = new faceapi.FaceMatcher(labeledDescriptors);
-        const dims = faceapi.matchDimensions(canvasVideoRef.current, videoRef.current, true);
-        const resizedDetections = faceapi.resizeResults(detections, dims);
+        // if(canvasImageRef.current != null && videoRef.current != null) {
+          const dims = faceapi.matchDimensions(canvasVideoRef.current, videoRef.current, true);
+          const resizedDetections = faceapi.resizeResults(detections, dims);
 
-        resizedDetections.forEach(({ detection, descriptor }) => {
-          const label = faceMatcher.findBestMatch(descriptor).toString();
-          const boxStyle = {
-            label,
-            lineWidth: 2,
-            boxColor: "green",
-            drawLabel: true,
-          };
-          new faceapi.draw.DrawBox(detection.box, boxStyle).draw(canvasVideoRef.current);
-        });
-
-        faceapi.draw.drawFaceLandmarks(canvasVideoRef.current, resizedDetections);
+          resizedDetections.forEach(({ detection, descriptor }) => {
+            const label = faceMatcher.findBestMatch(descriptor).toString();
+            const boxStyle = {
+              label,
+              lineWidth: 2,
+              boxColor: "green",
+              drawLabel: true,
+            };
+            new faceapi.draw.DrawBox(detection.box, boxStyle).draw(canvasVideoRef.current);
+          });
+          faceapi.draw.drawFaceLandmarks(canvasVideoRef.current, resizedDetections);
+        // }
       } else {
-        const ctx = canvasVideoRef.current.getContext('2d');
-        ctx.clearRect(0, 0, canvasVideoRef.current.width, canvasVideoRef.current.height);
+        if(canvasVideoRef.current != null) {
+          const ctx = canvasVideoRef.current.getContext('2d');
+          ctx.clearRect(0, 0, canvasVideoRef.current.width, canvasVideoRef.current.height);
+        }
       }
     }, 60);
   };
@@ -169,7 +173,6 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
             label = `Persona no encontrada`;
             options = { label };
           }
-
           new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
         });
 

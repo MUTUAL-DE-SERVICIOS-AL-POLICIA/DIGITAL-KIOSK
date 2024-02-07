@@ -13,17 +13,12 @@ import Footer from '@/components/Footer';
 
 interface ChildRefType {
   action: (prop?: boolean) => void;
-  onRemoveCam?: () => void;
-}
-
-type reconigtionViewRef = {
   onRemoveCam: () => void;
-};
+}
 
 export const AuthView = () => {
 
   const childRef = useRef<ChildRefType>()
-  const reconigtionViewRef = useRef<reconigtionViewRef | null>(null);
   const {
     step, identityCard,
     timer = 0, changeTimer,
@@ -32,21 +27,21 @@ export const AuthView = () => {
   } = useCredentialStore();
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (step != 'home' && timer > 0) {
-      interval = setInterval(() => {
-        changeTimer(timer - 1);
-        if (timer == 1) {
-          reconigtionViewRef.current?.onRemoveCam();
-          changeIdentityCard('')
-          changeIdentifyUser(false)
-          changeStateInstruction(true)
-          changeTimer(20)
-          changeStep('home')
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
+    // let interval: NodeJS.Timeout;
+    // if (step != 'home' && timer > 0) {
+    //   interval = setInterval(() => {
+    //     changeTimer(timer - 1);
+    //     if (timer == 1) {
+    //       childRef.current?.onRemoveCam();
+    //       changeStep('home')
+    //       changeIdentityCard('')
+    //       changeIdentifyUser(false)
+    //       changeStateInstruction(true)
+    //       changeTimer(20)
+    //     }
+    //   }, 1000);
+    // }
+    // return () => clearInterval(interval);
   }, [step, timer]);
 
   const handleClick = () => {
