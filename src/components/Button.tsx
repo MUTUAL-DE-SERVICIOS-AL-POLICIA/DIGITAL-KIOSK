@@ -46,11 +46,11 @@ export const ComponentButton = memo((props: buttonProps) => {
         marginBottom: '10px',
         width: '100%',
         fontWeight: 'bold',
-        backgroundColor: color || 'rgba(21, 107, 84, 0.9)', // Usa el color proporcionado o el predeterminado
+        backgroundColor: color || '#008698', // Usa el color proporcionado o el predeterminado
         '&:hover': {
           transform: 'scale(0.95)',
           transition: 'transform 0.2s ease', // Añade la propiedad de transición
-          backgroundColor: color ? 'orange' : 'rgba(21, 107, 84, 0.9)',
+          backgroundColor: color ? 'orange' : '#008698',
           // No especificar backgroundColor aquí para que no cambie en hover
         },
         ...sx,

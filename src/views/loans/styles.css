@@ -1,0 +1,8 @@
+.dynamic {
+  cursor: pointer;
+  transition: transform 50ms, box-shadow 50ms;
+}
+
+.dynamic:hover {
+  transform: scale(0.9);
+}

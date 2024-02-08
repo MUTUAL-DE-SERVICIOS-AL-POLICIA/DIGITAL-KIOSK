@@ -1,6 +1,7 @@
 import { Card, Paper, Stack, Typography } from "@mui/material"
 // @ts-ignore
 import logo from '@/assets/images/coin.png';
+import './styes.css';
 
 interface Props {
   title: string;
@@ -16,6 +17,7 @@ export const CardLoan = (props: Props) => {
     <Paper
       sx={{ p: 8, m: 8, backgroundColor: '#9BC5B8', borderRadius: '30px' }}
       onClick={() => onPressed()}
+      className="dynamic"
     >
       <Stack>
         <img src={logo} alt="Descripción de la imagen" style={{ width: '10vw' }} />

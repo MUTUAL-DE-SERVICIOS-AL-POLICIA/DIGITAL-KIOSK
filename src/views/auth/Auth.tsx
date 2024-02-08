@@ -27,21 +27,21 @@ export const AuthView = () => {
   } = useCredentialStore();
 
   useEffect(() => {
-    // let interval: NodeJS.Timeout;
-    // if (step != 'home' && timer > 0) {
-    //   interval = setInterval(() => {
-    //     changeTimer(timer - 1);
-    //     if (timer == 1) {
-    //       childRef.current?.onRemoveCam();
-    //       changeStep('home')
-    //       changeIdentityCard('')
-    //       changeIdentifyUser(false)
-    //       changeStateInstruction(true)
-    //       changeTimer(20)
-    //     }
-    //   }, 1000);
-    // }
-    // return () => clearInterval(interval);
+    let interval: NodeJS.Timeout;
+    if (step != 'home' && timer > 0) {
+      interval = setInterval(() => {
+        changeTimer(timer - 1);
+        if (timer == 1) {
+          childRef.current?.onRemoveCam();
+          changeStep('home')
+          changeIdentityCard('')
+          changeIdentifyUser(false)
+          changeStateInstruction(true)
+          changeTimer(40)
+        }
+      }, 1000);
+    }
+    return () => clearInterval(interval);
   }, [step, timer]);
 
   const handleClick = () => {
@@ -60,8 +60,8 @@ export const AuthView = () => {
       }{/* barra superior */}
         <div style={{ flex: '1 1 auto', overflowX: 'auto'}}>
           { step == 'home' && <HomeScreen /> }{/* Pantall casita */}
-          { step == 'identityCard' && <IdentityCard onChange={() => changeTimer(20)} ref={childRef} /> }{/* pantalla input carnet */}
-          { step == 'instructionCard' && identityCard != '' && <InstructionCard onChange={() => changeTimer(20)} ref={childRef} /> }{/* pantalla instruccion */}
+          { step == 'identityCard' && <IdentityCard onChange={() => changeTimer(40)} ref={childRef} /> }{/* pantalla input carnet */}
+          { step == 'instructionCard' && identityCard != '' && <InstructionCard onChange={() => changeTimer(40)} ref={childRef} /> }{/* pantalla instruccion */}
           { step == 'recognitionCard' && <RecognitionView ref={childRef}  /> }{/* pantalla reconocimiento facial */}
         </div>
       { step != 'home' && <Footer action={handleClick} />}

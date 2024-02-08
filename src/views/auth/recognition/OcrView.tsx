@@ -78,7 +78,7 @@ export const OcrView = forwardRef((props: imageProps, ref) => {
   return (
     <Stack spacing={2} style={{ width: '45vh' }} sx={{ paddingLeft: 5 }}>
       <Typography style={{ fontSize: '1.5vw' }} >
-        Coloque su Cédula de identidad {image == null ? 'true' : 'false'}
+        Coloque su Cédula de identidad
       </Typography>
       {
         image == null ?
