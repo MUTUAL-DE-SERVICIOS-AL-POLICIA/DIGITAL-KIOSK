@@ -1,68 +1,34 @@
-.simple-keyboard.hg-theme-default.myTheme {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-weight: bold;
-  background-color: #008698;
-  width: calc(100% - 150px);
-  /* height: 250px; */
-}
 
-.hg-rows {
-  width: 100%;
-  height: 100%;
-}
-
-.hg-row {
+.keyboardNumeric,
+.keyboardAlphanumeric {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
 }
 
-.hg-button {
-  width: 100%;
-  height: 100px;
-  aspect-ratio: 1/1 !important;
+div.key,
+.keyalphanumeric {
+  padding: 30px;
+  font-size: 2.5em;
+  font-weight: 500;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid gray;
+  cursor: pointer;
+  transition: transform 50ms, box-shadow 50ms;
+  text-align: center;
+}
+.key:hover,
+.keyalphanumeric:hover {
+  background-color: rgb(217, 217, 217);
+  transform: scale(0.96);
 }
 
-.hg-button > span {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 45px;
-  height: 100% !important;
-  max-height: 100%;
+.keyboardAlphanumeric {
+  grid-template-columns: repeat(10, 1fr);
 }
 
-
-/* .simple-keyboard.hg-layout-default .hg-button.hg-green {
-  transition: transform 0.3s ease;
-  background: white;
-  background-color: #008698;
-  color: #008698;
-  height: 130px;
-  border-radius: 300px;
-  border-color: #008698;
-  border-width: 3px;
-  padding: 0px;
-  border-style: solid;
-} */
-
-/* @media (min-width: 768px) {
-  .simple-keyboard.hg-layout-default .hg-button.hg-green {
-    font-size: 3.5vw;
-  }
+.keyalphanumeric {
+  padding: 30px;
+  font-size: 1.5em;
 }
-
-@media (max-width: 767px) {
-  .simple-keyboard.hg-layout-default .hg-button.hg-green {
-    font-size: 5.5vw;
-  }
-} */
-
-/* .simple-keyboard.hg-layout-default .hg-button.hg-green:hover {
-  background-color: #008698;
-  color: white;
-  transform: scale(0.95);
-  z-index: 1;
-} */
