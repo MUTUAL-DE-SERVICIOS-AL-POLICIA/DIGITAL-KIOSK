@@ -26,7 +26,7 @@ export const LoanView = () => {
           changeIdentityCard('');
           changeIdentifyUser(false)
           startLogout();
-          changeTimer(20);
+          changeTimer(40);
         }
       }, 1000);
     }
@@ -35,7 +35,7 @@ export const LoanView = () => {
   }, [timer]);
 
   const handlePaperClick = (loanId: number) => {
-    changeTimer(20);
+    changeTimer(40);
     printKardexLoan(loanId)
   };
 

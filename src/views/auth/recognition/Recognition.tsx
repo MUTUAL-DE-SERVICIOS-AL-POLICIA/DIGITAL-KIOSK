@@ -49,7 +49,7 @@ export const RecognitionView = forwardRef((_, ref) => {
       changeStep('home')
       reconigtionViewRef.current!.onRemoveCam()
       changeIdentifyUser(true);
-      changeTimer(20);
+      changeTimer(40);
     }
   }, [stateIdentityCard, statePerson])
 
