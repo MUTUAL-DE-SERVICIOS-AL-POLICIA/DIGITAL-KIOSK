@@ -14,6 +14,7 @@ export const InstructionCard = forwardRef((props: Props, ref) => {
 
   useImperativeHandle(ref, () => ({
     action: (state: boolean) => {
+      console.log("esto es")
       onChange()
       if(state) {
         changeStateInstruction(false)

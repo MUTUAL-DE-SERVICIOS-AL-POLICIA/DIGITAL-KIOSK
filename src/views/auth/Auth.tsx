@@ -27,6 +27,9 @@ export const AuthView = () => {
   } = useCredentialStore();
 
   useEffect(() => {
+    console.log("o de repente esto?")
+    console.log(step)
+    console.log(timer)
     // let interval: NodeJS.Timeout;
     // if (step != 'home' && timer > 0) {
     //   interval = setInterval(() => {

@@ -1,4 +1,5 @@
 import { AlphaNumeric, ComponentInput, KeyboardSimple } from '@/components';
+import KeyboardNumeric from '@/components/keyboardManual';
 import { useCredentialStore, useForm } from '@/hooks';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { Grid, Typography } from '@mui/material';
@@ -51,6 +52,12 @@ export const IdentityCard = forwardRef((props:Props, ref) => {
     onChange();
   }, [identityCard])
 
+
+  const handleClickKeyboard = (number: string) =>  {
+    console.log("esto es number", number)
+    // onValueChange('identityCard', number)
+  }
+
   return (
     <form style={{ paddingTop: 80 }}>
       <Grid container>
@@ -91,11 +98,12 @@ export const IdentityCard = forwardRef((props:Props, ref) => {
         </Grid>
         <Grid item container sm={6} justifyContent="center" alignItems="center">
           <div style={{ width: '100%', height: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <KeyboardSimple
+            {/* <KeyboardSimple
               ref={keyboardRef}
               onChange={(value: string) => onValueChange('identityCard', value)}
               keyboardComplete={keyboardComplete}
-            />
+            /> */}
+            <KeyboardNumeric onClick={handleClickKeyboard}/>
           </div>
         </Grid>
       </Grid>

@@ -45,6 +45,7 @@ export const RecognitionView = forwardRef((_, ref) => {
   // Si el reconocimiento fue todo bien
   useEffect(() => {
     if (stateIdentityCard && statePerson) {
+      console.log("se ejecuta esto")
       changeStep('home')
       reconigtionViewRef.current!.onRemoveCam()
       changeIdentifyUser(true);

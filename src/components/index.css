@@ -66,3 +66,25 @@
   transform: scale(0.95);
   z-index: 1;
 } */
+
+
+.keyboardNumeric {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+div.key {
+  padding: 30px;
+  font-size: 2.5em;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid gray;
+  cursor: pointer;
+  transition: transform 50ms, box-shadow 50ms;
+  text-align: center;
+}
+div.key:hover {
+  background-color: rgb(217, 217, 217);
+  transform: scale(0.96);
+}
