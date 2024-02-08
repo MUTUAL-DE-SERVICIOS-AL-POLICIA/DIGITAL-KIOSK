@@ -4,6 +4,7 @@ import { AppBar, CircularProgress, Grid, Toolbar, Typography } from "@mui/materi
 import { useEffect, useState } from 'react';
 import { CardLoan } from "./CardLoan";
 import { useCredentialStore } from "@/hooks";
+import Swal from 'sweetalert2'
 
 export const LoanView = () => {
   const { user } = useAuthStore();
@@ -19,29 +20,55 @@ export const LoanView = () => {
   }, [])
 
   useEffect(() => {
-    // let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout;
 
-    // if (timer > 0) {
-    //   interval = setInterval(() => {
-    //     changeTimer(timer - 1);
-    //     if (timer == 1) {
-    //       changeIdentityCard('');
-    //       changeIdentifyUser(false)
-    //       startLogout();
-    //       // changeTimer(40);
-    //     }
-    //   }, 1000);
-    // }
-    // return () => clearInterval(interval);
-
+    if (timer > 0) {
+      interval = setInterval(() => {
+        changeTimer(timer - 1);
+        if (timer == 1) {
+          changeIdentityCard('');
+          changeIdentifyUser(false)
+          startLogout();
+          changeTimer(40);
+        }
+      }, 1000);
+    }
+    return () => clearInterval(interval);
   }, [timer]);
 
   const handlePaperClick = async (loanId: number) => {
-    // changeTimer(40);
+    changeTimer(40);
     setLoading(true)
-    if(await printKardexLoan(loanId)){
-      setLoading(false)
+    const response:any = await printKardexLoan(loanId)
+    switch(response) {
+      case 200:
+        Swal.fire({
+          title: 'Impresión exitosa',
+          text: 'Recoja su hoja impresa',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+        });
+        break;
+      case 400:
+        Swal.fire({
+          title: 'No hay impresora conectada',
+          text: 'Contactese con soporte',
+          icon: 'warning',
+          confirmButtonText: 'Aceptar',
+        });
+        break;
+      case 501:break;
+      default:
+        console.log("enta aca")
+        Swal.fire({
+          title: 'Hubo un error',
+          text: 'El servicio de impresión no se encuenta disponible',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+        })
+        break;
     }
+    setLoading(false)
   };
 
   return (
