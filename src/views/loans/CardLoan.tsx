@@ -1,7 +1,7 @@
 import { Card, Paper, Stack, Typography } from "@mui/material"
 // @ts-ignore
 import logo from '@/assets/images/coin.png';
-import './styes.css';
+import './styles.css';
 
 interface Props {
   title: string;
@@ -25,12 +25,12 @@ export const CardLoan = (props: Props) => {
         <img src={logo} alt="Descripción de la imagen" style={{ paddingLeft: '60px', width: '10vw', position: "absolute", }} />
         <img src={logo} alt="Descripción de la imagen" style={{ paddingLeft: '90px', width: '10vw', position: "absolute", }} />
       </Stack>
-      <Card sx={{ px: 4, py: 2, backgroundColor: '#1E635A', borderRadius: '10px' }}>
-        <Typography sx={{ color: 'white' }}>
+      <Card sx={{ px: 3, py: 2, my: 2, backgroundColor: '#1E635A', borderRadius: '10px' }}>
+        <Typography variant="h4" sx={{ color: 'white' }}>
           {title}
         </Typography>
       </Card>
-      <Typography >
+      <Typography variant="h5" align="center">
         {title}
       </Typography>
     </Paper>
