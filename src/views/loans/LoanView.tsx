@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useLoanStore } from "@/hooks/useLoanStore";
-import { AppBar, Grid, Toolbar, Typography } from "@mui/material";
-import { useEffect } from 'react';
+import { AppBar, CircularProgress, Grid, Toolbar, Typography } from "@mui/material";
+import { useEffect, useState } from 'react';
 import { CardLoan } from "./CardLoan";
 import { useCredentialStore } from "@/hooks";
 
@@ -12,31 +12,36 @@ export const LoanView = () => {
   const { timer, changeIdentityCard, changeIdentifyUser, changeTimer } = useCredentialStore();
   const { printKardexLoan } = useLoanStore();
 
+  const [ loading, setLoading ] = useState(false)
+
   useEffect(() => {
     getLoans(user.nup);
   }, [])
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    // let interval: NodeJS.Timeout;
 
-    if (timer > 0) {
-      interval = setInterval(() => {
-        changeTimer(timer - 1);
-        if (timer == 1) {
-          changeIdentityCard('');
-          changeIdentifyUser(false)
-          startLogout();
-          changeTimer(40);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
+    // if (timer > 0) {
+    //   interval = setInterval(() => {
+    //     changeTimer(timer - 1);
+    //     if (timer == 1) {
+    //       changeIdentityCard('');
+    //       changeIdentifyUser(false)
+    //       startLogout();
+    //       // changeTimer(40);
+    //     }
+    //   }, 1000);
+    // }
+    // return () => clearInterval(interval);
 
   }, [timer]);
 
-  const handlePaperClick = (loanId: number) => {
-    changeTimer(40);
-    printKardexLoan(loanId)
+  const handlePaperClick = async (loanId: number) => {
+    // changeTimer(40);
+    setLoading(true)
+    if(await printKardexLoan(loanId)){
+      setLoading(false)
+    }
   };
 
   return (
@@ -63,7 +68,7 @@ export const LoanView = () => {
           {
             loans.liquited.map((loan: any) => {
               return (
-                <Grid item key={loan.id} xs={12} sm={4}>
+                <Grid item key={loan.id} xs={12} sm={4} justifyContent="center" alignContent="center">
                   <CardLoan
                     title={loan.procedure_modality}
                     onPressed={() => handlePaperClick(loan.id)}
@@ -72,6 +77,19 @@ export const LoanView = () => {
               )
             })
           }
+          {loading &&
+            <div className="overlay">
+              <CircularProgress
+                size={120}
+                sx={{
+                  color: '#42c9b7',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                }}
+              />
+            </div>
+            }
         </Grid>
       }
     </>

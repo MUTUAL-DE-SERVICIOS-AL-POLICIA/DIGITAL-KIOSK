@@ -24,7 +24,11 @@ export const useLoanStore = () => {
       const file = new Blob([data], { type: 'application/pdf' });
       const formData = new FormData()
       formData.append('pdfFile', file, 'kardex.pdf' )
-      await apiExternal.post('/printer/print/', formData)
+      const res = await apiExternal.post('/printer/print/', formData)
+      if(res.status == 200) {
+        return true
+      } else return false
+
     } catch (error: any) {
       const message = error.response.data.error
       Swal.fire('Error', message, 'error');

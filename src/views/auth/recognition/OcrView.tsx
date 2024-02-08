@@ -33,8 +33,8 @@ export const OcrView = forwardRef((props: imageProps, ref) => {
   // Función para verificar si dos cadenas están dentro del rango de error permitido
   const isWithinErrorRange = (texto1: string, str2: string): boolean => {
     const texto2 = str2.replace(/[^a-zA-Z0-9-]/g, '');
-    // console.log('texto1', texto1)
-    // console.log('texto2', texto2)
+    console.log('texto1', texto1)
+    console.log('texto2', texto2)
     if (texto2.includes(texto1)) return true;
     let coincidencia = 0;
     for (let i = 0; i < texto2.length; i++) {
