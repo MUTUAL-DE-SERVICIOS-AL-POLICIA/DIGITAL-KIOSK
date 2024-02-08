@@ -53,7 +53,6 @@ export const IdentityCard = forwardRef((props:Props, ref) => {
   const handleClickKeyboard = (number: any) =>  {
     let aux: string = ''
     if(typeof number === 'object' && number !== null) {
-      // borrame
       aux = identityCard.substring(0, identityCard.length - 1)
     } else {
       aux = identityCard + number

@@ -12,26 +12,41 @@ export const useLoanStore = () => {
 
   const getLoans = async (loanId: number) => {
     const { data } = await api.get(`/poa/get_affiliate_loans/${loanId}`);
-    console.log(data.payload)
     dispatch(setLoans({ loans: data.payload }));
   }
 
   const printKardexLoan = async (loanId: number) => {
     try {
-      const { data } = await api.get(`/poa/loan/${loanId}/print/kardex`, {
-        responseType: 'arraybuffer'
-      });
-      const file = new Blob([data], { type: 'application/pdf' });
-      const formData = new FormData()
-      formData.append('pdfFile', file, 'kardex.pdf' )
-      const res = await apiExternal.post('/printer/print/', formData)
-      if(res.status == 200) {
-        return true
-      } else return false
-
+      //@ts-ignore
+      const { data } = await Promise.race([
+        api.get(`/poa/loan/${loanId}/print/kardex`, { responseType: 'arraybuffer' }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
+      ]);
+      if(data) {
+        const file = new Blob([data], { type: 'application/pdf' });
+        const formData = new FormData()
+        formData.append('pdfFile', file, 'kardex.pdf' )
+        const res:any = await Promise.race([
+          await apiExternal.post('/printer/print/', formData),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
+        ])
+        if(res) {
+          // @ts-ignore
+          if(res.status == 200) {
+            return res.status
+          }
+        }
+      }
     } catch (error: any) {
-      const message = error.response.data.error
-      Swal.fire('Error', message, 'error');
+      if(error.code){
+        if(error.code == 'ERR_NETWORK') {
+          return 500
+        }
+      } else if(error.response) {
+        const message = error.response?.data?.error || 'Error de conexión'
+        Swal.fire('Error', message, 'error');
+        return 501
+      }
     }
   }
 
