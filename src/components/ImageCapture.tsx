@@ -14,24 +14,23 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
   const {
     onChange,
     webcamRef,
-    canvasWebcamRef
+    canvasWebcamRef,
   } = props;
 
-  // Pasa la referencia al componente padre
   useImperativeHandle(ref, () => ({
     onCapture: () => capture(),
   }));
 
+  /* Cuando se hace click en el botón INGRESAR se ejecuta esta función */
   const capture = async () => {
-    console.log("capturando una foto")
-    const worker = await createWorker('eng');
+    const worker = await createWorker('eng'); // Crea el proceso secundario
     if (webcamRef.current !== null) {
-      const imageSrc = webcamRef.current.getScreenshot();
+      const imageSrc = webcamRef.current.getScreenshot(); // Realizar captura
       if (imageSrc !== null) {
-        const image = await Image.load(imageSrc);
-        const greyImage = image.grey();
-        const ret = await worker.recognize(greyImage.toDataURL());
-        await worker.terminate();
+        const image = await Image.load(imageSrc); // Obtiene la imagen
+        const greyImage = image.grey(); // Convierte la imagen a escala de grises
+        const ret = await worker.recognize(greyImage.toDataURL()); // reconocimiento de texto
+        await worker.terminate(); // termina el proceso secundario
         onChange(imageSrc, ret.data.text);
       }
     }

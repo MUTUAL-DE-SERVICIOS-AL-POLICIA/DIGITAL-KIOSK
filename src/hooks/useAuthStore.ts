@@ -18,7 +18,6 @@ export const useAuthStore = () => {
         "device_name": "54:BF:64:61:D7:95",
         "identity_card": "4362223"
         // "identity_card": identityCard
-
       });
       localStorage.setItem('token', data.payload.access_token);
       const dataUser = {
@@ -27,7 +26,6 @@ export const useAuthStore = () => {
         "degree": data.payload.degree
       }
       const user = `${JSON.stringify(dataUser)}`;
-      console.log(dataUser)
       localStorage.setItem('user', user);
       changeIdentityCard(identityCard)
       dispatch(onLogin(dataUser));

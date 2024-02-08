@@ -50,6 +50,14 @@ export const KeyboardSimple = forwardRef((props: keyboardProps, ref) => {
         }}
         buttonTheme={buttonTheme}
         display={{ '{bksp}': '←' }}
+        preventMouseDownDefault={true}
+        disableCaretPositioning={true}
+        useButtonTag={false}
+        physicalKeyboardHighlight={true}
+        physicalKeyboardHighlightPress={true}
+        physicalKeyboardHighlightTextColor={"red"}
+        physicalKeyboardHighlightBgColor={"#9ab4d0"}
+        baseClass={"algo"}
       />
   );
 });
