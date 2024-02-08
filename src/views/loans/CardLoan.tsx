@@ -1,4 +1,5 @@
 import { Card, Paper, Stack, Typography } from "@mui/material"
+// @ts-ignore
 import logo from '@/assets/images/coin.png';
 
 interface Props {

@@ -1,9 +1,10 @@
-import { AlphaNumeric, ComponentInput, KeyboardSimple } from '@/components';
-import KeyboardNumeric from '@/components/keyboardManual';
+import { AlphaNumeric, ComponentInput } from '@/components';
+import KeyboardAlphanumeric from '@/components/keyboardAlphanumeric';
+import KeyboardNumeric from '@/components/keyboardNumeric';
 import { useCredentialStore, useForm } from '@/hooks';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { Grid, Typography } from '@mui/material';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 const loginFormFields = {
   identityCard: '',
@@ -11,10 +12,6 @@ const loginFormFields = {
 
 const formValidations = {
   identityCard: [(value: string) => value.length >= 1, 'Debe ingresar su número de carnet de identidad'],
-};
-
-type KeyboardRef = {
-  onClearInput: () => void;
 };
 
 interface Props {
@@ -26,7 +23,7 @@ export const IdentityCard = forwardRef((props:Props, ref) => {
   const { onChange } = props;
   const [ keyboardComplete, setkeyboardComplete ] = useState(false);
   const [ formSubmitted, setFormSubmitted ]       = useState(false);
-  const keyboardRef = useRef<KeyboardRef | null>(null);
+  // const keyboardRef = useRef<KeyboardRef | null>(null);
 
   const { startLogin } = useAuthStore();
   const { identityCard, onInputChange, isFormValid, onValueChange, identityCardValid } = useForm(
@@ -53,9 +50,15 @@ export const IdentityCard = forwardRef((props:Props, ref) => {
   }, [identityCard])
 
 
-  const handleClickKeyboard = (number: string) =>  {
-    console.log("esto es number", number)
-    // onValueChange('identityCard', number)
+  const handleClickKeyboard = (number: any) =>  {
+    let aux: string = ''
+    if(typeof number === 'object' && number !== null) {
+      // borrame
+      aux = identityCard.substring(0, identityCard.length - 1)
+    } else {
+      aux = identityCard + number
+    }
+    onValueChange('identityCard', aux)
   }
 
   return (
@@ -94,16 +97,14 @@ export const IdentityCard = forwardRef((props:Props, ref) => {
               },
             }}
           />
-          <Typography sx={{ px: 5 }} align="center" style={{ fontSize: '3vw', fontWeight: 700 }}>Por favor ingrese su número de carnet de identidad</Typography>
+          <Typography sx={{ px: 5 }} align="center" style={{ fontSize: '2vw', fontWeight: 200 }}>Por favor ingrese su número de carnet de identidad</Typography>
         </Grid>
         <Grid item container sm={6} justifyContent="center" alignItems="center">
           <div style={{ width: '100%', height: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* <KeyboardSimple
-              ref={keyboardRef}
-              onChange={(value: string) => onValueChange('identityCard', value)}
-              keyboardComplete={keyboardComplete}
-            /> */}
+            { !keyboardComplete ?
             <KeyboardNumeric onClick={handleClickKeyboard}/>
+            : <KeyboardAlphanumeric onClick={handleClickKeyboard}/>
+            }
           </div>
         </Grid>
       </Grid>
