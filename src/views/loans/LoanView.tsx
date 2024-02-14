@@ -59,10 +59,9 @@ export const LoanView = () => {
         break;
       case 501:break;
       default:
-        console.log("enta aca")
         Swal.fire({
           title: 'Hubo un error',
-          text: 'El servicio de impresión no se encuenta disponible',
+          text: 'El servicio de impresión no se encuentra disponible',
           icon: 'error',
           confirmButtonText: 'Aceptar',
         })

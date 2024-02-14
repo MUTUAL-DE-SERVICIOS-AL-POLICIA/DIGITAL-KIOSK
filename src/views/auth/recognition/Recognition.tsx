@@ -1,5 +1,5 @@
 
-import { Grid, Stack } from "@mui/material";
+import { Grid } from "@mui/material";
 import { RefObject, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FaceRecognition, OcrView } from ".";
 import Webcam from "react-webcam";
@@ -31,60 +31,72 @@ export const RecognitionView = forwardRef((_, ref) => {
   const canvasWebcamRef: RefObject<HTMLCanvasElement> = useRef(null);
 
   const [ imageCapture, setImageCapture ]           = useState<string | null>(null);
-  const [ stateIdentityCard, setStateIdentityCard ] = useState(false);
-  const [ statePerson, setStatePerson ]             = useState(false);
+  const [ stateIdentityCard, setStateIdentityCard ] = useState<boolean | null>(null);
+  const [ statePerson, setStatePerson ]             = useState<boolean | null>(null);
 
   const { changeIdentifyUser, changeTimer, changeStep } = useCredentialStore();
 
   const setImage = async (image: string | null) => {
     setImageCapture(image);
     await new Promise((resolve) => setTimeout(resolve, 0));
-    reconigtionViewRef.current!.onScanImage();
+    if(reconigtionViewRef.current) {
+      await reconigtionViewRef.current!.onScanImage();
+    }
   };
 
   // Si el reconocimiento fue todo bien
   useEffect(() => {
-    if (stateIdentityCard && statePerson) {
-      changeStep('home')
+    console.log("carnet identidad", stateIdentityCard)
+    console.log("persona", statePerson)
+    if (stateIdentityCard || statePerson) {
+      setTimeout(() => changeStep('home'), 5000)
       reconigtionViewRef.current!.onRemoveCam()
       changeIdentifyUser(true);
-      changeTimer(40);
+      changeTimer(40)
+    } else {
+      setImage(null)
+      // ocrViewRef.current!.onPlaying()
+      // Esto se debe mejorar
+      // setStateIdentityCard(null)
+      // setStatePerson(null)
     }
   }, [stateIdentityCard, statePerson])
 
   return (
-    <Stack >
-      <Grid container justifyContent="center" sx={{ marginTop: '50px' }}>
-        <Grid sx={{ p: .5 }} item container sm={6} justifyContent="center">
-          <OcrView
-            ref={ocrViewRef}
-            imageRef={imageRef}
-            canvasImageRef={canvasImageRef}
-            image={imageCapture}
-            setImage={setImage}
-            webcamRef={webcamRef}
-            canvasWebcamRef={canvasWebcamRef}
-            isIdentityCard={(state: boolean) => {
-              setStateIdentityCard(state);
-              if (!state) {
-                // reconigtionViewRef.current!.onRemoveCam()
-                ocrViewRef.current!.onPlaying()
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FaceRecognition
-            ref={reconigtionViewRef}
-            imageRef={imageRef}
-            canvasImageRef={canvasImageRef}
-            image={imageCapture}
-            webcamRef={webcamRef}
-            canvasWebcamRef={canvasWebcamRef}
-            isPerson={(state: boolean) => setStatePerson(state) }
-          />
-        </Grid>
+    <Grid container alignItems="end" sx={{ marginTop: '50px' }}>
+      <Grid sx={{ p: .5 }} container item sm={6} justifyContent="center" height="100%">
+        <OcrView
+          ref={ocrViewRef}
+          imageRef={imageRef}
+          canvasImageRef={canvasImageRef}
+          image={imageCapture}
+          setImage={setImage}
+          webcamRef={webcamRef}
+          canvasWebcamRef={canvasWebcamRef}
+          isIdentityCard={(state: boolean) => {
+            setStateIdentityCard(state);
+            if (!state) {
+              // setStateIdentityCard(null)
+              ocrViewRef.current!.onPlaying()
+            }
+          }}
+        />
       </Grid>
-    </Stack>
+      <Grid item xs={12} sm={6} height="100%">
+        <FaceRecognition
+          ref={reconigtionViewRef}
+          imageRef={imageRef}
+          canvasImageRef={canvasImageRef}
+          image={imageCapture}
+          webcamRef={webcamRef}
+          canvasWebcamRef={canvasWebcamRef}
+          isPerson={(state: boolean) => {
+            setStatePerson(state)
+            // if(!state) setStatePerson(null)
+            }
+          }
+        />
+      </Grid>
+    </Grid>
   );
 });
