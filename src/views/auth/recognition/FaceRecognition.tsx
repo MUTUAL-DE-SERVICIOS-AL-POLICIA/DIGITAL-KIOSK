@@ -47,6 +47,7 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
   }, [videoRef, webcamRef]);
 
 
+  /* Carga de modelos */
   useEffect(() => {
     loadModels().then(async () => {
       await scanFace();
@@ -85,7 +86,7 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
       return groupedDescriptors;
     }, {});
 
-  const scanFace = async () => {
+  const scanFace = async () => { // video
     if (!isFaceDetectionModelLoad()) return;
 
     const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS);
@@ -102,7 +103,7 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
 
       if (labeledDescriptors.length > 0) {
         faceMatcher = new faceapi.FaceMatcher(labeledDescriptors);
-        // if(canvasImageRef.current != null && videoRef.current != null) {
+        if(videoRef.current != null) {
           const dims = faceapi.matchDimensions(canvasVideoRef.current, videoRef.current, true);
           const resizedDetections = faceapi.resizeResults(detections, dims);
 
@@ -117,7 +118,7 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
             new faceapi.draw.DrawBox(detection.box, boxStyle).draw(canvasVideoRef.current);
           });
           faceapi.draw.drawFaceLandmarks(canvasVideoRef.current, resizedDetections);
-        // }
+        }
       } else {
         if(canvasVideoRef.current != null) {
           const ctx = canvasVideoRef.current.getContext('2d');
@@ -127,7 +128,7 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
     }, 60);
   };
 
-  const scanWebcam = async () => {
+  const scanWebcam = async () => { // webcam
     if (!isFaceDetectionModelLoad()) return;
     const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS);
     intervalWebCam = setInterval(async () => {
@@ -148,14 +149,17 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
     }, 60);
   }
 
-  const scanPhoto = async () => {
+  const scanPhoto = async () => { // imagen
     if (!image || !isFaceDetectionModelLoad()) return;
     const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 608, scoreThreshold: 0.6 });
+    /* Obtenemos la referencia a la imagen */
     const img = await faceapi.fetchImage(image);
+    /* detectamos todos los rostros en la imagen */
     const detections = await faceapi.detectAllFaces(img, options)
       .withFaceLandmarks()
       .withFaceDescriptors();
-    if (detections) {
+    if (detections.length != 0) {
+      /* Comparación con la imagen capturada */
       const canvas = canvasImageRef.current;
       faceapi.matchDimensions(canvas, imageRef.current);
       const resizeResults = faceapi.resizeResults(detections, imageRef.current);
@@ -172,13 +176,14 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
           } else {
             label = `Persona no encontrada`;
             options = { label };
+            isPerson(false)
           }
           new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
         });
 
         faceapi.draw.drawFaceLandmarks(canvasImageRef.current, resizeResults);
       }
-    }
+    } else console.log("sin detecciones")
   }
 
   return (
@@ -196,7 +201,8 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
             borderRadius: '30px',
             backgroundColor: '#fff',
             padding: '10px',
-            width: '45vw'
+            width: '40vw',
+            height: '30vw'
           }}
         />
         <canvas
@@ -206,7 +212,8 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
             pointerEvents: "none",
             padding: '10px',
             // border: '2px solid orange',
-            width: '45vw'
+            width: '40vw',
+            height: '30vw'
           }}
         />
       </Stack>

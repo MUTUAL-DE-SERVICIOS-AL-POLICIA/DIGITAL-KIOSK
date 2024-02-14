@@ -25,6 +25,7 @@ div.key,
 }
 
 .keyboardAlphanumeric {
+  margin-right: 60px;
   grid-template-columns: repeat(10, 1fr);
 }
 

@@ -14,7 +14,6 @@ export const InstructionCard = forwardRef((props: Props, ref) => {
 
   useImperativeHandle(ref, () => ({
     action: (state: boolean) => {
-      console.log("esto es")
       onChange()
       if(state) {
         changeStateInstruction(false)
@@ -29,9 +28,9 @@ export const InstructionCard = forwardRef((props: Props, ref) => {
   }))
 
   return (
-    <Grid container alignItems="center" style={{ marginTop: '10vh' }}>
+    <Grid container alignItems="center" style={{ marginTop: '15vh' }}>
       <Grid item container sm={6} direction="column" justifyContent="spacebetween">
-        <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '3vw', fontWeight: 500 }}>
+        <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
           Introduzca su carnet de identidad en la ranura de abajo.<br/>
           Quitese los anteojos, sombrero y barbijo para realizar el proceso correctamente.
         </Typography>
