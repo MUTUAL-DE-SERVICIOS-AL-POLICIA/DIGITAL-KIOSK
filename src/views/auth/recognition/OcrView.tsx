@@ -3,7 +3,6 @@ import { useCredentialStore } from '@/hooks';
 import { Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { RefObject, forwardRef, useImperativeHandle, useRef } from 'react';
-import Swal from 'sweetalert2';
 import './styles.css'
 
 type ImageViewRef = {

@@ -4,6 +4,7 @@ import { RefObject, forwardRef, useEffect, useImperativeHandle, useRef, useState
 import { FaceRecognition, OcrView } from ".";
 import Webcam from "react-webcam";
 import { useCredentialStore } from "@/hooks";
+import { setIdentifyUser, setIdentityCard } from "@/store";
 
 type OcrViewRef = {
   onCapture: () => void;
@@ -20,7 +21,11 @@ export const RecognitionView = forwardRef((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     onRemoveCam: () => reconigtionViewRef.current!.onRemoveCam(),
-    action: async () => await ocrViewRef.current!.onCapture()
+    action: async () => {
+      setStatePerson(null)
+      setIdentityCard(null)
+      await ocrViewRef.current!.onCapture()
+    }
   }));
 
   const ocrViewRef                                    = useRef<OcrViewRef | null>(null);
@@ -46,8 +51,8 @@ export const RecognitionView = forwardRef((_, ref) => {
 
   // Si el reconocimiento fue todo bien
   useEffect(() => {
-    console.log("carnet identidad", stateIdentityCard)
-    console.log("persona", statePerson)
+    console.log("stateIdentityCard", stateIdentityCard)
+    console.log("statePerson", statePerson)
     if (stateIdentityCard || statePerson) {
       setTimeout(() => changeStep('home'), 5000)
       reconigtionViewRef.current!.onRemoveCam()
@@ -55,10 +60,7 @@ export const RecognitionView = forwardRef((_, ref) => {
       changeTimer(40)
     } else {
       setImage(null)
-      // ocrViewRef.current!.onPlaying()
-      // Esto se debe mejorar
-      // setStateIdentityCard(null)
-      // setStatePerson(null)
+      ocrViewRef.current!.onPlaying()
     }
   }, [stateIdentityCard, statePerson])
 
@@ -76,7 +78,6 @@ export const RecognitionView = forwardRef((_, ref) => {
           isIdentityCard={(state: boolean) => {
             setStateIdentityCard(state);
             if (!state) {
-              // setStateIdentityCard(null)
               ocrViewRef.current!.onPlaying()
             }
           }}
@@ -92,9 +93,10 @@ export const RecognitionView = forwardRef((_, ref) => {
           canvasWebcamRef={canvasWebcamRef}
           isPerson={(state: boolean) => {
             setStatePerson(state)
-            // if(!state) setStatePerson(null)
+            // ocrViewRef.current!.onPlaying()
             }
           }
+          ocrRef={ocrViewRef}
         />
       </Grid>
     </Grid>

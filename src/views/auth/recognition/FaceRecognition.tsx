@@ -20,11 +20,12 @@ interface VideoProps {
   webcamRef: any;
   canvasWebcamRef: any;
   isPerson: (state: boolean) => void;
+  ocrRef: any;
 }
 
 export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
 
-  const { imageRef, canvasImageRef, image, webcamRef, canvasWebcamRef, isPerson } = props;
+  const { imageRef, canvasImageRef, image, webcamRef, canvasWebcamRef, isPerson, ocrRef } = props;
   const videoRef: any = useRef();
   const canvasVideoRef: any = useRef();
   let intervalVideo: NodeJS.Timeout;
@@ -183,7 +184,11 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
 
         faceapi.draw.drawFaceLandmarks(canvasImageRef.current, resizeResults);
       }
-    } else console.log("sin detecciones")
+    } else {
+      isPerson(false)
+      console.log("sin detecciones")
+      // ocrRef.current!.onPlaying()
+    }
   }
 
   return (
