@@ -54,7 +54,7 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
       await scanFace();
       await getLocalUserVideo();
       await scanWebcam();
-    })
+    }) // falta un catch
   }, [])
 
   const loadModels = async () => {
@@ -69,14 +69,43 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
 
   const getLocalUserVideo = async () => {
     try {
-      const environmentStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "environment" } });
-      webcamRef?.current && (webcamRef.current.srcObject = environmentStream);
-      const userStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } });
-      videoRef?.current && (videoRef.current.srcObject = userStream);
+      // const environmentStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "environment" } });
+      // webcamRef?.current && (webcamRef.current.srcObject = environmentStream);
+      // const userStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } });
+      // videoRef?.current && (videoRef.current.srcObject = userStream);
+
+      const streams = await getAllCameras();
+      webcamRef?.current && (webcamRef.current.srcObject = streams[0])
+      videoRef?.current && (videoRef.current.srcObject = streams[1])
     } catch (error) {
       console.error("Error:", error);
     }
   };
+
+  const getAllCameras = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      const videoDevices = devices.filter(device => device.kind === 'videoinput')
+
+      const streams = await Promise.all(videoDevices.map(async device => {
+        try {
+          return await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+              deviceId: { exact: device.deviceId }
+            }
+          })
+        } catch( error) {
+          console.error(`Error al acceder a la cámara ${device.label}`)
+          return null
+        }
+      }))
+      return streams.filter(stream => stream !== null)
+    } catch(error) {
+      console.error("Error al enumerar dispositivos", error)
+      return []
+    }
+  }
 
   const isFaceDetectionModelLoad = () => !!faceapi.nets.tinyFaceDetector.params;
 
