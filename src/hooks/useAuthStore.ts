@@ -9,7 +9,7 @@ import { useCredentialStore } from ".";
 
 export const useAuthStore = () => {
   const { status, user } = useSelector((state: any) => state.auth);
-  const { changeIdentityCard, changeStep } = useCredentialStore();
+  const { changeIdentityCard, changeStep, changeName } = useCredentialStore();
   const dispatch = useDispatch();
 
   const startLogin = async (identityCard: string) => {
@@ -28,6 +28,8 @@ export const useAuthStore = () => {
       const user = `${JSON.stringify(dataUser)}`;
       localStorage.setItem('user', user);
       changeIdentityCard(identityCard)
+      // changeName(data.payload.full_name) /* nueva implementación */
+      changeName('')
       dispatch(onLogin(dataUser));
       changeStep('instructionCard')
     } catch (error: any) {
