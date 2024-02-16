@@ -17,11 +17,12 @@ interface imageProps {
   webcamRef: any;
   canvasWebcamRef: RefObject<HTMLCanvasElement>;
   isIdentityCard: (state: boolean) => void;
+  isLastName: (state: boolean) => void;
 }
 
 export const OcrView = forwardRef((props: imageProps, ref) => {
-  const { imageRef, canvasImageRef, image, setImage, webcamRef, canvasWebcamRef, isIdentityCard } = props
-  const { identityCard } = useCredentialStore();
+  const { imageRef, canvasImageRef, image, setImage, webcamRef, canvasWebcamRef, isIdentityCard, isLastName } = props
+  const { identityCard, name } = useCredentialStore();
   // OCR
   const imageCaptureRef = useRef<ImageViewRef | null>(null);
   useImperativeHandle(ref, () => ({
@@ -52,9 +53,20 @@ export const OcrView = forwardRef((props: imageProps, ref) => {
   const handleImageCapture = (image: string, text: string) => {
     setImage(image);
     if (isWithinErrorRange(identityCard, text)) {
-      isIdentityCard(true);
+      // console.log("reconoce carnet de identidad")
+      isIdentityCard(true); // se encontro el carnet de identidad
     } else {
-      isIdentityCard(false);
+      // console.log("no reconoce el carnet de identidad")
+      isIdentityCard(false); // no se encontro el carnet
+    }
+    // logica para reconocimiento del apellido paterno
+    // name debe venir de la api que viene del STI
+    if(isWithinErrorRange(name, text)) {
+      // console.log("reconoce nombre")
+      isLastName(true)
+    } else {
+      // console.log("no reconoce nombre")
+      isLastName(false)
     }
   }
 

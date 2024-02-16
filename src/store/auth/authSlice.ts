@@ -10,6 +10,7 @@ export const authSlice = createSlice({
     userIdentify: false,
     timer: 20,
     InstructionState: true,
+    name: ''
   },
   reducers: {
     setChangeStep: (state, { payload }) => {
@@ -41,9 +42,12 @@ export const authSlice = createSlice({
       state.timer = 20;
       state.InstructionState = true;
     },
+    setName: (state, { payload }) => {
+      state.name = payload.full_name
+    }
   }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setChangeStep, onLogin, onLogout, setIdentityCard, setIdentifyUser, setTimer, setInstructionState, setResetAll } = authSlice.actions;
+export const { setChangeStep, onLogin, onLogout, setIdentityCard, setIdentifyUser, setTimer, setInstructionState, setResetAll, setName } = authSlice.actions;
