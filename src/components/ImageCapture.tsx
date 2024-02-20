@@ -34,6 +34,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         canvas.width = CAPTURED_IMAGE_WIDTH;
         canvas.height = CAPTURED_IMAGE_HEIGHT;
         ctx?.drawImage(img, 0, 0, CAPTURED_IMAGE_WIDTH, CAPTURED_IMAGE_HEIGHT);
+        const canvasURL = canvas.toDataURL('image/jpeg');
 
         // Dividir la imagen en tres partes horizontales
         const segmentWidth = CAPTURED_IMAGE_WIDTH / 3;
@@ -78,7 +79,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         const concatenatedText = text1 + ' ' + text2 + ' ' + text3;
 
         // Llamar a la función onChange con la imagen original y el texto concatenado
-        onChange(segment1DataURL, concatenatedText);
+        onChange(canvasURL, concatenatedText);
       };
       if (imageSrc != null) { img.src = imageSrc; }
     }
