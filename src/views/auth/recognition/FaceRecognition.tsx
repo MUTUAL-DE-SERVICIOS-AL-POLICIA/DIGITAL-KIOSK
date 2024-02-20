@@ -18,7 +18,7 @@ interface GroupedDescriptors {
 export const FaceRecognition = forwardRef((_, ref) => {
 
 
-   const { image, changeRecognizedByFacialRecognition, ocr, facialRecognition, changeStep, changeIdentifyUser } = useCredentialStore()
+   const { image, changeRecognizedByFacialRecognition, ocr, changeStep, changeIdentifyUser } = useCredentialStore()
 
    const videoRef: any       = useRef();
    const canvasVideoRef: any = useRef();
@@ -192,9 +192,7 @@ export const FaceRecognition = forwardRef((_, ref) => {
                }
                // deja pasar
                changeIdentifyUser(true)
-               console.log("face recognition", facialRecognition)
                console.log("encuentra a la persona")
-               alert("persona reconocida")
                changeStep('home')
                cleanup()
             } else {
@@ -209,7 +207,6 @@ export const FaceRecognition = forwardRef((_, ref) => {
                   changeStep('home')
                   cleanup()
                }
-               alert("persona  no reconocida")
             }
             new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
          }
