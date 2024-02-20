@@ -18,7 +18,7 @@ const Footer = (props: Props) => {
           <Grid item>
             <ComponentButton
               onClick={action}
-              text="INGRESAR"
+              text="CONTINUAR"
               sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%', padding: "0px 25px" }}
             />
           </Grid>

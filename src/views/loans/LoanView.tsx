@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import { CardLoan } from "./CardLoan";
 import { useCredentialStore } from "@/hooks";
 import Swal from 'sweetalert2'
+import { getEnvVariables } from "@/helpers";
+
+let ACTIVITY_TIME = 0
 
 export const LoanView = () => {
   const { user } = useAuthStore();
@@ -17,6 +20,7 @@ export const LoanView = () => {
 
   useEffect(() => {
     getLoans(user.nup);
+    ACTIVITY_TIME = getEnvVariables().ACTIVITY_TIME
   }, [])
 
   useEffect(() => {
@@ -29,7 +33,7 @@ export const LoanView = () => {
           changeIdentityCard('');
           changeIdentifyUser(false)
           startLogout();
-          changeTimer(40);
+          changeTimer(ACTIVITY_TIME);
         }
       }, 1000);
     }
@@ -37,7 +41,7 @@ export const LoanView = () => {
   }, [timer]);
 
   const handlePaperClick = async (loanId: number) => {
-    changeTimer(40);
+    changeTimer(ACTIVITY_TIME)
     setLoading(true)
     const response:any = await printKardexLoan(loanId)
     switch(response) {

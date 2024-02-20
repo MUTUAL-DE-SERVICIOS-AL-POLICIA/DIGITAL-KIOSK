@@ -102,7 +102,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           borderRadius: '30px',
           backgroundColor: '#fff',
           padding: '10px',
-          width: '20vw'
+          width: '30vw'
         }}
       />
       <canvas
@@ -110,7 +110,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         style={{
           position: "absolute",
           pointerEvents: "none",
-          width: '20vw'
+          width: '30vw'
         }}
       />
     </Stack>

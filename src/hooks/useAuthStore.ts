@@ -28,8 +28,7 @@ export const useAuthStore = () => {
       const user = `${JSON.stringify(dataUser)}`;
       localStorage.setItem('user', user);
       changeIdentityCard(identityCard)
-      // changeName(data.payload.full_name) /* nueva implementación */
-      changeName('')
+      changeName(data.payload.full_name) /* nueva implementación */
       dispatch(onLogin(dataUser));
       changeStep('instructionCard')
     } catch (error: any) {

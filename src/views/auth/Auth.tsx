@@ -8,13 +8,18 @@ import { InstructionCard } from './InstructionCard';
 //@ts-ignore
 import imageLogoBlanco from '@/assets/images/muserpol-logo-blanco.png';
 import { HomeScreen } from './HomeScreen';
-import { RecognitionView } from './recognition';
+import { FaceRecognition, OcrView } from './recognition';
 import Footer from '@/components/Footer';
+import { PreviousRecognition } from './recognition/PreviousRecognition';
+
+import { getEnvVariables } from '@/helpers';
 
 interface ChildRefType {
   action: (prop?: boolean) => void;
   onRemoveCam: () => void;
 }
+
+let ACTIVITY_TIME = 0
 
 export const AuthView = () => {
 
@@ -27,6 +32,10 @@ export const AuthView = () => {
   } = useCredentialStore();
 
   useEffect(() => {
+    ACTIVITY_TIME = getEnvVariables().ACTIVITY_TIME
+  }, [])
+
+  useEffect(() => {
     let interval: NodeJS.Timeout;
     if (step != 'home' && timer > 0) {
       interval = setInterval(() => {
@@ -37,7 +46,7 @@ export const AuthView = () => {
           changeIdentityCard('')
           changeIdentifyUser(false)
           changeStateInstruction(true)
-          changeTimer(40)
+          changeTimer(ACTIVITY_TIME)
         }
       }, 1000);
     }
@@ -60,10 +69,12 @@ export const AuthView = () => {
       }{/* barra superior */}
         <div style={{ flex: '1 1 auto', overflowX: 'auto'}}>
           { step == 'home' && <HomeScreen /> }{/* Pantall casita */}
-          { step == 'identityCard' && <IdentityCard onChange={() => changeTimer(40)} ref={childRef} /> }{/* pantalla input carnet */}
-          { step == 'instructionCard' && identityCard != '' && <InstructionCard onChange={() => changeTimer(40)} ref={childRef} /> }{/* pantalla instruccion */}
-          { step == 'recognitionCard' && <RecognitionView ref={childRef}  /> }{/* pantalla reconocimiento facial */}
-        </div>
+          { step == 'identityCard' && <IdentityCard onChange={() => changeTimer(ACTIVITY_TIME)} ref={childRef} /> }{/* pantalla input carnet */}
+          { step == 'instructionCard' && identityCard != '' && <InstructionCard onChange={() => changeTimer(ACTIVITY_TIME)} ref={childRef} /> }{/* pantalla instruccion */}
+          { step == 'recognitionCard' && <OcrView ref={childRef} /> } {/* pantalla reconocimiento facial */}
+          { step == 'previousFaceRecognition' && <PreviousRecognition ref={childRef} />}
+          { step == 'faceRecognition' && <FaceRecognition ref={childRef} />}
+         </div>
       { step != 'home' && <Footer action={handleClick} />}
     </div>
   );
