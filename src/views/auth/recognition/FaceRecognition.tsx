@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react"
 import * as faceapi from "face-api.js"
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useCredentialStore } from "@/hooks";
 
 const TINY_OPTIONS = {
@@ -18,7 +18,7 @@ interface GroupedDescriptors {
 export const FaceRecognition = forwardRef((_, ref) => {
 
 
-   const { image } = useCredentialStore()
+   const { image, changeRecognizedByFacialRecognition, ocr, facialRecognition, changeStep, changeIdentifyUser } = useCredentialStore()
 
    const videoRef: any       = useRef();
    const canvasVideoRef: any = useRef();
@@ -35,13 +35,10 @@ export const FaceRecognition = forwardRef((_, ref) => {
 
    const cleanup = useCallback(() => {
       intervalVideo && clearInterval(intervalVideo);
-      // intervalWebCam && clearInterval(intervalWebCam);
 
       if (videoRef.current) videoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
 
-      // if (webcamRef.current) webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
-
-   }, [videoRef, /*webcamRef*/]);
+   }, [videoRef]);
 
 
    /* Carga de modelos */
@@ -187,11 +184,32 @@ export const FaceRecognition = forwardRef((_, ref) => {
             if (!label.includes('unknown')) {
                label = `Persona encontrada`;
                options = { label, boxColor: 'green' };
-               console.log("encuentra la persona")
+               changeRecognizedByFacialRecognition(true)
+               if(ocr) {
+                  // enviar al backend para registrar el tipo de reconocimiento
+                  // si entro a este punto, es por que ocr = true y reconocimiento = true
+                  // dej pasar
+               }
+               // deja pasar
+               changeIdentifyUser(true)
+               console.log("face recognition", facialRecognition)
+               console.log("encuentra a la persona")
+               alert("persona reconocida")
+               changeStep('home')
+               cleanup()
             } else {
                label = `Persona no encontrada`;
                options = { label };
                console.log("no encuentra la persona")
+               if(ocr) {
+                  // enviar al backend para registrar el tipo de reconocimiento
+                  // si entro a este punto, es por que ocr = true y reconocimiento = false
+                  // igual se lo deja pasar
+                  changeIdentifyUser(true)
+                  changeStep('home')
+                  cleanup()
+               }
+               alert("persona  no reconocida")
             }
             new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
          }
@@ -200,35 +218,43 @@ export const FaceRecognition = forwardRef((_, ref) => {
    }
 
    return (
-      <Stack spacing={2} >
-         <Typography style={{ fontSize: '1.5vw' }}>
-            Reconocimiento Facial
-         </Typography>
-         <Stack >
-            <video
-               muted
-               autoPlay
-               ref={videoRef}
-               style={{
-                  objectFit: "fill",
-                  borderRadius: '30px',
-                  backgroundColor: '#fff',
-                  padding: '10px',
-                  width: '40vw',
-                  height: '30vw'
-               }}
-            />
-            <canvas
-               ref={canvasVideoRef}
-               style={{
-                  position: "absolute",
-                  pointerEvents: "none",
-                  padding: '10px',
-                  width: '40vw',
-                  height: '30vw'
-               }}
-            />
+      <Box sx={{
+         display: 'flex',
+         justifyContent: 'center',
+         alignItems: 'center',
+         height: '70vh'
+      }}
+      >
+         <Stack spacing={2} >
+            <Typography style={{ fontSize: '2vw' }} align="center">
+               Reconocimiento Facial
+            </Typography>
+            <Stack >
+               <video
+                  muted
+                  autoPlay
+                  ref={videoRef}
+                  style={{
+                     objectFit: "fill",
+                     borderRadius: '30px',
+                     backgroundColor: '#fff',
+                     padding: '10px',
+                     width: '40vw',
+                     height: '30vw'
+                  }}
+               />
+               <canvas
+                  ref={canvasVideoRef}
+                  style={{
+                     position: "absolute",
+                     pointerEvents: "none",
+                     padding: '10px',
+                     width: '40vw',
+                     height: '30vw'
+                  }}
+               />
+            </Stack>
          </Stack>
-      </Stack>
+      </Box>
    );
 });

@@ -11,7 +11,9 @@ export const authSlice = createSlice({
     timer: 20,
     InstructionState: true,
     name: '',
-    image: ''
+    image: '',
+    ocr: false,
+    facialRecognition: false
   },
   reducers: {
     setChangeStep: (state, { payload }) => {
@@ -48,6 +50,12 @@ export const authSlice = createSlice({
     },
     setImageCapture: (state, { payload }) => {
       state.image = payload.image
+    },
+    setOcr: (state, { payload }) => {
+      state.ocr = payload.ocr
+    },
+    setFacialRecognition: (state, { payload }) => {
+      state.facialRecognition = payload.facialRecognition
     }
   }
 });
@@ -64,5 +72,7 @@ export const {
   setInstructionState,
   setResetAll,
   setName,
-  setImageCapture
+  setImageCapture,
+  setOcr,
+  setFacialRecognition
 } = authSlice.actions;

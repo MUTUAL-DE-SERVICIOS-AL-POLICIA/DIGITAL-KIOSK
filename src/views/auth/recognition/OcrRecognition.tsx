@@ -1,9 +1,10 @@
 import { ImageCanvas, ImageCapture } from "@/components";
 import { Box, Stack, Typography } from "@mui/material";
-import { RefObject, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { RefObject, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useCredentialStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
+import { getEnvVariables } from "@/helpers";
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -19,8 +20,12 @@ export const OcrView = forwardRef((_, ref) => {
    useImperativeHandle(ref, () => ({
       action: async () => {
          await imageCaptureRef.current!.onCapture()
-      }
+      },
+      onRemoveCam: () => cleanup()
+
    }))
+
+   const { ACTIVITY_TIME } = getEnvVariables()
 
    let intervalWebCam: NodeJS.Timeout
 
@@ -32,8 +37,14 @@ export const OcrView = forwardRef((_, ref) => {
    const imageRef: RefObject<HTMLImageElement> = useRef(null)
    const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null)
 
+   const { identityCard, changeStep, changeTimer, changeImage, changeRecognizedByOcr } = useCredentialStore()
 
-   const { identityCard, changeStep, changeTimer, changeImage } = useCredentialStore()
+   const cleanup = useCallback(() => {
+      intervalWebCam && clearInterval(intervalWebCam);
+      // @ts-ignore
+      if (webcamRef.current) webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+
+   }, [webcamRef]);
 
    const getLocalUserVideo = async () => {
       try {
@@ -68,14 +79,13 @@ export const OcrView = forwardRef((_, ref) => {
    const handleImageCapture = (image: string, text: string) => {
       setImage(image)
       if (isWithinErrorRange(identityCard, text)) {
-         // guardamos en el contexto
-         // necesito apagar la camara
          setTimeout(() => changeStep('previousFaceRecognition'), 1000)
          // changeIdentifyUser(true)
+         changeRecognizedByOcr(true)
          changeImage(image)
-         changeTimer(40)
+         changeTimer(ACTIVITY_TIME)
+         cleanup()
       } else {
-         // No reconoció la imagen
          setImage(null)
          getLocalUserVideo()
       }
@@ -126,10 +136,10 @@ export const OcrView = forwardRef((_, ref) => {
          display: 'flex',
          justifyContent: 'center',
          alignItems: 'center',
-         height: '100vh'
+         height: '70vh'
       }}>
-         <Stack spacing={2} style={{ width: '45vh' }} sx={{ paddingLeft: 5 }}>
-            <Typography style={{ fontSize: '1.5vw' }}>
+         <Stack>
+            <Typography style={{ fontSize: '2vw' }} align="center">
                Coloque su Cédula de identidad
             </Typography>
             {
@@ -150,5 +160,4 @@ export const OcrView = forwardRef((_, ref) => {
          </Stack>
       </Box>
    )
-
 })

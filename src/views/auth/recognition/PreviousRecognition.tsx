@@ -1,15 +1,17 @@
+import { getEnvVariables } from "@/helpers"
 import { useCredentialStore } from "@/hooks"
 import { Grid, Typography } from "@mui/material"
 import { forwardRef, useImperativeHandle } from "react"
 
 export const PreviousRecognition = forwardRef((_, ref) => {
 
+   const { ACTIVITY_TIME } = getEnvVariables()
    const { changeStep, changeTimer } = useCredentialStore()
 
    useImperativeHandle(ref, () => ({
       action: () => {
          changeStep('faceRecognition')
-         changeTimer(40)
+         changeTimer(ACTIVITY_TIME)
       }
    }))
 
