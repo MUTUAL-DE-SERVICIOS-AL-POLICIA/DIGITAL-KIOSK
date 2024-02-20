@@ -1,6 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react"
 import * as faceapi from "face-api.js"
 import { Stack, Typography } from "@mui/material";
+import { useCredentialStore } from "@/hooks";
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -13,40 +14,34 @@ interface GroupedDescriptors {
    [key: string]: any[];
 }
 
-interface VideoProps {
-   imageRef: any;
-   canvasImageRef: any;
-   image: string | null;
-   webcamRef: any;
-   canvasWebcamRef: any;
-   isPerson: (state: boolean) => void;
-}
 
-export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
+export const FaceRecognition = forwardRef((_, ref) => {
 
-   const { imageRef, canvasImageRef, image, webcamRef, canvasWebcamRef, isPerson } = props;
+
+   const { image } = useCredentialStore()
 
    const videoRef: any       = useRef();
    const canvasVideoRef: any = useRef();
 
    let intervalVideo:  NodeJS.Timeout;
-   let intervalWebCam: NodeJS.Timeout;
+   let img: any;
 
    useImperativeHandle(ref, () => ({
       onScanImage: () => scanPhoto(),
       onRemoveCam: () => cleanup(),
-      onPlaying:   () => getLocalUserVideo()
+      onPlaying:   () => getLocalUserVideo(),
+      action:  () => scanPhoto()
    }));
 
    const cleanup = useCallback(() => {
       intervalVideo && clearInterval(intervalVideo);
-      intervalWebCam && clearInterval(intervalWebCam);
+      // intervalWebCam && clearInterval(intervalWebCam);
 
       if (videoRef.current) videoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
 
-      if (webcamRef.current) webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      // if (webcamRef.current) webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
 
-   }, [videoRef, webcamRef]);
+   }, [videoRef, /*webcamRef*/]);
 
 
    /* Carga de modelos */
@@ -54,7 +49,6 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
       loadModels().then(async () => {
          await scanFace();
          await getLocalUserVideo();
-         await scanWebcam();
       }).catch(() => console.error("No se cargaron los modelos"))
    }, [])
 
@@ -76,7 +70,7 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
          // videoRef?.current && (videoRef.current.srcObject = userStream);
 
          const streams = await getAllCameras();
-         webcamRef?.current && (webcamRef.current.srcObject = streams[1])
+         // webcamRef?.current && (webcamRef.current.srcObject = streams[1])
          videoRef?.current && (videoRef.current.srcObject = streams[0])
       } catch (error) {
          console.error("Error:", error);
@@ -158,45 +152,33 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
       }, 60);
    };
 
-   const scanWebcam = async () => { // webcam
-      if (!isFaceDetectionModelLoad()) return;
-
-      const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS);
-      intervalWebCam = setInterval(async () => {
-         if (!webcamRef.current) clearInterval(intervalWebCam);
-         else {
-            const imageSrc = webcamRef.current.getScreenshot();
-            if (!imageSrc) return;
-            const img = await faceapi.fetchImage(imageSrc);
-            const detections = await faceapi.detectAllFaces(img, options)
-               .withFaceLandmarks()
-               .withFaceDescriptors();
-            if (canvasWebcamRef.current && img) {
-               const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true);
-               const resizedDetections = faceapi.resizeResults(detections, dims);
-               faceapi.draw.drawDetections(canvasWebcamRef.current, resizedDetections);
-            }
-         }
-      }, 60);
-   }
-
    const scanPhoto = async () => { // imagen
       if (!image || !isFaceDetectionModelLoad()) return;
       const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 608, scoreThreshold: 0.6 });
-      const img = await faceapi.fetchImage(image);
+      img = await faceapi.fetchImage(image);
+
+      // creando el elemento
+      const canvas = document.createElement('canvas')
+
+      img.onload = () => {
+         const width = img.width
+         const height = img.height
+         canvas.width = width
+         canvas.height = height
+      }
+
       const detections = await faceapi.detectAllFaces(img, options)
          .withFaceLandmarks()
          .withFaceDescriptors();
 
-      if (detections.length === 0) { isPerson(false); return; }
+      if (detections.length === 0) { return; }
 
-      if (!canvasImageRef.current && !imageRef.current) { isPerson(false); return; }
+      if (!canvas && !img) { return; }
 
-      const canvas = canvasImageRef.current;
-      faceapi.matchDimensions(canvas, imageRef.current);
-      const resizeResults = faceapi.resizeResults(detections, imageRef.current);
+      faceapi.matchDimensions(canvas, img);
+      const resizeResults = faceapi.resizeResults(detections, img);
 
-      if (resizeResults.length === 0) { isPerson(false); return; }
+      if (resizeResults.length === 0) { return; }
 
       resizeResults.forEach(({ detection, descriptor }) => {
          if(faceMatcher) {
@@ -205,16 +187,16 @@ export const FaceRecognition = forwardRef((props: VideoProps, ref) => {
             if (!label.includes('unknown')) {
                label = `Persona encontrada`;
                options = { label, boxColor: 'green' };
-               isPerson(true)
+               console.log("encuentra la persona")
             } else {
                label = `Persona no encontrada`;
                options = { label };
-               isPerson(false)
+               console.log("no encuentra la persona")
             }
             new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
          }
       });
-      faceapi.draw.drawFaceLandmarks(canvasImageRef.current, resizeResults);
+      faceapi.draw.drawFaceLandmarks(canvas, resizeResults);
    }
 
    return (

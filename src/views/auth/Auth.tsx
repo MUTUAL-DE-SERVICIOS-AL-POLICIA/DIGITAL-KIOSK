@@ -8,8 +8,9 @@ import { InstructionCard } from './InstructionCard';
 //@ts-ignore
 import imageLogoBlanco from '@/assets/images/muserpol-logo-blanco.png';
 import { HomeScreen } from './HomeScreen';
-import { RecognitionView } from './recognition';
+import { FaceRecognition, OcrView } from './recognition';
 import Footer from '@/components/Footer';
+import { PreviousRecognition } from './recognition/PreviousRecognition';
 
 interface ChildRefType {
   action: (prop?: boolean) => void;
@@ -62,8 +63,10 @@ export const AuthView = () => {
           { step == 'home' && <HomeScreen /> }{/* Pantall casita */}
           { step == 'identityCard' && <IdentityCard onChange={() => changeTimer(40)} ref={childRef} /> }{/* pantalla input carnet */}
           { step == 'instructionCard' && identityCard != '' && <InstructionCard onChange={() => changeTimer(40)} ref={childRef} /> }{/* pantalla instruccion */}
-          { step == 'recognitionCard' && <RecognitionView ref={childRef}  /> }{/* pantalla reconocimiento facial */}
-        </div>
+          { step == 'recognitionCard' && <OcrView ref={childRef} /> } {/* pantalla reconocimiento facial */}
+          { step == 'previousFaceRecognition' && <PreviousRecognition ref={childRef} />}
+          { step == 'faceRecognition' && <FaceRecognition ref={childRef} />}
+         </div>
       { step != 'home' && <Footer action={handleClick} />}
     </div>
   );

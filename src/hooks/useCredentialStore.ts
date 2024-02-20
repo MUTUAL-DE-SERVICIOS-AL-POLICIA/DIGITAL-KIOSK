@@ -1,7 +1,7 @@
-import { setChangeStep, setIdentifyUser, setIdentityCard, setInstructionState, setName, setResetAll, setTimer } from "@/store";
+import { setChangeStep, setIdentifyUser, setIdentityCard, setInstructionState, setName, setResetAll, setTimer, setImageCapture } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 export const useCredentialStore = () => {
-  const { step, identityCard, userIdentify, timer, InstructionState, name } = useSelector((state: any) => state.auth);
+  const { step, identityCard, userIdentify, timer, InstructionState, name, image } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
   const changeStep = async (step: string | null) => {
@@ -25,6 +25,9 @@ export const useCredentialStore = () => {
   const changeName = async (full_name: string) => {
     dispatch(setName({full_name: full_name}))
   }
+  const changeImage = async (image: string) => {
+    dispatch(setImageCapture({image}))
+  }
 
 
   return {
@@ -35,6 +38,7 @@ export const useCredentialStore = () => {
     timer,
     InstructionState,
     name,
+    image,
     //* Métodos
     changeStep,
     changeIdentityCard,
@@ -42,6 +46,7 @@ export const useCredentialStore = () => {
     changeTimer,
     changeStateInstruction,
     changeResetAll,
-    changeName
+    changeName,
+    changeImage
   }
 }

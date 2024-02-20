@@ -1,3 +1,2 @@
 export * from './FaceRecognition';
-export * from './Recognition';
-export * from './OcrView';
+export * from './OcrRecognition'
