@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, RefObject } from 'react';
 import Webcam from "react-webcam";
 import Tesseract from 'tesseract.js';
 import Stack from '@mui/material/Stack';
+import { useCredentialStore } from '@/hooks';
 
 const CAPTURED_IMAGE_WIDTH = 1920; // Ancho predefinido para la imagen capturada
 const CAPTURED_IMAGE_HEIGHT = 1080; // Alto predefinido para la imagen capturada
@@ -18,6 +19,8 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
     canvasWebcamRef,
   } = props;
 
+  const { changeLoadingGlobal } = useCredentialStore()
+
   useImperativeHandle(ref, () => ({
     onCapture: () => capture(),
   }));
@@ -32,6 +35,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
   }
 
   const capture = async () => {
+    changeLoadingGlobal(true)
     if (webcamRef.current !== null) {
       const imageSrc = webcamRef.current.getScreenshot();
       const img = new Image();
@@ -92,6 +96,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         )
 
         // Llamar a la función onChange con la imagen original y el texto concatenado
+        changeLoadingGlobal(false)
         onChange(canvasURL, concatenatedText)
       };
       if (imageSrc != null) { img.src = imageSrc; }

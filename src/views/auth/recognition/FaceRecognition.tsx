@@ -18,7 +18,7 @@ interface GroupedDescriptors {
 export const FaceRecognition = forwardRef((_, ref) => {
 
 
-   const { image, changeRecognizedByFacialRecognition, ocr, changeStep, changeIdentifyUser } = useCredentialStore()
+   const { image, changeRecognizedByFacialRecognition, ocr, changeIdentifyUser, changeStep, changeLoadingGlobal } = useCredentialStore()
 
    const videoRef: any       = useRef();
    const canvasVideoRef: any = useRef();
@@ -27,7 +27,6 @@ export const FaceRecognition = forwardRef((_, ref) => {
    let img: any;
 
    useImperativeHandle(ref, () => ({
-      onScanImage: () => scanPhoto(),
       onRemoveCam: () => cleanup(),
       onPlaying:   () => getLocalUserVideo(),
       action:  () => scanPhoto()
@@ -150,6 +149,7 @@ export const FaceRecognition = forwardRef((_, ref) => {
    };
 
    const scanPhoto = async () => { // imagen
+      changeLoadingGlobal(true)
       if (!image || !isFaceDetectionModelLoad()) return;
       const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 608, scoreThreshold: 0.6 });
       img = await faceapi.fetchImage(image);
@@ -186,25 +186,22 @@ export const FaceRecognition = forwardRef((_, ref) => {
                options = { label, boxColor: 'green' };
                changeRecognizedByFacialRecognition(true)
                if(ocr) {
-                  // enviar al backend para registrar el tipo de reconocimiento
-                  // si entro a este punto, es por que ocr = true y reconocimiento = true
-                  // dej pasar
                }
-               // deja pasar
-               changeIdentifyUser(true)
-               console.log("encuentra a la persona")
                changeStep('home')
+               changeIdentifyUser(true)
+               console.log("================================")
+               console.log("RECONOCE EL ROSTRO")
+               console.log("================================")
                cleanup()
             } else {
                label = `Persona no encontrada`;
                options = { label };
-               console.log("no encuentra la persona")
+               console.log("================================")
+               console.log("NO RECONOCE EL ROSTRO")
+               console.log("================================")
                if(ocr) {
-                  // enviar al backend para registrar el tipo de reconocimiento
-                  // si entro a este punto, es por que ocr = true y reconocimiento = false
-                  // igual se lo deja pasar
-                  changeIdentifyUser(true)
                   changeStep('home')
+                  changeIdentifyUser(true)
                   cleanup()
                }
             }
@@ -212,6 +209,7 @@ export const FaceRecognition = forwardRef((_, ref) => {
          }
       });
       faceapi.draw.drawFaceLandmarks(canvas, resizeResults);
+      changeLoadingGlobal(false)
    }
 
    return (

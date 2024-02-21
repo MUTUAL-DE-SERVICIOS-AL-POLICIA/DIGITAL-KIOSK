@@ -5,6 +5,7 @@ import { useCredentialStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
 import { TimerContext } from "@/context/TimerContext";
+import Swal from "sweetalert2";
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -87,6 +88,13 @@ export const OcrView = forwardRef((_, ref) => {
       } else {
          setImage(null)
          getLocalUserVideo()
+         Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Intente de nuevo",
+            showConfirmButton: false,
+            timer: 2000
+         });
       }
    }
 
