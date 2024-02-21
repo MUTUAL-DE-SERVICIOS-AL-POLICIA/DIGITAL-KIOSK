@@ -19,8 +19,8 @@ export const useAuthStore = () => {
       changeLoadingGlobal(true)
       const { data } = await coffeApi.post('/poa/get_session', {
         "device_name": "54:BF:64:61:D7:95",
-        "identity_card": "4362223"
-        // "identity_card": identityCard
+        // "identity_card": "4362223"
+        "identity_card": identityCard
       });
       localStorage.setItem('token', data.payload.access_token);
       const dataUser = {
@@ -39,10 +39,16 @@ export const useAuthStore = () => {
       }, 1000)
     } catch (error: any) {
       changeLoadingGlobal(false)
+      changeIdentityCard('')
       if (!error.response) return Swal.fire('Intentalo nuevamente', 'Error en el servidor', 'error')
       dispatch(onLogout());
       const message = error.response.data.message
-      Swal.fire('Error', message, 'error')
+        Swal.fire({
+          title: 'Carnet no valido',
+          text: message,
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+        });
     }
   }
 

@@ -6,6 +6,7 @@ import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
 import { TimerContext } from "@/context/TimerContext";
 import Swal from "sweetalert2";
+import './styles.css'
 
 const TINY_OPTIONS = {
    inputSize: 320,

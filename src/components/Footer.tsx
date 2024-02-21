@@ -3,18 +3,20 @@ import { ComponentButton } from '.';
 import { useCredentialStore } from '@/hooks';
 
 interface Props {
-  action: () => void
+  action: () => void;
+  onRemoveCam: () => void;
 }
 
 const Footer = (props: Props) => {
 
-  const { action } = props
+  const { action, onRemoveCam } = props
 
   const { loading, step, changeStep, changeIdentityCard } = useCredentialStore()
 
   const resetStep = () => {
     changeStep('identityCard')
     changeIdentityCard('')
+    onRemoveCam()
   }
 
   return (

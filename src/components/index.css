@@ -33,3 +33,12 @@ div.key,
   padding: 30px;
   font-size: 1.5em;
 }
+/* .MuiLoadingButton-loadingIndicator { */
+  /* color: red !important; */
+  /* scale: 6; */
+  /* text-align: center  !important; */
+/* } */
+.MuiCircularProgress-svg {
+  color:  white;
+  scale: 4  ;
+}

@@ -1,6 +1,7 @@
 import LoadingButton from '@mui/lab/LoadingButton';
 import { SxProps, Theme } from '@mui/material';
 import { memo } from 'react';
+import "./index.css";
 
 interface buttonProps {
   type?: any;
@@ -33,7 +34,7 @@ export const ComponentButton = memo((props: buttonProps) => {
     <LoadingButton
       loading={loading}
       type={type}
-      className='mt-2'
+      className="mt-2"
       variant={variant}
       disableRipple
       disabled={disable}
