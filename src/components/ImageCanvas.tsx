@@ -15,7 +15,7 @@ export const ImageCanvas = (props: imageProps) => {
   } = props;
 
   return (
-    <Stack>
+    <Stack sx={{display: 'none'}}>
       <img
         ref={imageRef}
         src={src}

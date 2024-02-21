@@ -1,7 +1,9 @@
 import { TimerContext } from "@/context/TimerContext"
 import { useCredentialStore } from "@/hooks"
-import { Grid, Typography } from "@mui/material"
+import { Box, Grid, Typography } from "@mui/material"
 import { forwardRef, useContext, useImperativeHandle } from "react"
+// @ts-ignore
+import imageLogo from '@/assets/images/carnet.png';
 
 export const PreviousRecognition = forwardRef((_, ref) => {
 
@@ -25,9 +27,14 @@ export const PreviousRecognition = forwardRef((_, ref) => {
          style={{ height: '65vh' }}
       >
          <Grid item container sm={6} direction="column">
-            <Typography style={{ fontSize: '3.5vw' }} align="center">
+            <Typography sx={{ pl: 5 }} style={{ fontSize: '3.5vw' }} align="center">
                Por favor recoja su carnet de identidad de la bandeja
             </Typography>
+         </Grid>
+         <Grid item container sm={6} direction="column">
+            <Box display="flex" justifyContent="center">
+               <img src={imageLogo} alt="Imagen carnet" style={{ width: '30vw'}} />
+            </Box>
          </Grid>
       </Grid>
    )

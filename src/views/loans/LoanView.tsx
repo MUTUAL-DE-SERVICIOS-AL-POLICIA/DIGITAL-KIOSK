@@ -6,12 +6,13 @@ import { CardLoan } from "./CardLoan";
 import { useCredentialStore } from "@/hooks";
 import Swal from 'sweetalert2'
 import { TimerContext } from "@/context/TimerContext";
+import { ComponentButton } from "@/components";
 
 export const LoanView = () => {
   const { user } = useAuthStore();
   const { loans, getLoans } = useLoanStore();
   const { startLogout } = useAuthStore();
-  const { changeIdentityCard, changeIdentifyUser } = useCredentialStore();
+  const { changeIdentityCard, changeIdentifyUser, changeStep } = useCredentialStore();
   const { printKardexLoan } = useLoanStore();
 
   const [ loading, setLoading ] = useState(false)
@@ -65,11 +66,19 @@ export const LoanView = () => {
     setLoading(false)
   };
 
+  const handleExit = () => {
+    startLogout()
+    changeStep('home')
+    changeIdentifyUser(false)
+    changeIdentityCard('')
+  }
+
   return (
     <>
-      <AppBar position="static" style={{ background: '#f2f2f2' }}>
+      <AppBar position="static" style={{ background: '#f2f2f2', flex: '0 0 0%' }}>
         <Toolbar>
           <Typography style={{ fontSize: '4vw', fontWeight: 700 }}>MIS PRESTAMOS</Typography>
+          <Typography style={{ fontSize: '3vw', fontWeight: 700}}>{ seconds }</Typography>
         </Toolbar>
       </AppBar>
       {
@@ -98,6 +107,15 @@ export const LoanView = () => {
               )
             })
           }
+          <Grid container justifyContent="center" alignContent="center">
+            <Grid item sm={2} xs={12} >
+              <ComponentButton
+                onClick={() => handleExit()}
+                text={`SALIR`}
+                sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '4.5vw', width: '100%', padding: "0px 30px" }}
+              />
+            </Grid>
+          </Grid>
           {loading &&
             <div className="overlay">
               <CircularProgress

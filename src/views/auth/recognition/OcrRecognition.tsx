@@ -38,7 +38,7 @@ export const OcrView = forwardRef((_, ref) => {
    const imageRef: RefObject<HTMLImageElement> = useRef(null)
    const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null)
 
-   const { identityCard, changeStep, changeImage, changeRecognizedByOcr } = useCredentialStore()
+   const { identityCard, changeStep, changeImage, changeRecognizedByOcr, changeLoadingGlobal } = useCredentialStore()
 
    const cleanup = useCallback(() => {
       intervalWebCam && clearInterval(intervalWebCam);
@@ -59,8 +59,9 @@ export const OcrView = forwardRef((_, ref) => {
 
    const isWithinErrorRange = (text1: string, str2: string): boolean => {
       const text2 = str2.replace(/[^a-zA-Z0-9-]/g, '')
-      console.log("text1", text1)
-      console.log("text2", text2)
+      console.log("***************************************************")
+      console.log("TEXTO RECONOCIDO: \n-->\t", text2)
+      console.log("***************************************************")
       if (text2.includes(text1)) return true
       let coincidence = 0
       for (let i = 0; i < text2.length; i++) {
@@ -132,9 +133,11 @@ export const OcrView = forwardRef((_, ref) => {
    }
 
    useEffect(() => {
+      changeLoadingGlobal(true)
       loadModels().then(async () => {
          await scanWebcam()
          await getLocalUserVideo()
+         changeLoadingGlobal(false)
       }).catch(() => console.error("No se cargaron los modelos"))
    }, [])
 
@@ -146,7 +149,7 @@ export const OcrView = forwardRef((_, ref) => {
          height: '70vh'
       }}>
          <Stack>
-            <Typography style={{ fontSize: '2vw' }} align="center">
+            <Typography style={{ fontSize: '2vw', display: image ? 'none' : 'flex'}} align="center">
                Coloque su Cédula de identidad
             </Typography>
             {

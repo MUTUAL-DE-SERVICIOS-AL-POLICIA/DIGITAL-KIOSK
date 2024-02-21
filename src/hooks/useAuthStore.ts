@@ -36,7 +36,7 @@ export const useAuthStore = () => {
         dispatch(onLogin(dataUser));
         changeStep('instructionCard')
         changeLoadingGlobal(false)
-      }, 2000)
+      }, 1000)
     } catch (error: any) {
       changeLoadingGlobal(false)
       if (!error.response) return Swal.fire('Intentalo nuevamente', 'Error en el servidor', 'error')
