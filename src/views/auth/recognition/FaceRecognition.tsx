@@ -1,8 +1,9 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react"
 import * as faceapi from "face-api.js"
 import { Box, Stack, Typography } from "@mui/material";
-import { useCredentialStore } from "@/hooks";
+import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Swal from "sweetalert2";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -19,7 +20,9 @@ interface GroupedDescriptors {
 export const FaceRecognition = forwardRef((_, ref) => {
 
 
-   const { image, changeRecognizedByFacialRecognition, ocr, changeIdentifyUser, changeStep, changeLoadingGlobal } = useCredentialStore()
+   const { image, changeRecognizedByFacialRecognition, ocr, changeIdentifyUser, changeStep, changeLoadingGlobal, identityCard } = useCredentialStore()
+   const { ocrState, leftText, middleText, rightText } = useStastisticsStore()
+   const { authMethodRegistration } = useAuthStore()
 
    const videoRef: any       = useRef();
    const canvasVideoRef: any = useRef();
@@ -218,14 +221,14 @@ export const FaceRecognition = forwardRef((_, ref) => {
                   label = `Persona encontrada`;
                   options = { label, boxColor: 'green' };
                   changeRecognizedByFacialRecognition(true)
-                  if(ocr) {
-                  }
                   changeStep('home')
                   changeIdentifyUser(true)
                   console.log("================================")
                   console.log("RECONOCE EL ROSTRO")
                   console.log("================================")
                   cleanup()
+                  // changeFaceRecognitionS(true)
+                  sendStatistics(true)
                   return true
                } else {
                   label = `Persona no encontrada`;
@@ -233,11 +236,13 @@ export const FaceRecognition = forwardRef((_, ref) => {
                   console.log("================================")
                   console.log("NO RECONOCE EL ROSTRO")
                   console.log("================================")
+                  // changeFaceRecognitionS(false)
                   if(ocr) {
                      changeStep('home')
                      changeIdentifyUser(true)
                      cleanup()
                   }
+                  sendStatistics(false)
                }
                new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
             }
@@ -247,6 +252,21 @@ export const FaceRecognition = forwardRef((_, ref) => {
       } catch (error:any) {
          console.error("Error con la cámara del rostro: ", error)
       }
+   }
+
+   const sendStatistics = async (faceState: boolean) => {
+      console.log("antes de ejecutarse esto")
+      const body = {
+         identity_card: identityCard,
+         left_text: leftText,
+         middle_text: middleText,
+         right_text: rightText,
+         ocr_state: ocrState,
+         facial_recognition: faceState
+      }
+      console.log(body)
+      authMethodRegistration(body)
+      console.log("se ejecuto esto")
    }
 
    return (
