@@ -13,7 +13,8 @@ export const PreviousRecognition = forwardRef((_, ref) => {
       action: () => {
          changeStep('faceRecognition')
          resetTimer()
-      }
+      },
+      onRemoveCam: () => {}
    }))
 
    return (
