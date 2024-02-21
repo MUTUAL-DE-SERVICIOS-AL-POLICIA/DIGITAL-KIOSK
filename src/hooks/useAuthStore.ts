@@ -6,6 +6,7 @@ import {
   onLogout,
 } from "@/store";
 import { useCredentialStore } from ".";
+import { getEnvVariables } from "@/helpers";
 
 export const useAuthStore = () => {
   const { status, user } = useSelector((state: any) => state.auth);
@@ -13,12 +14,13 @@ export const useAuthStore = () => {
   const dispatch = useDispatch();
 
   const { changeLoadingGlobal } = useCredentialStore()
+  const { MAC_DEVICE } = getEnvVariables()
 
   const startLogin = async (identityCard: string) => {
     try {
       changeLoadingGlobal(true)
       const { data } = await coffeApi.post('/poa/get_session', {
-        "device_name": "54:BF:64:61:D7:95",
+        "device_name": MAC_DEVICE,
         // "identity_card": "4362223"
         "identity_card": identityCard
       });
