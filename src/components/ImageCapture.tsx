@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, RefObject } from 'react';
 import Webcam from "react-webcam";
 import Tesseract from 'tesseract.js';
 import Stack from '@mui/material/Stack';
+import { useCredentialStore } from '@/hooks';
 
 const CAPTURED_IMAGE_WIDTH = 1920; // Ancho predefinido para la imagen capturada
 const CAPTURED_IMAGE_HEIGHT = 1080; // Alto predefinido para la imagen capturada
@@ -18,11 +19,23 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
     canvasWebcamRef,
   } = props;
 
+  const { changeLoadingGlobal } = useCredentialStore()
+
   useImperativeHandle(ref, () => ({
     onCapture: () => capture(),
   }));
 
+  // Función para convertir una imagen a una URL
+  const convertImageToDataURL = (canvas: HTMLCanvasElement, segment: any, segmentWidth: number): string  => {
+    canvas.width = segmentWidth;
+    canvas.height = CAPTURED_IMAGE_HEIGHT;
+    const ctx = canvas.getContext('2d');
+    ctx?.putImageData(segment, 0, 0);
+    return canvas.toDataURL('image/jpeg');
+  }
+
   const capture = async () => {
+    changeLoadingGlobal(true)
     if (webcamRef.current !== null) {
       const imageSrc = webcamRef.current.getScreenshot();
       const img = new Image();
@@ -43,43 +56,48 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         const segment3 = ctx?.getImageData(2 * segmentWidth, 0, segmentWidth, CAPTURED_IMAGE_HEIGHT);
 
         // Obtener la URL de las imágenes segmentadas
-        const canvas1 = document.createElement('canvas');
-        canvas1.width = segmentWidth;
-        canvas1.height = CAPTURED_IMAGE_HEIGHT;
-        const ctx1 = canvas1.getContext('2d');
-        ctx1?.putImageData(segment1!, 0, 0);
-        const segment1DataURL = canvas1.toDataURL('image/jpeg');
+        const promises = [
+          new Promise<string>((resolve, _) => {
+              resolve(convertImageToDataURL(document.createElement('canvas'), segment1!, segmentWidth));
+          }),
+          new Promise<string>((resolve, _) => {
+              resolve(convertImageToDataURL(document.createElement('canvas'), segment2!, segmentWidth));
+          }),
+          new Promise<string>((resolve, _) => {
+              resolve(convertImageToDataURL(document.createElement('canvas'), segment3!, segmentWidth));
+          })
+        ];
 
-        const canvas2 = document.createElement('canvas');
-        canvas2.width = segmentWidth;
-        canvas2.height = CAPTURED_IMAGE_HEIGHT;
-        const ctx2 = canvas2.getContext('2d');
-        ctx2?.putImageData(segment2!, 0, 0);
-        const segment2DataURL = canvas2.toDataURL('image/jpeg');
-
-        const canvas3 = document.createElement('canvas');
-        canvas3.width = segmentWidth;
-        canvas3.height = CAPTURED_IMAGE_HEIGHT;
-        const ctx3 = canvas3.getContext('2d');
-        ctx3?.putImageData(segment3!, 0, 0);
-        const segment3DataURL = canvas3.toDataURL('image/jpeg');
+        const [segment1DataURL, segment2DataURL, segment3DataURL] = await Promise.all(promises);
 
         // Realizar el reconocimiento de texto en las imágenes segmentadas
-        const worker = await Tesseract.createWorker();
-        const { data: { text: text1 } } = await worker.recognize(segment1DataURL);
-        const { data: { text: text2 } } = await worker.recognize(segment2DataURL);
-        const { data: { text: text3 } } = await worker.recognize(segment3DataURL);
-        await worker.terminate();
+        const scheduler =  Tesseract.createScheduler()
+        const worker1 = await Tesseract.createWorker()
+        const worker2 = await Tesseract.createWorker()
+        const worker3 = await Tesseract.createWorker()
 
+        scheduler.addWorker(worker1)
+        scheduler.addWorker(worker2)
+        scheduler.addWorker(worker3)
 
-        console.log("texto derecha",text1)
-        console.log("texto medio",text2)
-        console.log("texto izquierda",text3)
-        // Concatenar los textos reconocidos
-        const concatenatedText = text1 + ' ' + text2 + ' ' + text3;
+        const results = await Promise.all(
+          [segment1DataURL, segment2DataURL, segment3DataURL].map((segment) => (
+            scheduler.addJob('recognize', segment)
+          ))
+        )
+        await scheduler.terminate()
+
+        results.forEach(result => console.log(result.data.text))
+
+        const initialValue = ''
+        const concatenatedText = results.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.data.text,
+          initialValue
+        )
 
         // Llamar a la función onChange con la imagen original y el texto concatenado
-        onChange(canvasURL, concatenatedText);
+        changeLoadingGlobal(false)
+        onChange(canvasURL, concatenatedText)
       };
       if (imageSrc != null) { img.src = imageSrc; }
     }

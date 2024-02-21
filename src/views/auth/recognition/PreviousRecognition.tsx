@@ -1,18 +1,20 @@
-import { getEnvVariables } from "@/helpers"
+import { TimerContext } from "@/context/TimerContext"
 import { useCredentialStore } from "@/hooks"
 import { Grid, Typography } from "@mui/material"
-import { forwardRef, useImperativeHandle } from "react"
+import { forwardRef, useContext, useImperativeHandle } from "react"
 
 export const PreviousRecognition = forwardRef((_, ref) => {
 
-   const { ACTIVITY_TIME } = getEnvVariables()
-   const { changeStep, changeTimer } = useCredentialStore()
+   const { changeStep } = useCredentialStore()
+
+   const { resetTimer } = useContext(TimerContext)
 
    useImperativeHandle(ref, () => ({
       action: () => {
          changeStep('faceRecognition')
-         changeTimer(ACTIVITY_TIME)
-      }
+         resetTimer()
+      },
+      onRemoveCam: () => {}
    }))
 
    return (

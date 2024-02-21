@@ -8,7 +8,8 @@ import {
   setTimer,
   setImageCapture,
   setOcr,
-  setFacialRecognition
+  setFacialRecognition,
+  setLoadingGlobal
 } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -22,7 +23,8 @@ export const useCredentialStore = () => {
     name,
     image,
     ocr,
-    facialRecognition
+    facialRecognition,
+    loading
   } = useSelector((state: any) => state.auth);
 
   const dispatch = useDispatch();
@@ -57,7 +59,9 @@ export const useCredentialStore = () => {
   const changeRecognizedByFacialRecognition = async (facialRecognition: boolean) => {
     dispatch(setFacialRecognition({facialRecognition}))
   }
-
+  const changeLoadingGlobal = async ( loading: boolean ) => {
+    dispatch(setLoadingGlobal({ loading }))
+  }
 
   return {
     //* Propiedades
@@ -70,6 +74,7 @@ export const useCredentialStore = () => {
     image,
     ocr,
     facialRecognition,
+    loading,
     //* Métodos
     changeStep,
     changeIdentityCard,
@@ -80,6 +85,7 @@ export const useCredentialStore = () => {
     changeName,
     changeImage,
     changeRecognizedByOcr,
-    changeRecognizedByFacialRecognition
+    changeRecognizedByFacialRecognition,
+    changeLoadingGlobal
   }
 }

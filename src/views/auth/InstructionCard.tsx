@@ -2,19 +2,17 @@ import { Box, Grid, Typography } from "@mui/material";
 // @ts-ignore
 import imageLogo from '@/assets/images/carnet.png';
 import { useCredentialStore } from "@/hooks";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useContext, useImperativeHandle } from "react";
+import { TimerContext } from "@/context/TimerContext";
 
-interface Props {
-  onChange: () => void;
-}
-export const InstructionCard = forwardRef((props: Props, ref) => {
+export const InstructionCard = forwardRef((_, ref) => {
 
-  const { onChange } = props;
   const { changeIdentityCard, changeIdentifyUser, changeStateInstruction, changeStep } = useCredentialStore();
+  const { resetTimer } = useContext(TimerContext)
 
   useImperativeHandle(ref, () => ({
     action: (state: boolean) => {
-      onChange()
+      resetTimer()
       if(state) {
         changeStateInstruction(false)
         changeStep('recognitionCard')

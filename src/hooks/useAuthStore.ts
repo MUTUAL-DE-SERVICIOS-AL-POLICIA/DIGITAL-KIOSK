@@ -12,8 +12,11 @@ export const useAuthStore = () => {
   const { changeIdentityCard, changeStep, changeName } = useCredentialStore();
   const dispatch = useDispatch();
 
+  const { changeLoadingGlobal } = useCredentialStore()
+
   const startLogin = async (identityCard: string) => {
     try {
+      changeLoadingGlobal(true)
       const { data } = await coffeApi.post('/poa/get_session', {
         "device_name": "54:BF:64:61:D7:95",
         "identity_card": "4362223"
@@ -25,13 +28,17 @@ export const useAuthStore = () => {
         "fullName": data.payload.full_name,
         "degree": data.payload.degree
       }
-      const user = `${JSON.stringify(dataUser)}`;
-      localStorage.setItem('user', user);
-      changeIdentityCard(identityCard)
-      changeName(data.payload.full_name) /* nueva implementación */
-      dispatch(onLogin(dataUser));
-      changeStep('instructionCard')
+      setTimeout(() => {
+        const user = `${JSON.stringify(dataUser)}`;
+        localStorage.setItem('user', user);
+        changeIdentityCard(identityCard)
+        changeName(data.payload.full_name) /* nueva implementación */
+        dispatch(onLogin(dataUser));
+        changeStep('instructionCard')
+        changeLoadingGlobal(false)
+      }, 2000)
     } catch (error: any) {
+      changeLoadingGlobal(false)
       if (!error.response) return Swal.fire('Intentalo nuevamente', 'Error en el servidor', 'error')
       dispatch(onLogout());
       const message = error.response.data.message

@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography } from '@mui/material';
 
 import { IdentityCard } from './IdentityCard';
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { useCredentialStore } from '@/hooks';
 import { InstructionCard } from './InstructionCard';
 
@@ -12,46 +12,36 @@ import { FaceRecognition, OcrView } from './recognition';
 import Footer from '@/components/Footer';
 import { PreviousRecognition } from './recognition/PreviousRecognition';
 
-import { getEnvVariables } from '@/helpers';
+import { TimerContext } from '@/context/TimerContext';
 
 interface ChildRefType {
   action: (prop?: boolean) => void;
   onRemoveCam: () => void;
 }
 
-let ACTIVITY_TIME = 0
-
 export const AuthView = () => {
 
   const childRef = useRef<ChildRefType>()
   const {
     step, identityCard,
-    timer = 0, changeTimer,
     changeStep, changeIdentifyUser,
     changeIdentityCard, changeStateInstruction
   } = useCredentialStore();
 
-  useEffect(() => {
-    ACTIVITY_TIME = getEnvVariables().ACTIVITY_TIME
-  }, [])
+  const { seconds, resetTimer } = useContext(TimerContext)
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (step != 'home' && timer > 0) {
-      interval = setInterval(() => {
-        changeTimer(timer - 1);
-        if (timer == 1) {
-          childRef.current?.onRemoveCam();
-          changeStep('home')
-          changeIdentityCard('')
-          changeIdentifyUser(false)
-          changeStateInstruction(true)
-          changeTimer(ACTIVITY_TIME)
-        }
-      }, 1000);
+    if (step != 'name' && seconds > 0 ) {
+      if(seconds == 1) {
+        childRef.current?.onRemoveCam()
+        changeStep('home')
+        changeIdentityCard('')
+        changeIdentifyUser(false)
+        changeStateInstruction(true)
+        resetTimer()
+      }
     }
-    return () => clearInterval(interval);
-  }, [step, timer]);
+  }, [step, seconds]);
 
   const handleClick = () => {
     if(childRef) if(childRef.current) childRef.current.action(true)
@@ -63,15 +53,15 @@ export const AuthView = () => {
         <AppBar position="static" style={{ background: '#008698', flex: '0 0 7%' }}>
           <Toolbar>
             <img src={imageLogoBlanco} alt="Imagen tipo logo" style={{ width: '10vw' }} />
-            <Typography variant='h4' color='white'>{timer}</Typography>
+            <Typography variant='h4' color='white'>{seconds}</Typography>
           </Toolbar>
         </AppBar>
       }{/* barra superior */}
         <div style={{ flex: '1 1 auto', overflowX: 'auto'}}>
           { step == 'home' && <HomeScreen /> }{/* Pantall casita */}
-          { step == 'identityCard' && <IdentityCard onChange={() => changeTimer(ACTIVITY_TIME)} ref={childRef} /> }{/* pantalla input carnet */}
-          { step == 'instructionCard' && identityCard != '' && <InstructionCard onChange={() => changeTimer(ACTIVITY_TIME)} ref={childRef} /> }{/* pantalla instruccion */}
-          { step == 'recognitionCard' && <OcrView ref={childRef} /> } {/* pantalla reconocimiento facial */}
+          { step == 'identityCard' && <IdentityCard ref={childRef} /> }{/* pantalla input carnet */}
+          { step == 'instructionCard' && identityCard != '' && <InstructionCard ref={childRef} /> }{/* pantalla instruccion */}
+          { step == 'recognitionCard' && <OcrView ref={childRef} /> } {/* pantalla reconocimiento ocr */}
           { step == 'previousFaceRecognition' && <PreviousRecognition ref={childRef} />}
           { step == 'faceRecognition' && <FaceRecognition ref={childRef} />}
          </div>

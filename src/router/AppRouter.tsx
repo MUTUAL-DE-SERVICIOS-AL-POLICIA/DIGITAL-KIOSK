@@ -16,12 +16,11 @@ export const AppRouter = () => {
     checkAuthToken();
   }, []);
 
-
   return (
     (status === 'not-authenticated' || !userIdentify) ?
       <AuthView /> :
       <Routes>
-        <Route path="/" element={<LoanView />} />
+        <Route path="/"  element={<LoanView />} />
         <Route path="/*" element={<Navigate to={"/"} />} />
       </Routes>
   )
