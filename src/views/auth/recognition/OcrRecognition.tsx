@@ -1,7 +1,7 @@
 import { ImageCanvas, ImageCapture } from "@/components";
 import { Box, Stack, Typography } from "@mui/material";
 import { RefObject, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { useCredentialStore } from "@/hooks";
+import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
 import { TimerContext } from "@/context/TimerContext";
@@ -40,6 +40,7 @@ export const OcrView = forwardRef((_, ref) => {
    const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null)
 
    const { identityCard, changeStep, changeImage, changeRecognizedByOcr, changeLoadingGlobal } = useCredentialStore()
+   const { changeOcrState } = useStastisticsStore()
 
    const cleanup = useCallback(() => {
       intervalWebCam && clearInterval(intervalWebCam);
@@ -87,9 +88,11 @@ export const OcrView = forwardRef((_, ref) => {
          changeImage(image)
          resetTimer()
          cleanup()
+         changeOcrState(true)
       } else {
          setImage(null)
          getLocalUserVideo()
+         changeOcrState(false)
          Swal.fire({
             position: "center",
             icon: "warning",

@@ -2,7 +2,7 @@ import { forwardRef, useImperativeHandle, RefObject } from 'react';
 import Webcam from "react-webcam";
 import Tesseract from 'tesseract.js';
 import Stack from '@mui/material/Stack';
-import { useCredentialStore } from '@/hooks';
+import { useCredentialStore, useStastisticsStore } from '@/hooks';
 
 const CAPTURED_IMAGE_WIDTH = 1920; // Ancho predefinido para la imagen capturada
 const CAPTURED_IMAGE_HEIGHT = 1080; // Alto predefinido para la imagen capturada
@@ -20,6 +20,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
   } = props;
 
   const { changeLoadingGlobal } = useCredentialStore()
+  const { changeLeftText, changeMiddleText, changeRightText } = useStastisticsStore()
 
   useImperativeHandle(ref, () => ({
     onCapture: () => capture(),
@@ -86,6 +87,10 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           ))
         )
         await scheduler.terminate()
+
+        changeLeftText(results[0].data.text)
+        changeMiddleText(results[1].data.text)
+        changeRightText(results[2].data.text)
 
         const initialValue = ''
         const concatenatedText = results.reduce(

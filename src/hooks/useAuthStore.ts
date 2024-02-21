@@ -21,8 +21,8 @@ export const useAuthStore = () => {
       changeLoadingGlobal(true)
       const { data } = await coffeApi.post('/poa/get_session', {
         "device_name": MAC_DEVICE,
-        // "identity_card": "4362223"
-        "identity_card": identityCard
+        "identity_card": "4362223"
+        // "identity_card": identityCard
       });
       localStorage.setItem('token', data.payload.access_token);
       const dataUser = {
@@ -71,6 +71,15 @@ export const useAuthStore = () => {
     dispatch(onLogout());
   }
 
+  const authMethodRegistration = async (body: object) =>{
+    try {
+      const { data } = await coffeApi.post('/report/register_auth_kiosk', body)
+      console.log(data)
+    } catch(error: any) {
+      console.error("Hubo un error: ", error)
+    }
+  }
+
 
 
   return {
@@ -81,6 +90,7 @@ export const useAuthStore = () => {
     startLogin,
     checkAuthToken,
     startLogout,
+    authMethodRegistration
   }
 
 }
