@@ -11,8 +11,8 @@ const KeyboardNumeric = (props: KeyboardProps) => {
 
 	const numbers = [
 		'7', '8', '9',
-		'4', '5', '6',
-		'1', '2', '3',
+		'6', '5', '4',
+		'3', '2', '1',
 		'0', '-', <BackspaceIcon fontSize='large'/>
 	]
 

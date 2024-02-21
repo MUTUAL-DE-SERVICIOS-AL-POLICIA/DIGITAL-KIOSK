@@ -42,9 +42,11 @@ export const FaceRecognition = forwardRef((_, ref) => {
 
    /* Carga de modelos */
    useEffect(() => {
+      changeLoadingGlobal(true)
       loadModels().then(async () => {
          await scanFace();
          await getLocalUserVideo();
+         changeLoadingGlobal(false)
       }).catch(() => console.error("No se cargaron los modelos"))
    }, [])
 
@@ -60,19 +62,18 @@ export const FaceRecognition = forwardRef((_, ref) => {
 
    const getLocalUserVideo = async () => {
       try {
-         // const environmentStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "environment" } });
-         // webcamRef?.current && (webcamRef.current.srcObject = environmentStream);
-         // const userStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } });
-         // videoRef?.current && (videoRef.current.srcObject = userStream);
+         const userStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } });
+         videoRef?.current && (videoRef.current.srcObject = userStream);
 
-         const streams = await getAllCameras();
-         // webcamRef?.current && (webcamRef.current.srcObject = streams[1])
-         videoRef?.current && (videoRef.current.srcObject = streams[0])
+         // SOLO PARA DESARROLLO
+         // const streams = await getAllCameras();
+         // videoRef?.current && (videoRef.current.srcObject = streams[0])
       } catch (error) {
          console.error("Error:", error);
       }
    };
 
+   // @ts-ignore
    const getAllCameras = async () => {
       try {
          const devices = await navigator.mediaDevices.enumerateDevices()
@@ -177,7 +178,7 @@ export const FaceRecognition = forwardRef((_, ref) => {
 
       if (resizeResults.length === 0) { return; }
 
-      resizeResults.forEach(({ detection, descriptor }) => {
+      resizeResults.some(({ detection, descriptor }) => {
          if(faceMatcher) {
             let label = faceMatcher.findBestMatch(descriptor).toString();
             let options = null;
@@ -193,6 +194,7 @@ export const FaceRecognition = forwardRef((_, ref) => {
                console.log("RECONOCE EL ROSTRO")
                console.log("================================")
                cleanup()
+               return true
             } else {
                label = `Persona no encontrada`;
                options = { label };

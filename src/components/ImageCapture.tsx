@@ -87,8 +87,6 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         )
         await scheduler.terminate()
 
-        results.forEach(result => console.log(result.data.text))
-
         const initialValue = ''
         const concatenatedText = results.reduce(
           (accumulator, currentValue) => accumulator + currentValue.data.text,

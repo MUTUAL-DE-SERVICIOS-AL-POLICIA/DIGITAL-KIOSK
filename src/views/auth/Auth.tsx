@@ -53,7 +53,8 @@ export const AuthView = () => {
         <AppBar position="static" style={{ background: '#008698', flex: '0 0 7%' }}>
           <Toolbar>
             <img src={imageLogoBlanco} alt="Imagen tipo logo" style={{ width: '10vw' }} />
-            <Typography variant='h4' color='white'>{seconds}</Typography>
+            { identityCard && <Typography variant='h4' color='white'><b>CI ingresado: </b> {identityCard}</Typography> }
+            <Typography variant='h4' color='white'> {seconds}</Typography>
           </Toolbar>
         </AppBar>
       }{/* barra superior */}

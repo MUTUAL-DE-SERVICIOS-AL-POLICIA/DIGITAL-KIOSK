@@ -10,14 +10,28 @@ const Footer = (props: Props) => {
 
   const { action } = props
 
-  const { loading } = useCredentialStore()
+  const { loading, step, changeStep, changeIdentityCard } = useCredentialStore()
+
+  const resetStep = () => {
+    changeStep('identityCard')
+    changeIdentityCard('')
+  }
 
   return (
     <AppBar position="static" sx={{pb: 0, mb: 0, backgroundColor: '#EEEEEE'}} style={{flex: '0 0 20%'}}>
       <Toolbar>
         <Grid container
           justifyContent="center"
+          spacing={3}
         >
+          { step != 'identityCard' && <Grid item>
+            <ComponentButton
+              onClick={() => resetStep()}
+              text="VOLVER"
+              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%', padding: "0px 25px" }}
+              color="warning"
+            />
+          </Grid> }
           <Grid item>
             <ComponentButton
               onClick={action}
