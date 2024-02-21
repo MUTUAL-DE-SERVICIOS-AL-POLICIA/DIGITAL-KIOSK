@@ -151,67 +151,71 @@ export const FaceRecognition = forwardRef((_, ref) => {
 
    const scanPhoto = async () => { // imagen
       changeLoadingGlobal(true)
-      if (!image || !isFaceDetectionModelLoad()) return;
-      const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 608, scoreThreshold: 0.6 });
-      img = await faceapi.fetchImage(image);
+      try {
+         if (!image || !isFaceDetectionModelLoad()) return;
+         const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 608, scoreThreshold: 0.6 });
+         img = await faceapi.fetchImage(image);
 
-      // creando el elemento
-      const canvas = document.createElement('canvas')
+         // creando el elemento
+         const canvas = document.createElement('canvas')
 
-      img.onload = () => {
-         const width = img.width
-         const height = img.height
-         canvas.width = width
-         canvas.height = height
-      }
+         img.onload = () => {
+            const width = img.width
+            const height = img.height
+            canvas.width = width
+            canvas.height = height
+         }
 
-      const detections = await faceapi.detectAllFaces(img, options)
-         .withFaceLandmarks()
-         .withFaceDescriptors();
+         const detections = await faceapi.detectAllFaces(img, options)
+            .withFaceLandmarks()
+            .withFaceDescriptors();
 
-      if (detections.length === 0) { return; }
+         if (detections.length === 0) { return; }
 
-      if (!canvas && !img) { return; }
+         if (!canvas && !img) { return; }
 
-      faceapi.matchDimensions(canvas, img);
-      const resizeResults = faceapi.resizeResults(detections, img);
+         faceapi.matchDimensions(canvas, img);
+         const resizeResults = faceapi.resizeResults(detections, img);
 
-      if (resizeResults.length === 0) { return; }
+         if (resizeResults.length === 0) { return; }
 
-      resizeResults.some(({ detection, descriptor }) => {
-         if(faceMatcher) {
-            let label = faceMatcher.findBestMatch(descriptor).toString();
-            let options = null;
-            if (!label.includes('unknown')) {
-               label = `Persona encontrada`;
-               options = { label, boxColor: 'green' };
-               changeRecognizedByFacialRecognition(true)
-               if(ocr) {
-               }
-               changeStep('home')
-               changeIdentifyUser(true)
-               console.log("================================")
-               console.log("RECONOCE EL ROSTRO")
-               console.log("================================")
-               cleanup()
-               return true
-            } else {
-               label = `Persona no encontrada`;
-               options = { label };
-               console.log("================================")
-               console.log("NO RECONOCE EL ROSTRO")
-               console.log("================================")
-               if(ocr) {
+         resizeResults.some(({ detection, descriptor }) => {
+            if(faceMatcher) {
+               let label = faceMatcher.findBestMatch(descriptor).toString();
+               let options = null;
+               if (!label.includes('unknown')) {
+                  label = `Persona encontrada`;
+                  options = { label, boxColor: 'green' };
+                  changeRecognizedByFacialRecognition(true)
+                  if(ocr) {
+                  }
                   changeStep('home')
                   changeIdentifyUser(true)
+                  console.log("================================")
+                  console.log("RECONOCE EL ROSTRO")
+                  console.log("================================")
                   cleanup()
+                  return true
+               } else {
+                  label = `Persona no encontrada`;
+                  options = { label };
+                  console.log("================================")
+                  console.log("NO RECONOCE EL ROSTRO")
+                  console.log("================================")
+                  if(ocr) {
+                     changeStep('home')
+                     changeIdentifyUser(true)
+                     cleanup()
+                  }
                }
+               new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
             }
-            new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
-         }
-      });
-      faceapi.draw.drawFaceLandmarks(canvas, resizeResults);
-      changeLoadingGlobal(false)
+         });
+         faceapi.draw.drawFaceLandmarks(canvas, resizeResults);
+         changeLoadingGlobal(false)
+      } catch (error:any) {
+         console.error("Error con la cámara del rostro: ", error)
+      }
    }
 
    return (

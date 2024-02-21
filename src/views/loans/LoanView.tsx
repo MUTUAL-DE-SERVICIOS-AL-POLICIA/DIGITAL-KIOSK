@@ -78,7 +78,7 @@ export const LoanView = () => {
       <AppBar position="static" style={{ background: '#f2f2f2', flex: '0 0 0%' }}>
         <Toolbar>
           <Typography style={{ fontSize: '4vw', fontWeight: 700 }}>MIS PRESTAMOS</Typography>
-          <Typography style={{ fontSize: '3vw', fontWeight: 700}}>{ seconds }</Typography>
+          <Typography style={{ fontSize: '2vw', fontWeight: 700}}>{ seconds }</Typography>
         </Toolbar>
       </AppBar>
       {

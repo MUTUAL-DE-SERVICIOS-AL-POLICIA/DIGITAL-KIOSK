@@ -44,7 +44,12 @@ export const useLoanStore = () => {
         }
       } else if(error.response) {
         const message = error.response?.data?.error || 'Error de conexión'
-        Swal.fire('Error', message, 'error');
+        Swal.fire({
+          title: 'Hubo un error',
+          text: message,
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+        });
         return 501
       }
     }

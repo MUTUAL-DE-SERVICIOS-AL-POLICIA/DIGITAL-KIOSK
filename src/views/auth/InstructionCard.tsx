@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Card, Grid, Typography } from "@mui/material";
 // @ts-ignore
 import imageLogo from '@/assets/images/carnet.png';
 import { useCredentialStore } from "@/hooks";
@@ -28,10 +28,12 @@ export const InstructionCard = forwardRef((_, ref) => {
   return (
     <Grid container alignItems="center" style={{ marginTop: '15vh' }}>
       <Grid item container sm={6} direction="column" justifyContent="spacebetween">
-        <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
-          Introduzca su carnet de identidad en la ranura de abajo.<br/>
-          Quitese los anteojos, sombrero y barbijo para realizar el proceso correctamente.
-        </Typography>
+        <Card sx={{ ml: 10, borderRadius: '30px', p: 2}} variant="outlined">
+          <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
+            Introduzca su carnet de identidad en la ranura de abajo.<br/>
+            Quitese los anteojos, sombrero y barbijo para realizar el proceso correctamente.
+          </Typography>
+        </Card>
       </Grid>
       <Grid item container sm={6} direction="column">
         <Box display="flex" justifyContent="center">

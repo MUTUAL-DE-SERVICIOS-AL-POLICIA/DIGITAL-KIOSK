@@ -47,6 +47,10 @@ export const AuthView = () => {
     if(childRef) if(childRef.current) childRef.current.action(true)
   }
 
+  const handleClean = () => {
+    if(childRef) if(childRef.current) childRef.current.onRemoveCam()
+  }
+
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
       { step != 'home' &&
@@ -66,7 +70,7 @@ export const AuthView = () => {
           { step == 'previousFaceRecognition' && <PreviousRecognition ref={childRef} />}
           { step == 'faceRecognition' && <FaceRecognition ref={childRef} />}
          </div>
-      { step != 'home' && <Footer action={handleClick} />}
+      { step != 'home' && <Footer action={handleClick} onRemoveCam={handleClean}/>}
     </div>
   );
 };
