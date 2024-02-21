@@ -14,22 +14,22 @@ export const useAuthStore = () => {
 
   const startLogin = async (identityCard: string) => {
     try {
-      const { data } = await coffeApi.post('/poa/get_session', {
-        "device_name": "54:BF:64:61:D7:95",
-        "identity_card": "4362223"
-        // "identity_card": identityCard
-      });
-      localStorage.setItem('token', data.payload.access_token);
-      const dataUser = {
-        "nup": data.payload.nup,
-        "fullName": data.payload.full_name,
-        "degree": data.payload.degree
-      }
-      const user = `${JSON.stringify(dataUser)}`;
-      localStorage.setItem('user', user);
-      changeIdentityCard(identityCard)
-      changeName(data.payload.full_name) /* nueva implementación */
-      dispatch(onLogin(dataUser));
+      // const { data } = await coffeApi.post('/poa/get_session', {
+      //   "device_name": "54:BF:64:61:D7:95",
+      //   "identity_card": "4362223"
+      //   // "identity_card": identityCard
+      // });
+      // localStorage.setItem('token', data.payload.access_token);
+      // const dataUser = {
+      //   "nup": data.payload.nup,
+      //   "fullName": data.payload.full_name,
+      //   "degree": data.payload.degree
+      // }
+      // const user = `${JSON.stringify(dataUser)}`;
+      // localStorage.setItem('user', user);
+      // changeIdentityCard(identityCard)
+      // changeName(data.payload.full_name) /* nueva implementación */
+      // dispatch(onLogin(dataUser));
       changeStep('instructionCard')
     } catch (error: any) {
       if (!error.response) return Swal.fire('Intentalo nuevamente', 'Error en el servidor', 'error')

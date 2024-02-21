@@ -1,10 +1,11 @@
 import { AlphaNumeric, ComponentInput } from '@/components';
 import KeyboardAlphanumeric from '@/components/keyboardAlphanumeric';
 import KeyboardNumeric from '@/components/keyboardNumeric';
+import { TimerContext } from '@/context/TimerContext';
 import { useCredentialStore, useForm } from '@/hooks';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { Grid, Typography } from '@mui/material';
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from 'react';
 
 const loginFormFields = {
   identityCard: '',
@@ -14,16 +15,12 @@ const formValidations = {
   identityCard: [(value: string) => value.length >= 1, 'Debe ingresar su número de carnet de identidad'],
 };
 
-interface Props {
-  onChange: () => void;
-}
+export const IdentityCard = forwardRef((_, ref) => {
 
-export const IdentityCard = forwardRef((props:Props, ref) => {
-
-  const { onChange } = props;
   const [ keyboardComplete, setkeyboardComplete ] = useState(false);
   const [ formSubmitted, setFormSubmitted ]       = useState(false);
-  // const keyboardRef = useRef<KeyboardRef | null>(null);
+
+  const { resetTimer } = useContext(TimerContext)
 
   const { startLogin } = useAuthStore();
   const { identityCard, onInputChange, isFormValid, onValueChange, identityCardValid } = useForm(
@@ -40,13 +37,13 @@ export const IdentityCard = forwardRef((props:Props, ref) => {
       setFormSubmitted(true);
       if (!isFormValid) return;
       startLogin(identityCard);
-      onChange();
+      resetTimer()
     },
     onRemoveCam: () => {}
   }))
 
   useEffect(() => {
-    onChange();
+    resetTimer()
   }, [identityCard])
 
 

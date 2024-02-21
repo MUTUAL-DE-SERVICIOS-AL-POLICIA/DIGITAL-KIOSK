@@ -1,10 +1,10 @@
 import { ImageCanvas, ImageCapture } from "@/components";
 import { Box, Stack, Typography } from "@mui/material";
-import { RefObject, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { RefObject, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useCredentialStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
-import { getEnvVariables } from "@/helpers";
+import { TimerContext } from "@/context/TimerContext";
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -25,7 +25,7 @@ export const OcrView = forwardRef((_, ref) => {
 
    }))
 
-   const { ACTIVITY_TIME } = getEnvVariables()
+   const { resetTimer } = useContext(TimerContext)
 
    let intervalWebCam: NodeJS.Timeout
 
@@ -37,7 +37,7 @@ export const OcrView = forwardRef((_, ref) => {
    const imageRef: RefObject<HTMLImageElement> = useRef(null)
    const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null)
 
-   const { identityCard, changeStep, changeTimer, changeImage, changeRecognizedByOcr } = useCredentialStore()
+   const { identityCard, changeStep, changeImage, changeRecognizedByOcr } = useCredentialStore()
 
    const cleanup = useCallback(() => {
       intervalWebCam && clearInterval(intervalWebCam);
@@ -80,10 +80,9 @@ export const OcrView = forwardRef((_, ref) => {
       setImage(image)
       if (isWithinErrorRange(identityCard, text)) {
          setTimeout(() => changeStep('previousFaceRecognition'), 1000)
-         // changeIdentifyUser(true)
          changeRecognizedByOcr(true)
          changeImage(image)
-         changeTimer(ACTIVITY_TIME)
+         resetTimer()
          cleanup()
       } else {
          setImage(null)

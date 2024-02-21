@@ -1,47 +1,38 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useLoanStore } from "@/hooks/useLoanStore";
 import { AppBar, CircularProgress, Grid, Toolbar, Typography } from "@mui/material";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CardLoan } from "./CardLoan";
 import { useCredentialStore } from "@/hooks";
 import Swal from 'sweetalert2'
-import { getEnvVariables } from "@/helpers";
-
-let ACTIVITY_TIME = 0
+import { TimerContext } from "@/context/TimerContext";
 
 export const LoanView = () => {
   const { user } = useAuthStore();
   const { loans, getLoans } = useLoanStore();
   const { startLogout } = useAuthStore();
-  const { timer, changeIdentityCard, changeIdentifyUser, changeTimer } = useCredentialStore();
+  const { changeIdentityCard, changeIdentifyUser } = useCredentialStore();
   const { printKardexLoan } = useLoanStore();
 
   const [ loading, setLoading ] = useState(false)
 
+  const { seconds, resetTimer } = useContext(TimerContext)
+
   useEffect(() => {
     getLoans(user.nup);
-    ACTIVITY_TIME = getEnvVariables().ACTIVITY_TIME
   }, [])
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (timer > 0) {
-      interval = setInterval(() => {
-        changeTimer(timer - 1);
-        if (timer == 1) {
-          changeIdentityCard('');
-          changeIdentifyUser(false)
-          startLogout();
-          changeTimer(ACTIVITY_TIME);
-        }
-      }, 1000);
+    if(seconds == 1) {
+      changeIdentityCard('');
+      changeIdentifyUser(false)
+      startLogout();
+      resetTimer()
     }
-    return () => clearInterval(interval);
-  }, [timer]);
+  }, [seconds]);
 
   const handlePaperClick = async (loanId: number) => {
-    changeTimer(ACTIVITY_TIME)
+    resetTimer()
     setLoading(true)
     const response:any = await printKardexLoan(loanId)
     switch(response) {
