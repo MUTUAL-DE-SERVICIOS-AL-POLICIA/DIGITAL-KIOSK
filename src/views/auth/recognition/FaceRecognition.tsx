@@ -2,6 +2,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 
 import * as faceapi from "face-api.js"
 import { Box, Stack, Typography } from "@mui/material";
 import { useCredentialStore } from "@/hooks";
+import Swal from "sweetalert2";
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -170,14 +171,44 @@ export const FaceRecognition = forwardRef((_, ref) => {
             .withFaceLandmarks()
             .withFaceDescriptors();
 
-         if (detections.length === 0) { return; }
+         if (detections.length === 0) {
+            changeLoadingGlobal(false)
+            Swal.fire({
+               position: "center",
+               icon: "warning",
+               title: "Intente de nuevo",
+               showConfirmButton: false,
+               timer: 2000
+            });
+            return;
+         }
 
-         if (!canvas && !img) { return; }
+         if (!canvas && !img) {
+            changeLoadingGlobal(false)
+            Swal.fire({
+               position: "center",
+               icon: "warning",
+               title: "Intente de nuevo",
+               showConfirmButton: false,
+               timer: 2000
+            });
+            return;
+         }
 
          faceapi.matchDimensions(canvas, img);
          const resizeResults = faceapi.resizeResults(detections, img);
 
-         if (resizeResults.length === 0) { return; }
+         if (resizeResults.length === 0) {
+            changeLoadingGlobal(false)
+            Swal.fire({
+               position: "center",
+               icon: "warning",
+               title: "Intente de nuevo",
+               showConfirmButton: false,
+               timer: 2000
+            });
+            return;
+         }
 
          resizeResults.some(({ detection, descriptor }) => {
             if(faceMatcher) {
