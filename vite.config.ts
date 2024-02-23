@@ -13,6 +13,6 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   server: {
     host: VITE_HOST || 'localhost', // Usar el valor de la variable de entorno o 'localhost' por defecto
-    port: Number(VITE_PORT) || 3000, // Usar el valor de la variable de entorno o 3000 por defecto
+    port: Number(VITE_PORT) || 4001, // Usar el valor de la variable de entorno o 3000 por defecto
   },
 })
