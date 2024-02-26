@@ -83,7 +83,7 @@ export const OcrView = forwardRef((_, ref) => {
    const handleImageCapture = useCallback((image: string, text: string) => {
       setImage(image)
       if (isWithinErrorRange(identityCard, text)) {
-         setTimeout(() => changeStep('previousFaceRecognition'), 1000)
+         changeStep('previousFaceRecognition')
          changeRecognizedByOcr(true)
          changeImage(image)
          resetTimer()

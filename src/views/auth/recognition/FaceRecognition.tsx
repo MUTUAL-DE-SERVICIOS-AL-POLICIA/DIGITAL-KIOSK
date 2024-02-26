@@ -257,7 +257,6 @@ export const FaceRecognition = forwardRef((_, ref) => {
    }
 
    const sendStatistics = async (faceState: boolean) => {
-      console.log("antes de ejecutarse esto")
       const body = {
          identity_card: identityCard,
          left_text: leftText,
@@ -266,9 +265,7 @@ export const FaceRecognition = forwardRef((_, ref) => {
          ocr_state: ocrState,
          facial_recognition: faceState
       }
-      console.log(body)
       authMethodRegistration(body)
-      console.log("se ejecuto esto")
    }
 
    return (
