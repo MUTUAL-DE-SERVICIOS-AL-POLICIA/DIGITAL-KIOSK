@@ -5,7 +5,7 @@ import { useContext, useEffect, useRef } from 'react';
 import { useCredentialStore } from '@/hooks';
 import { InstructionCard } from './InstructionCard';
 
-//@ts-ignore
+//@ts-expect-error do not proceed
 import imageLogoBlanco from '@/assets/images/muserpol-logo-blanco.png';
 import { HomeScreen } from './HomeScreen';
 import { FaceRecognition, OcrView } from './recognition';

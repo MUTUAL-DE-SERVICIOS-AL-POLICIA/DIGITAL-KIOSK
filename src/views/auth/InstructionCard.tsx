@@ -1,5 +1,5 @@
 import { Box, Card, Grid, Typography } from "@mui/material";
-// @ts-ignore
+// @ts-expect-error do not proceed
 import imageLogo from '@/assets/images/carnet.png';
 import { useCredentialStore } from "@/hooks";
 import { forwardRef, useContext, useImperativeHandle } from "react";

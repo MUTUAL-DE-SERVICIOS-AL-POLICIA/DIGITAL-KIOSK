@@ -1,5 +1,5 @@
 import { Card, Paper, Stack, Typography } from "@mui/material"
-// @ts-ignore
+//@ts-expect-error do not proceed
 import logo from '@/assets/images/PlanDePagos.png';
 import './styles.css';
 

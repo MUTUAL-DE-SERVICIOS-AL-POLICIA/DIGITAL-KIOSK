@@ -1,8 +1,9 @@
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import "./index.css";
+import { ReactNode } from 'react';
 
 interface KeyboardProps {
-	onClick: (number: any) => void;
+	onClick: (number: string | ReactNode ) => void;
 }
 
 const KeyboardNumeric = (props: KeyboardProps) => {

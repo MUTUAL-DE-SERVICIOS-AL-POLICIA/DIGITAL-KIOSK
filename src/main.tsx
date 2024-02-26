@@ -55,7 +55,7 @@ fontStyle.load().then(() => {
   document.fonts.add(fontStyle);
 });
 
-const handleContextMenu = (e: any) => {
+const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
   e.preventDefault(); // Evita el comportamiento por defecto del evento de clic derecho
 };
 

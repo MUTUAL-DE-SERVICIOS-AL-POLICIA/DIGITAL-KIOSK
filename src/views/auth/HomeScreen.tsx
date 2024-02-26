@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
-//@ts-ignore
+//@ts-expect-error do not proceed
 import logo from '@/assets/images/muserpol_casa.jpg';
-//@ts-ignore
+//@ts-expect-error do not proceed
 import imageLogo from '@/assets/images/muserpol.png';
 import { useEffect, useState } from "react";
 import { useCredentialStore } from "@/hooks";

@@ -1,4 +1,4 @@
-import { ImageCanvas, ImageCapture } from "@/components";
+import { /*ImageCanvas,*/ ImageCapture } from "@/components";
 import { Box, Stack, Typography } from "@mui/material";
 import { RefObject, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
@@ -36,15 +36,15 @@ export const OcrView = forwardRef((_, ref) => {
    const imageCaptureRef: RefObject<ImageViewRef> = useRef(null)
    const webcamRef: RefObject<Webcam> = useRef(null)
    const canvasWebcamRef: RefObject<HTMLCanvasElement> = useRef(null)
-   const imageRef: RefObject<HTMLImageElement> = useRef(null)
-   const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null)
+   // const imageRef: RefObject<HTMLImageElement> = useRef(null)
+   // const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null)
 
    const { identityCard, changeStep, changeImage, changeRecognizedByOcr, changeLoadingGlobal } = useCredentialStore()
    const { changeOcrState } = useStastisticsStore()
 
    const cleanup = useCallback(() => {
       intervalWebCam && clearInterval(intervalWebCam);
-      // @ts-ignore
+      // @ts-expect-error type is not known
       if (webcamRef.current) webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
 
    }, [webcamRef]);
@@ -52,7 +52,7 @@ export const OcrView = forwardRef((_, ref) => {
    const getLocalUserVideo = async () => {
       try {
          const environmentStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "environment" } })
-         // @ts-ignore
+         // @ts-expect-error type is not known
          webcamRef?.current && (webcamRef.current.srcObject = environmentStream)
       } catch (error) {
          console.error("Error:", error)
@@ -80,7 +80,7 @@ export const OcrView = forwardRef((_, ref) => {
       return true
    }
 
-   const handleImageCapture = (image: string, text: string) => {
+   const handleImageCapture = useCallback((image: string, text: string) => {
       setImage(image)
       if (isWithinErrorRange(identityCard, text)) {
          setTimeout(() => changeStep('previousFaceRecognition'), 1000)
@@ -101,7 +101,7 @@ export const OcrView = forwardRef((_, ref) => {
             timer: 2000
          });
       }
-   }
+   }, [image, changeImage])
 
    const isFaceDetectionModelLoad = () => !!faceapi.nets.tinyFaceDetector.params;
 
@@ -157,19 +157,27 @@ export const OcrView = forwardRef((_, ref) => {
                Coloque su Cédula de identidad
             </Typography>
             {
-               image == null ?
+               // image == null ?
+               //    <ImageCapture
+               //       onChange={handleImageCapture}
+               //       ref={imageCaptureRef}
+               //       webcamRef={webcamRef}
+               //       canvasWebcamRef={canvasWebcamRef}
+               //    />
+               //    :
+               //    <ImageCanvas
+               //       imageRef={imageRef}
+               //       canvasImageRef={canvasImageRef}
+               //       src={image}
+               //    />
+               image == null && (
                   <ImageCapture
                      onChange={handleImageCapture}
                      ref={imageCaptureRef}
                      webcamRef={webcamRef}
                      canvasWebcamRef={canvasWebcamRef}
                   />
-                  :
-                  <ImageCanvas
-                     imageRef={imageRef}
-                     canvasImageRef={canvasImageRef}
-                     src={image}
-                  />
+               )
             }
          </Stack>
       </Box>

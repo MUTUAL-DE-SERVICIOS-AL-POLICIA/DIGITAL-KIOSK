@@ -21,8 +21,8 @@ export const useAuthStore = () => {
       changeLoadingGlobal(true)
       const { data } = await coffeApi.post('/poa/get_session', {
         "device_name": MAC_DEVICE,
-        "identity_card": "4362223"
-        // "identity_card": identityCard
+        // "identity_card": "4362223"
+        "identity_card": identityCard
       });
       localStorage.setItem('token', data.payload.access_token);
       const dataUser = {
