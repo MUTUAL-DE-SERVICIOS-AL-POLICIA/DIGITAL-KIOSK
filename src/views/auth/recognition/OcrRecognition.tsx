@@ -1,10 +1,9 @@
 import { /*ImageCanvas,*/ ImageCapture } from "@/components";
 import { Box, Stack, Typography } from "@mui/material";
-import { RefObject, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { RefObject, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState, memo } from "react";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
-import { TimerContext } from "@/context/TimerContext";
 import Swal from "sweetalert2";
 import './styles.css'
 
@@ -17,7 +16,7 @@ type ImageViewRef = {
    onCapture: () => void
 }
 
-export const OcrView = forwardRef((_, ref) => {
+export const OcrView = memo(forwardRef((_, ref) => {
 
    useImperativeHandle(ref, () => ({
       action: async () => {
@@ -26,8 +25,6 @@ export const OcrView = forwardRef((_, ref) => {
       onRemoveCam: () => cleanup()
 
    }))
-
-   const { resetTimer } = useContext(TimerContext)
 
    let intervalWebCam: NodeJS.Timeout
 
@@ -86,7 +83,6 @@ export const OcrView = forwardRef((_, ref) => {
          changeStep('previousFaceRecognition')
          changeRecognizedByOcr(true)
          changeImage(image)
-         resetTimer()
          cleanup()
          changeOcrState(true)
       } else {
@@ -182,4 +178,4 @@ export const OcrView = forwardRef((_, ref) => {
          </Stack>
       </Box>
    )
-})
+}))

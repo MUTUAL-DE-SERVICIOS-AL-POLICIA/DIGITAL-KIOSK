@@ -2,17 +2,14 @@ import { Box, Card, Grid, Typography } from "@mui/material";
 // @ts-expect-error do not proceed
 import imageLogo from '@/assets/images/carnet.png';
 import { useCredentialStore } from "@/hooks";
-import { forwardRef, useContext, useImperativeHandle } from "react";
-import { TimerContext } from "@/context/TimerContext";
+import { forwardRef, useImperativeHandle, memo } from "react";
 
-export const InstructionCard = forwardRef((_, ref) => {
+export const InstructionCard = memo(forwardRef((_, ref) => {
 
   const { changeIdentityCard, changeIdentifyUser, changeStateInstruction, changeStep } = useCredentialStore();
-  const { resetTimer } = useContext(TimerContext)
 
   useImperativeHandle(ref, () => ({
     action: (state: boolean) => {
-      resetTimer()
       if(state) {
         changeStateInstruction(false)
         changeStep('recognitionCard')
@@ -42,4 +39,4 @@ export const InstructionCard = forwardRef((_, ref) => {
       </Grid>
     </Grid>
   )
-})
+}))

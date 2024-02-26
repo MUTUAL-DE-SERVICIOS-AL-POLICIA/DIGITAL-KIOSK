@@ -1,13 +1,14 @@
 import { AppBar, Grid, Toolbar } from '@mui/material';
 import { ComponentButton } from '.';
 import { useCredentialStore } from '@/hooks';
+import { memo } from 'react';
 
 interface Props {
   action: () => void;
   onRemoveCam: () => void;
 }
 
-const Footer = (props: Props) => {
+const Footer = memo((props: Props) => {
 
   const { action, onRemoveCam } = props
 
@@ -46,6 +47,6 @@ const Footer = (props: Props) => {
       </Toolbar>
     </AppBar>
   );
-}
+})
 
 export default Footer;
