@@ -31,8 +31,8 @@ export const IdentityCard = forwardRef((_, ref) => {
   const { changeIdentityCard } = useCredentialStore()
 
   useImperativeHandle(ref, () => ({
-    //@ts-expect-error
-    action: (state?: boolean) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    action: (_?: boolean) => {
       changeIdentityCard(identityCard)
       setFormSubmitted(true);
       if (!isFormValid) return;

@@ -2,7 +2,7 @@ import { TimerContext } from "@/context/TimerContext"
 import { useCredentialStore } from "@/hooks"
 import { Box, Card, Grid, Typography } from "@mui/material"
 import { forwardRef, useContext, useImperativeHandle } from "react"
-// @ts-ignore
+//@ts-expect-error do not proceed
 import imageLogo from '@/assets/images/carnet.png';
 
 export const PreviousRecognition = forwardRef((_, ref) => {

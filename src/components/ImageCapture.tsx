@@ -27,11 +27,11 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
   }));
 
   // Función para convertir una imagen a una URL
-  const convertImageToDataURL = (canvas: HTMLCanvasElement, segment: any, segmentWidth: number): string  => {
+  const convertImageToDataURL = (canvas: HTMLCanvasElement, segment: ImageData | undefined, segmentWidth: number): string  => {
     canvas.width = segmentWidth;
     canvas.height = CAPTURED_IMAGE_HEIGHT;
     const ctx = canvas.getContext('2d');
-    ctx?.putImageData(segment, 0, 0);
+    segment && ctx?.putImageData(segment, 0, 0);
     return canvas.toDataURL('image/jpeg');
   }
 
@@ -52,18 +52,21 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
 
         // Dividir la imagen en tres partes horizontales
         const segmentWidth = CAPTURED_IMAGE_WIDTH / 3;
-        const segment1 = ctx?.getImageData(0, 0, segmentWidth, CAPTURED_IMAGE_HEIGHT);
-        const segment2 = ctx?.getImageData(segmentWidth, 0, segmentWidth, CAPTURED_IMAGE_HEIGHT);
-        const segment3 = ctx?.getImageData(2 * segmentWidth, 0, segmentWidth, CAPTURED_IMAGE_HEIGHT);
+        const segment1: ImageData | undefined = ctx?.getImageData(0, 0, segmentWidth, CAPTURED_IMAGE_HEIGHT);
+        const segment2: ImageData | undefined = ctx?.getImageData(segmentWidth, 0, segmentWidth, CAPTURED_IMAGE_HEIGHT);
+        const segment3: ImageData | undefined = ctx?.getImageData(2 * segmentWidth, 0, segmentWidth, CAPTURED_IMAGE_HEIGHT);
 
         // Obtener la URL de las imágenes segmentadas
         const promises = [
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           new Promise<string>((resolve, _) => {
               resolve(convertImageToDataURL(document.createElement('canvas'), segment1!, segmentWidth));
           }),
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           new Promise<string>((resolve, _) => {
               resolve(convertImageToDataURL(document.createElement('canvas'), segment2!, segmentWidth));
           }),
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           new Promise<string>((resolve, _) => {
               resolve(convertImageToDataURL(document.createElement('canvas'), segment3!, segmentWidth));
           })

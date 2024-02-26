@@ -4,13 +4,13 @@
 export const getEnvVariables = () => {
 
     return {
-        // @ts-ignore
+        // @ts-expect-error no necesary
         VITE_HOST_BACKEND: import.meta.env.VITE_HOST_BACKEND,
-        // @ts-ignore
+        // @ts-expect-error no necesary
         VITE_HOST_BACKEND_PRINT: import.meta.env.VITE_HOST_BACKEND_PRINT,
-        // @ts-ignore
+        // @ts-expect-error no necesary
         ACTIVITY_TIME: import.meta.env.VITE_ACTIVITY_TIME,
-        // @ts-ignore
+        // @ts-expect-error no necesary
         MAC_DEVICE: import.meta.env.VITE_MAC_DEVICE,
     }
 }

@@ -17,7 +17,7 @@ export const useLoanStore = () => {
 
   const printKardexLoan = async (loanId: number) => {
     try {
-      //@ts-ignore
+      // @ts-expect-error no necesary
       const { data } = await Promise.race([
         api.get(`/poa/loan/${loanId}/print/kardex`, { responseType: 'arraybuffer' }),
         new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
@@ -31,7 +31,6 @@ export const useLoanStore = () => {
           new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
         ])
         if(res) {
-          // @ts-ignore
           if(res.status == 200) {
             return res.status
           }

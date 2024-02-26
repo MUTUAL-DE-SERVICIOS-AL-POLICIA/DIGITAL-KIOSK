@@ -1,24 +1,22 @@
 import LoadingButton from '@mui/lab/LoadingButton';
 import { SxProps, Theme } from '@mui/material';
-import { memo } from 'react';
+import { MouseEventHandler, ReactNode, memo } from 'react';
 import "./index.css";
 
 interface buttonProps {
-  type?: any;
   text: string;
-  onClick?: any;
-  startIcon?: any;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  startIcon?: ReactNode;
   disable?: boolean;
   loading?: boolean;
   variant?: any;
-  endIcon?: any;
+  endIcon?: ReactNode;
   sx?: SxProps<Theme>;
   color?: any;
 }
 
 export const ComponentButton = memo((props: buttonProps) => {
   const {
-    type,
     text,
     onClick,
     startIcon,
@@ -33,7 +31,6 @@ export const ComponentButton = memo((props: buttonProps) => {
   return (
     <LoadingButton
       loading={loading}
-      type={type}
       className="mt-2"
       variant={variant}
       disableRipple

@@ -77,31 +77,31 @@ export const FaceRecognition = forwardRef((_, ref) => {
       }
    };
 
-   // @ts-ignore
-   const getAllCameras = async () => {
-      try {
-         const devices = await navigator.mediaDevices.enumerateDevices()
-         const videoDevices = devices.filter(device => device.kind === 'videoinput')
+   // // @ts-expect-error used for development
+   // const getAllCameras = async () => {
+   //    try {
+   //       const devices = await navigator.mediaDevices.enumerateDevices()
+   //       const videoDevices = devices.filter(device => device.kind === 'videoinput')
 
-         const streams = await Promise.all(videoDevices.map(async device => {
-            try {
-               return await navigator.mediaDevices.getUserMedia({
-                  audio: false,
-                  video: {
-                     deviceId: { exact: device.deviceId }
-                  }
-               })
-            } catch (error) {
-               console.error(`Error al acceder a la cámara ${device.label}`)
-               return null
-            }
-         }))
-         return streams.filter(stream => stream !== null)
-      } catch (error) {
-         console.error("Error al enumerar dispositivos", error)
-         return []
-      }
-   }
+   //       const streams = await Promise.all(videoDevices.map(async device => {
+   //          try {
+   //             return await navigator.mediaDevices.getUserMedia({
+   //                audio: false,
+   //                video: {
+   //                   deviceId: { exact: device.deviceId }
+   //                }
+   //             })
+   //          } catch (error) {
+   //             console.error(`Error al acceder a la cámara ${device.label}`)
+   //             return null
+   //          }
+   //       }))
+   //       return streams.filter(stream => stream !== null)
+   //    } catch (error) {
+   //       console.error("Error al enumerar dispositivos", error)
+   //       return []
+   //    }
+   // }
 
    const isFaceDetectionModelLoad = () => !!faceapi.nets.tinyFaceDetector.params;
 
@@ -188,13 +188,14 @@ export const FaceRecognition = forwardRef((_, ref) => {
 
          if (!canvas && !img) {
             changeLoadingGlobal(false)
-            Swal.fire({
-               position: "center",
-               icon: "warning",
-               title: "Intente de nuevo",
-               showConfirmButton: false,
-               timer: 2000
-            });
+            console.error("No existe el canvas o imagen")
+            // Swal.fire({
+            //    position: "center",
+            //    icon: "warning",
+            //    title: "Intente de nuevo",
+            //    showConfirmButton: false,
+            //    timer: 2000
+            // });
             return;
          }
 
@@ -203,13 +204,14 @@ export const FaceRecognition = forwardRef((_, ref) => {
 
          if (resizeResults.length === 0) {
             changeLoadingGlobal(false)
-            Swal.fire({
-               position: "center",
-               icon: "warning",
-               title: "Intente de nuevo",
-               showConfirmButton: false,
-               timer: 2000
-            });
+            console.error("No existe resizeResults")
+            // Swal.fire({
+            //    position: "center",
+            //    icon: "warning",
+            //    title: "Intente de nuevo",
+            //    showConfirmButton: false,
+            //    timer: 2000
+            // });
             return;
          }
 
