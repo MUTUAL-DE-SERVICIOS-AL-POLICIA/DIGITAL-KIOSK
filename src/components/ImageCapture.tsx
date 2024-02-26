@@ -58,15 +58,12 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
 
         // Obtener la URL de las imágenes segmentadas
         const promises = [
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           new Promise<string>((resolve, _) => {
               resolve(convertImageToDataURL(document.createElement('canvas'), segment1!, segmentWidth));
           }),
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           new Promise<string>((resolve, _) => {
               resolve(convertImageToDataURL(document.createElement('canvas'), segment2!, segmentWidth));
           }),
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           new Promise<string>((resolve, _) => {
               resolve(convertImageToDataURL(document.createElement('canvas'), segment3!, segmentWidth));
           })
