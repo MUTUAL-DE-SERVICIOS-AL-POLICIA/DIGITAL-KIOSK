@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography } from '@mui/material';
 
 import { IdentityCard } from './IdentityCard';
-import { useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useCredentialStore } from '@/hooks';
 import { InstructionCard } from './InstructionCard';
 
@@ -43,13 +43,14 @@ export const AuthView = () => {
     }
   }, [step, seconds]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if(childRef) if(childRef.current) childRef.current.action(true)
-  }
+    resetTimer()
+  }, [childRef])
 
-  const handleClean = () => {
+  const handleClean = useCallback(() => {
     if(childRef) if(childRef.current) childRef.current.onRemoveCam()
-  }
+  },[childRef])
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>

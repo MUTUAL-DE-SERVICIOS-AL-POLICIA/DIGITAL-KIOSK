@@ -3,10 +3,10 @@ import { Box, Grid, Typography } from "@mui/material";
 import logo from '@/assets/images/muserpol_casa.jpg';
 //@ts-expect-error do not proceed
 import imageLogo from '@/assets/images/muserpol.png';
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo} from "react";
 import { useCredentialStore } from "@/hooks";
 
-export const HomeScreen = () => {
+export const HomeScreen = memo(() => {
 
   const [ screenHeight, setScreenHeight ] = useState(window.innerHeight);
   const { changeStep } = useCredentialStore();
@@ -56,4 +56,4 @@ export const HomeScreen = () => {
       </Grid>
     </div>
   );
-};
+})
