@@ -28,7 +28,6 @@ export const IdentityCard = memo(forwardRef((_, ref) => {
   const { changeIdentityCard } = useCredentialStore()
 
   useImperativeHandle(ref, () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     action: (_?: boolean) => {
       changeIdentityCard(identityCard)
       setFormSubmitted(true);
