@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react"
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, memo } from "react"
 import * as faceapi from "face-api.js"
 import { Box, Stack, Typography } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
@@ -16,9 +16,7 @@ interface GroupedDescriptors {
    [key: string]: any[];
 }
 
-
-export const FaceRecognition = forwardRef((_, ref) => {
-
+export const FaceRecognition = memo(forwardRef((_, ref) => {
 
    const { image, changeRecognizedByFacialRecognition, ocr, changeIdentifyUser, changeStep, changeLoadingGlobal, identityCard } = useCredentialStore()
    const { ocrState, leftText, middleText, rightText } = useStastisticsStore()
@@ -308,4 +306,4 @@ export const FaceRecognition = forwardRef((_, ref) => {
          </Stack>
       </Box>
    );
-});
+}));

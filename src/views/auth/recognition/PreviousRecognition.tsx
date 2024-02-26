@@ -1,20 +1,16 @@
-import { TimerContext } from "@/context/TimerContext"
 import { useCredentialStore } from "@/hooks"
 import { Box, Card, Grid, Typography } from "@mui/material"
-import { forwardRef, useContext, useImperativeHandle } from "react"
+import { forwardRef, useImperativeHandle, memo } from "react"
 //@ts-expect-error do not proceed
 import imageLogo from '@/assets/images/carnet.png';
 
-export const PreviousRecognition = forwardRef((_, ref) => {
+export const PreviousRecognition = memo(forwardRef((_, ref) => {
 
    const { changeStep } = useCredentialStore()
-
-   const { resetTimer } = useContext(TimerContext)
 
    useImperativeHandle(ref, () => ({
       action: () => {
          changeStep('faceRecognition')
-         resetTimer()
       },
       onRemoveCam: () => {}
    }))
@@ -40,5 +36,5 @@ export const PreviousRecognition = forwardRef((_, ref) => {
          </Grid>
       </Grid>
    )
-})
+}))
 
