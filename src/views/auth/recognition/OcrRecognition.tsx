@@ -119,7 +119,7 @@ export const OcrView = memo(forwardRef((_, ref) => {
                const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true)
                const resizedDetections = faceapi.resizeResults(detections, dims)
                detections.forEach(({ detection }) =>{
-                  let boxStyle = {
+                  const boxStyle = {
                      label: round(detection.score).toString(),
                      lineWidth: 3,
                      boxColor: "green",
