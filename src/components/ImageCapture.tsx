@@ -42,7 +42,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
       const img = new Image();
       img.onload = async () => {
         const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
 
         // Ajustar la imagen capturada al tamaño predefinido
         canvas.width = CAPTURED_IMAGE_WIDTH;
@@ -131,6 +131,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         style={{
           position: "absolute",
           pointerEvents: "none",
+          padding: '10px',
           width: '30vw'
         }}
       />

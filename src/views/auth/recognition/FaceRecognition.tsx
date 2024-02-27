@@ -4,6 +4,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Swal from "sweetalert2";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { round } from "@/helpers"
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -131,9 +132,10 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
                const dims = faceapi.matchDimensions(canvasVideoRef.current, videoRef.current, true);
                const resizedDetections = faceapi.resizeResults(detections, dims);
                resizedDetections.forEach(({ detection, descriptor }) => {
-                  const label = faceMatcher.findBestMatch(descriptor).toString();
+                  let label = faceMatcher.findBestMatch(descriptor).toString();
+                  label = label.substring(0, 9)
                   const boxStyle = {
-                     label,
+                     label: `${label} (${round(detection.score).toString()})`,
                      lineWidth: 2,
                      boxColor: "green",
                      drawLabel: true,
@@ -144,7 +146,7 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
             }
          } else {
             if (canvasVideoRef.current != null) {
-               const ctx = canvasVideoRef.current.getContext('2d');
+               const ctx = canvasVideoRef.current.getContext('2d', { willReadFrequently: true });
                ctx.clearRect(0, 0, canvasVideoRef.current.width, canvasVideoRef.current.height);
             }
          }

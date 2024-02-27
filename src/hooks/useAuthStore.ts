@@ -19,23 +19,23 @@ export const useAuthStore = () => {
   const startLogin = async (identityCard: string) => {
     try {
       changeLoadingGlobal(true)
-      // const { data } = await coffeApi.post('/poa/get_session', {
-      //   "device_name": MAC_DEVICE,
-      //   // "identity_card": "4362223"
-      //   "identity_card": identityCard
-      // });
-      // localStorage.setItem('token', data.payload.access_token);
-      // const dataUser = {
-      //   "nup": data.payload.nup,
-      //   "fullName": data.payload.full_name,
-      //   "degree": data.payload.degree
-      // }
+      const { data } = await coffeApi.post('/poa/get_session', {
+        "device_name": MAC_DEVICE,
+        // "identity_card": "4362223"
+        "identity_card": identityCard
+      });
+      localStorage.setItem('token', data.payload.access_token);
+      const dataUser = {
+        "nup": data.payload.nup,
+        "fullName": data.payload.full_name,
+        "degree": data.payload.degree
+      }
       setTimeout(() => {
-        // const user = `${JSON.stringify(dataUser)}`;
-        // localStorage.setItem('user', user);
-        // changeIdentityCard(identityCard)
-        // changeName(data.payload.full_name) /* nueva implementación */
-        // dispatch(onLogin(dataUser));
+        const user = `${JSON.stringify(dataUser)}`;
+        localStorage.setItem('user', user);
+        changeIdentityCard(identityCard)
+        changeName(data.payload.full_name) /* nueva implementación */
+        dispatch(onLogin(dataUser));
         changeStep('instructionCard')
         changeLoadingGlobal(false)
       }, 1000)
