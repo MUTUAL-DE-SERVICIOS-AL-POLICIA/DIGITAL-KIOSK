@@ -1,16 +1,19 @@
+
 import { Card, Paper, Stack, Typography } from "@mui/material"
-//@ts-expect-error do not proceed
-import logo from '@/assets/images/PlanDePagos.png';
-import './styles.css';
+////@ts-expect-error do not proceed
+// import logo from '@/assets/images/PlanDePagos.png';
+import '../views/content/loans/styles.css';
 
 interface Props {
   title: string;
   onPressed: () => void;
+  logo: any;
 }
-export const CardLoan = (props: Props) => {
+export const CardComponent = (props: Props) => {
   const {
     title,
     onPressed,
+    logo
   } = props;
 
   return (

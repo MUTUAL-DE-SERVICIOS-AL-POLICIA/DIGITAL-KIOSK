@@ -11,7 +11,9 @@ const loginFormFields = {
 };
 
 const formValidations = {
-  identityCard: [(value: string) => value.length >= 4, 'El carnet de identidad debe tener al menos 4 dígitos'],
+  identityCard: [
+    (value: string) => value.length >= 4 && value.length <= 12, 'El carnet de identidad debe tener de 4 dígitos a 12 dígitos',
+  ],
 };
 
 export const IdentityCard = memo(forwardRef((_, ref) => {

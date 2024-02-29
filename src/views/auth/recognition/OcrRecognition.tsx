@@ -6,6 +6,7 @@ import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
 import Swal from "sweetalert2";
 import './styles.css'
+import { round } from "@/helpers"
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -32,7 +33,8 @@ export const OcrView = memo(forwardRef((_, ref) => {
 
    const imageCaptureRef: RefObject<ImageViewRef> = useRef(null)
    const webcamRef: RefObject<Webcam> = useRef(null)
-   const canvasWebcamRef: RefObject<HTMLCanvasElement> = useRef(null)
+   // const canvasWebcamRef: RefObject<HTMLCanvasElement> = useRef(null)
+   const canvasWebcamRef: any = useRef(null)
    // const imageRef: RefObject<HTMLImageElement> = useRef(null)
    // const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null)
 
@@ -116,7 +118,16 @@ export const OcrView = memo(forwardRef((_, ref) => {
             if (canvasWebcamRef.current && img) {
                const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true)
                const resizedDetections = faceapi.resizeResults(detections, dims)
-               faceapi.draw.drawDetections(canvasWebcamRef.current, resizedDetections)
+               detections.forEach(({ detection }) =>{
+                  const boxStyle = {
+                     label: round(detection.score).toString(),
+                     lineWidth: 3,
+                     boxColor: "green",
+                     drawLabel: true,
+                  }
+                  new faceapi.draw.DrawBox(detection.box, boxStyle).draw(canvasWebcamRef.current)
+               })
+               faceapi.draw.drawFaceLandmarks(canvasWebcamRef.current, resizedDetections)
             }
          }
       }, 60)

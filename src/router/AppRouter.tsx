@@ -5,7 +5,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { AuthView } from '@/views/auth/Auth';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/hooks/useAuthStore';
-import { LoanView } from '@/views/loans/LoanView';
+import { MainView } from '@/views/content/MainView';
 import { useCredentialStore } from '@/hooks';
 
 export const AppRouter = () => {
@@ -20,7 +20,7 @@ export const AppRouter = () => {
     (status === 'not-authenticated' || !userIdentify) ?
       <AuthView /> :
       <Routes>
-        <Route path="/"  element={<LoanView />} />
+        <Route path="/"  element={<MainView />} />
         <Route path="/*" element={<Navigate to={"/"} />} />
       </Routes>
   )

@@ -11,7 +11,7 @@ export const useLoanStore = () => {
   const dispatch = useDispatch();
 
   const getLoans = async (loanId: number) => {
-    const { data } = await api.get(`/poa/get_affiliate_loans/${loanId}`);
+    const { data } = await api.get(`/kiosk/get_affiliate_loans/${loanId}`);
     dispatch(setLoans({ loans: data.payload }));
   }
 
@@ -19,7 +19,7 @@ export const useLoanStore = () => {
     try {
       // @ts-expect-error no necesary
       const { data } = await Promise.race([
-        api.get(`/poa/loan/${loanId}/print/kardex`, { responseType: 'arraybuffer' }),
+        api.get(`/kiosk/loan/${loanId}/print/kardex`, { responseType: 'arraybuffer' }),
         new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
       ]);
       if(data) {

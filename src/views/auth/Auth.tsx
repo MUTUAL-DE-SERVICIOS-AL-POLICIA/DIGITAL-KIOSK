@@ -31,15 +31,15 @@ export const AuthView = () => {
   const { seconds, resetTimer } = useContext(TimerContext)
 
   useEffect(() => {
-    if (step != 'name' && seconds > 0 ) {
-      if(seconds == 1) {
-        childRef.current?.onRemoveCam()
-        changeStep('home')
-        changeIdentityCard('')
-        changeIdentifyUser(false)
-        changeStateInstruction(true)
-        resetTimer()
-      }
+    if(step == 'home') {
+      resetTimer()
+    } else if(seconds == 1) {
+      childRef.current?.onRemoveCam()
+      changeStep('home')
+      changeIdentityCard('')
+      changeIdentifyUser(false)
+      changeStateInstruction(true)
+      resetTimer()
     }
   }, [step, seconds]);
 
