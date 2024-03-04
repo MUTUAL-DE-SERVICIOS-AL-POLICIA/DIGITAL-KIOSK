@@ -14,7 +14,6 @@ export const useContributionStore = () => {
    const getAllContributions = async (affiliateId: number) => {
       try {
          const { data } = await api.get(`/kiosk/all_contributions/${affiliateId}`)
-         console.log( data )
          dispatch(setContributions({ contributions: data.payload }))
          dispatch(setHasContributionActive({ hasContributionActive: data.payload.has_contributions_active }))
          dispatch(setHasContributionPassive({ hasContributionPassive: data.payload.has_contributions_passive }))
@@ -49,7 +48,6 @@ export const useContributionStore = () => {
                   return res.status
                }
             }
-            console.log("no existe res")
          }
       } catch(error: any) {
          if(error.code){
@@ -76,19 +74,18 @@ export const useContributionStore = () => {
             new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
          ])
          if(data) {
-            console.log("se ejecuta exitosamente contribution passive!")
             const file = new Blob([data], { type: 'application/pdf' })
             const formData = new FormData()
             formData.append('pdfFile', file, 'contribution_passive.pdf')
-            // const res: any = await Promise.race([
-            //    await apiExternal.post(`/printer/print/`, formData),
-            //    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
-            // ])
-            // if(res) {
-            //    if(res.status == 200) {
-            //       return res.status
-            //    }
-            // }
+            const res: any = await Promise.race([
+               await apiExternal.post(`/printer/print/`, formData),
+               new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
+            ])
+            if(res) {
+               if(res.status == 200) {
+                  return res.status
+               }
+            }
          }
       } catch(error: any) {
          if(error.code){
