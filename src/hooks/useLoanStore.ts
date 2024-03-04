@@ -12,6 +12,7 @@ export const useLoanStore = () => {
 
   const getLoans = async (loanId: number) => {
     const { data } = await api.get(`/kiosk/get_affiliate_loans/${loanId}`);
+    console.log("tipo de data", data.payload)
     dispatch(setLoans({ loans: data.payload }));
   }
 

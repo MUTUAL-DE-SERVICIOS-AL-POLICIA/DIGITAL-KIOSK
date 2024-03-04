@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useLoanStore } from "@/hooks/useLoanStore";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useEffect } from 'react';
 import Swal from 'sweetalert2'
 import { CardComponent } from "@/components";
@@ -58,35 +58,33 @@ export const LoanView = (props: Props) => {
   };
 
   return (
-    <Box>
+    <Box sx={{padding: 5}}>
       {
-        loans && <Grid container>
-          {
-            loans.current.map((loan: any) => {
-              return (
-                <Grid item key={loan.id} xs={12} sm={4}>
-                  <CardComponent
-                    title={loan.procedure_modality}
-                    onPressed={() => handlePaperClick(loan.id)}
-                    logo={logo}
-                  />
-                </Grid>
-              )
-            })
+        loans && <Grid container justifyContent="center" alignItems="center">
+          <Typography variant="h3" sx={{textAlign: 'center', fontWeight: 700, mb: 1}}>PRÉSTAMOS</Typography>
+          { loans && loans.current.length == 0 && <Grid container justifyContent="center" alignItems="center" style={{ minHeight: 'calc(50vh)' }}>
+            <Grid item>
+              <Typography variant="h3">
+                Sin préstamos
+              </Typography>
+            </Grid>
+            </Grid>
           }
-          {
-            loans.liquited.map((loan: any) => {
-              return (
-                <Grid item key={loan.id} xs={12} sm={4} justifyContent="center" alignContent="center">
-                  <CardComponent
-                    title={loan.procedure_modality}
-                    onPressed={() => handlePaperClick(loan.id)}
-                    logo={logo}
-                  />
-                </Grid>
-              )
-            })
-          }
+          <Stack direction="column" spacing={3} sx={{overflowX: 'auto', maxHeight: '60vh'}}>
+            {
+              loans.current.map((loan: any) => {
+                return (
+                  <Grid item key={loan.id} >
+                    <CardComponent
+                      procedureTitle={loan.procedure_modality}
+                      onPressed={() => handlePaperClick(loan.id)}
+                      logo={logo}
+                    />
+                  </Grid>
+                )
+              })
+            }
+          </Stack>
         </Grid>
       }
     </Box>

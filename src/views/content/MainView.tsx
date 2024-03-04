@@ -1,9 +1,11 @@
-import { ComponentButton, TabComponent } from "@/components"
+import { ComponentButton } from "@/components"
 import { TimerContext } from "@/context/TimerContext";
 import { useCredentialStore } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { AppBar, CircularProgress, Grid, Toolbar, Typography } from "@mui/material"
+import { AppBar, CircularProgress, Grid, Paper, Toolbar, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react";
+import { LoanView } from "./loans/LoanView";
+import { ContributionView } from "./contributions/ContributionView";
 
 export const MainView = () => {
 
@@ -32,13 +34,26 @@ export const MainView = () => {
       <div style={{display: 'flex', flexDirection: 'column', height: '100vh' }}>
          <AppBar position="static" style={{ background: '#f2f2f2', flex: '0 0 7%' }}>
             <Toolbar>
-               <Typography style={{ fontSize: '3vw', fontWeight: 700}}>MIS SERVICIOS</Typography>
+               <Typography style={{ fontSize: '3vw', fontWeight: 700}}>TRÁMITES</Typography>
                <Typography style={{ fontSize: '2vw', fontWeight: 700}}>{ seconds }</Typography>
             </Toolbar>
          </AppBar>
-         <div style={{flex: '1 1 auto', overflowX: 'auto'}}>
-            <TabComponent setLoading={setLoading} />
-         </div>
+         <Grid container spacing={2} style={{display: 'flex', height: '100vh'}}>
+            <Grid item xs={12}>
+               <Grid container spacing={10}>
+                  <Grid xs={6} item style={{display: 'flex', flexDirection: 'column'}}>
+                     <Paper elevation={0} sx={{height: '73vh', borderRadius: '20px', ml: 10}}>
+                        <ContributionView setLoading={setLoading} />
+                     </Paper>
+                  </Grid>
+                  <Grid xs={6} item>
+                     <Paper elevation={0} sx={{height: '73vh', borderRadius: '20px', mr: 10}}>
+                        <LoanView setLoading={setLoading} />
+                     </Paper>
+                  </Grid>
+               </Grid>
+            </Grid>
+         </Grid>
          <AppBar position="static" sx={{backgroundColor: '#EEEEEE'}} style={{flex: '0 0 17%'}}>
             <Grid container justifyContent="center" alignContent="center">
                <Grid item >

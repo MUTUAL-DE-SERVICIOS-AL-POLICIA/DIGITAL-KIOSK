@@ -1,7 +1,7 @@
-import { Box, Grid } from "@mui/material"
+import { Box, Grid, Stack, Typography } from "@mui/material"
 import { CardComponent } from "@/components"
 // @ts-expect-error no proceded
-import logo from '@/assets/images/contribution.png'
+import logo from '@/assets/images/aportes.png'
 import { useEffect } from "react"
 import { useContributionStore } from "@/hooks/useContributionStore"
 import { useAuthStore } from "@/hooks/useAuthStore"
@@ -96,26 +96,29 @@ export const ContributionView = (props: Props) => {
    }
 
    return (
-      <Box>
-         <Grid container>
-            <Grid item>
-               { hasContributionActive &&
-                  <CardComponent
-                     title="Certificación de Activo"
-                     onPressed={() => handlePrintContributionActive()}
-                     logo={logo}
-                  />
-               }
-            </Grid>
-            <Grid item>
-               { hasContributionPassive &&
-                  <CardComponent
-                     title="Certificación de Pasivo"
-                     onPressed={() => handlePrintContributionPassive()}
-                     logo={logo}
-                  />
-               }
-            </Grid>
+      <Box sx={{padding: 5}}>
+         <Grid container justifyContent="center" alignItems="center">
+            <Typography variant="h3" sx={{textAlign: 'center', fontWeight: 700, mb: 1}}>APORTES</Typography>
+            <Stack direction="column" spacing={3}>
+               <Grid item>
+                  { hasContributionActive &&
+                     <CardComponent
+                        procedureTitle="Certificación de Activo"
+                        onPressed={() => handlePrintContributionActive()}
+                        logo={logo}
+                     />
+                  }
+               </Grid>
+               <Grid item>
+                  { hasContributionPassive &&
+                     <CardComponent
+                        procedureTitle="Certificación de Pasivo"
+                        onPressed={() => handlePrintContributionPassive()}
+                        logo={logo}
+                     />
+                  }
+               </Grid>
+            </Stack>
          </Grid>
       </Box>
    )
