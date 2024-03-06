@@ -4,30 +4,35 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Swal from "sweetalert2";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { round } from "@/helpers"
+import { round, base64toBlob } from "@/helpers"
 
 const TINY_OPTIONS = {
    inputSize: 320,
    scoreThreshold: 0.5
 }
 
-let faceMatcher: any = null;
+const TINY_OPTIONS_PHOTO = {
+   inputSize: 608,
+   scoreThreshold: 0.6
+}
+
+let faceMatcher: any = null
 
 interface GroupedDescriptors {
-   [key: string]: any[];
+   [key: string]: any[]
 }
 
 export const FaceRecognition = memo(forwardRef((_, ref) => {
 
-   const { image, changeRecognizedByFacialRecognition, ocr, changeIdentifyUser, changeStep, changeLoadingGlobal, identityCard } = useCredentialStore()
+   const { image, changeRecognizedByFacialRecognition, ocr, changeIdentifyUser, changeStep, changeLoadingGlobal, identityCard, savePhoto, changeIdentityCard } = useCredentialStore()
    const { ocrState, leftText, middleText, rightText } = useStastisticsStore()
-   const { authMethodRegistration } = useAuthStore()
+   const { authMethodRegistration, user } = useAuthStore()
 
-   const videoRef: any       = useRef();
-   const canvasVideoRef: any = useRef();
+   const videoRef: any       = useRef()
+   const canvasVideoRef: any = useRef()
 
-   let intervalVideo:  NodeJS.Timeout;
-   let img: any;
+   let intervalVideo:  NodeJS.Timeout
+   let img: any
 
    useImperativeHandle(ref, () => ({
       onRemoveCam: () => cleanup(),
@@ -156,8 +161,11 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
    const scanPhoto = async () => { // imagen
       changeLoadingGlobal(true)
       try {
-         if (!image || !isFaceDetectionModelLoad()) return;
-         const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 608, scoreThreshold: 0.6 });
+         if (!image || !isFaceDetectionModelLoad()) {
+            console.error("No se cargaron los modelos o no existe la imágen")
+            return;
+         }
+         const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS_PHOTO);
          img = await faceapi.fetchImage(image);
 
          // creando el elemento
@@ -183,20 +191,29 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
                showConfirmButton: false,
                timer: 2000
             });
-            return;
+            setTimeout(() => {
+               changeStep('identityCard')
+               changeIdentityCard('')
+               cleanup()
+            }, 2000)
+            console.error("No existe detecciones")
          }
 
          if (!canvas && !img) {
             changeLoadingGlobal(false)
+            Swal.fire({
+               position: "center",
+               icon: "warning",
+               title: "Intente de nuevo",
+               showConfirmButton: false,
+               timer: 2000
+            });
+            setTimeout(() => {
+               changeStep('identityCard')
+               changeIdentityCard('')
+               cleanup()
+            }, 2000)
             console.error("No existe el canvas o imagen")
-            // Swal.fire({
-            //    position: "center",
-            //    icon: "warning",
-            //    title: "Intente de nuevo",
-            //    showConfirmButton: false,
-            //    timer: 2000
-            // });
-            return;
          }
 
          faceapi.matchDimensions(canvas, img);
@@ -215,22 +232,31 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
             return;
          }
 
-         resizeResults.some(({ detection, descriptor }) => {
+         resizeResults.some(async ({ detection, descriptor }) => {
             if(faceMatcher) {
                let label = faceMatcher.findBestMatch(descriptor).toString();
                let options = null;
                if (!label.includes('unknown')) {
+                  if(videoRef.current !== null) {
+                     const video = videoRef.current
+                     if(!video.paused && video.readyState === 4) {
+                        const cvs = document.createElement('canvas')
+                        cvs.width = video.videoWidth
+                        cvs.height = video.videoHeight
+                        const ctx = cvs.getContext('2d')
+                        ctx?.drawImage(video, 0, 0, cvs.width, cvs.height)
+                        const imageDataURL = cvs.toDataURL('image/jpeg')
+                        savePhoto({affiliateId: user.nup, photo_face: base64toBlob(imageDataURL)})
+                     }
+                  }
                   label = `Persona encontrada`;
                   options = { label, boxColor: 'green' };
                   changeRecognizedByFacialRecognition(true)
-                  changeStep('home')
-                  changeIdentifyUser(true)
                   console.log("================================")
                   console.log("RECONOCE EL ROSTRO")
                   console.log("================================")
-                  cleanup()
-                  // changeFaceRecognitionS(true)
                   sendStatistics(true)
+                  operative({step: 'home', identifyUser: true})
                   return true
                } else {
                   label = `Persona no encontrada`;
@@ -238,12 +264,7 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
                   console.log("================================")
                   console.log("NO RECONOCE EL ROSTRO")
                   console.log("================================")
-                  // changeFaceRecognitionS(false)
-                  if(ocr) {
-                     changeStep('home')
-                     changeIdentifyUser(true)
-                     cleanup()
-                  }
+                  if(ocr) operative({step: 'home', identifyUser: true})
                   sendStatistics(false)
                }
                new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
@@ -252,6 +273,7 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
          faceapi.draw.drawFaceLandmarks(canvas, resizeResults);
          changeLoadingGlobal(false)
       } catch (error:any) {
+         changeLoadingGlobal(false)
          console.error("Error con la cámara del rostro: ", error)
       }
    }
@@ -266,6 +288,12 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
          facial_recognition: faceState
       }
       authMethodRegistration(body)
+   }
+
+   const operative = ({step, identifyUser} : {step: string, identifyUser: boolean}) => {
+      changeStep(step)
+      changeIdentifyUser(identifyUser)
+      cleanup()
    }
 
    return (
