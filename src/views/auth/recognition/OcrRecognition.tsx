@@ -7,6 +7,8 @@ import * as faceapi from "face-api.js"
 import Swal from "sweetalert2";
 import './styles.css'
 import { round } from "@/helpers"
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { base64toBlob } from "@/helpers";
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -33,13 +35,12 @@ export const OcrView = memo(forwardRef((_, ref) => {
 
    const imageCaptureRef: RefObject<ImageViewRef> = useRef(null)
    const webcamRef: RefObject<Webcam> = useRef(null)
-   // const canvasWebcamRef: RefObject<HTMLCanvasElement> = useRef(null)
    const canvasWebcamRef: any = useRef(null)
-   // const imageRef: RefObject<HTMLImageElement> = useRef(null)
-   // const canvasImageRef: RefObject<HTMLCanvasElement> = useRef(null)
 
-   const { identityCard, changeStep, changeImage, changeRecognizedByOcr, changeLoadingGlobal } = useCredentialStore()
+   const { identityCard, changeStep, changeImage, changeRecognizedByOcr, changeLoadingGlobal, savePhoto } = useCredentialStore()
    const { changeOcrState } = useStastisticsStore()
+   const { authMethodRegistration, user } = useAuthStore()
+   const { leftText, middleText, rightText } = useStastisticsStore()
 
    const cleanup = useCallback(() => {
       intervalWebCam && clearInterval(intervalWebCam);
@@ -87,10 +88,12 @@ export const OcrView = memo(forwardRef((_, ref) => {
          changeImage(image)
          cleanup()
          changeOcrState(true)
+         savePhoto({affiliateId: user.nup, photo_ci: base64toBlob(image)})
       } else {
          setImage(null)
          getLocalUserVideo()
          changeOcrState(false)
+         sendStatistics()
          Swal.fire({
             position: "center",
             icon: "warning",
@@ -100,6 +103,18 @@ export const OcrView = memo(forwardRef((_, ref) => {
          });
       }
    }, [image, changeImage])
+
+   const sendStatistics = () => {
+      const body = {
+         identity_card: identityCard,
+         left_text: leftText,
+         middle_text: middleText,
+         right_text: rightText,
+         ocr_state: false,
+         facial_recognition: false
+      }
+      authMethodRegistration(body)
+   }
 
    const isFaceDetectionModelLoad = () => !!faceapi.nets.tinyFaceDetector.params;
 
@@ -164,19 +179,6 @@ export const OcrView = memo(forwardRef((_, ref) => {
                Coloque su Cédula de identidad
             </Typography>
             {
-               // image == null ?
-               //    <ImageCapture
-               //       onChange={handleImageCapture}
-               //       ref={imageCaptureRef}
-               //       webcamRef={webcamRef}
-               //       canvasWebcamRef={canvasWebcamRef}
-               //    />
-               //    :
-               //    <ImageCanvas
-               //       imageRef={imageRef}
-               //       canvasImageRef={canvasImageRef}
-               //       src={image}
-               //    />
                image == null && (
                   <ImageCapture
                      onChange={handleImageCapture}

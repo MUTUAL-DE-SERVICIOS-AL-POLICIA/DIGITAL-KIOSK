@@ -1,3 +1,4 @@
+import { coffeApi } from "@/services";
 import {
   setChangeStep,
   setIdentifyUser,
@@ -12,6 +13,9 @@ import {
   setLoadingGlobal
 } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
+
+
+const api = coffeApi
 
 export const useCredentialStore = () => {
   const {
@@ -62,6 +66,20 @@ export const useCredentialStore = () => {
   const changeLoadingGlobal = async ( loading: boolean ) => {
     dispatch(setLoadingGlobal({ loading }))
   }
+  const savePhoto = async ({affiliateId, photo_ci= null, photo_face = null}: {affiliateId:string, photo_ci?:any, photo_face?:any}) => {
+    const formData = new FormData()
+    if(photo_ci) formData.append('photo_ci', photo_ci, 'carnet.jpg')
+    if(photo_face) formData.append('photo_face', photo_face, 'rostro.jpg')
+    formData.append('affiliate_id', affiliateId.toString())
+    try {
+      const data = await api.post(`/kiosk/save_photo`, formData)
+      if(data.status == 201) {
+        console.log("se guardo exitosamente la fotografía")
+      }
+    } catch(error: any) {
+      console.error("No se pudo guardar la imagen: ", error)
+    }
+  }
 
   return {
     //* Propiedades
@@ -86,6 +104,7 @@ export const useCredentialStore = () => {
     changeImage,
     changeRecognizedByOcr,
     changeRecognizedByFacialRecognition,
-    changeLoadingGlobal
+    changeLoadingGlobal,
+    savePhoto
   }
 }
