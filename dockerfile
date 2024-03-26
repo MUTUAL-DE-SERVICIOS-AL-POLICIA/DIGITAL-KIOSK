@@ -1,5 +1,5 @@
 # Etapa de construcción
-FROM node:alpine as build
+FROM node:20.5.0 as build
 
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
