@@ -34,6 +34,7 @@ export const LoanView = (props: Props) => {
           text: 'Recoja su hoja impresa',
           icon: 'success',
           confirmButtonText: 'Aceptar',
+          timer: 1500
         });
         break;
       case 400:
@@ -42,6 +43,7 @@ export const LoanView = (props: Props) => {
           text: 'Contactese con soporte',
           icon: 'warning',
           confirmButtonText: 'Aceptar',
+          timer: 1500
         });
         break;
       case 501:break;
@@ -51,6 +53,7 @@ export const LoanView = (props: Props) => {
           text: 'El servicio de impresión no se encuentra disponible',
           icon: 'error',
           confirmButtonText: 'Aceptar',
+          timer: 1500
         })
         break;
     }

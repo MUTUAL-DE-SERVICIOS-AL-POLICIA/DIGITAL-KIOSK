@@ -2,7 +2,6 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, memo }
 import * as faceapi from "face-api.js"
 import { Box, Stack, Typography } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
-import Swal from "sweetalert2";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { round, base64toBlob } from "@/helpers"
 
@@ -24,7 +23,7 @@ interface GroupedDescriptors {
 
 export const FaceRecognition = memo(forwardRef((_, ref) => {
 
-   const { image, changeRecognizedByFacialRecognition, ocr, changeIdentifyUser, changeStep, changeLoadingGlobal, identityCard, savePhoto, changeIdentityCard } = useCredentialStore()
+   const { image, changeRecognizedByFacialRecognition, ocr, changeIdentifyUser, changeStep, changeLoadingGlobal, identityCard, savePhoto } = useCredentialStore()
    const { ocrState, leftText, middleText, rightText } = useStastisticsStore()
    const { authMethodRegistration, user } = useAuthStore()
 
@@ -184,35 +183,15 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
 
          if (detections.length === 0) {
             changeLoadingGlobal(false)
-            Swal.fire({
-               position: "center",
-               icon: "warning",
-               title: "Intente de nuevo",
-               showConfirmButton: false,
-               timer: 2000
-            });
-            setTimeout(() => {
-               changeStep('identityCard')
-               changeIdentityCard('')
-               cleanup()
-            }, 2000)
+            sendStatistics(false)
+            if(ocr) operative({ step: 'home', identifyUser: true})
             console.error("No existe detecciones")
          }
 
          if (!canvas && !img) {
             changeLoadingGlobal(false)
-            Swal.fire({
-               position: "center",
-               icon: "warning",
-               title: "Intente de nuevo",
-               showConfirmButton: false,
-               timer: 2000
-            });
-            setTimeout(() => {
-               changeStep('identityCard')
-               changeIdentityCard('')
-               cleanup()
-            }, 2000)
+            sendStatistics(false)
+            if(ocr) operative({ step: 'home', identifyUser: true})
             console.error("No existe el canvas o imagen")
          }
 
@@ -221,14 +200,9 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
 
          if (resizeResults.length === 0) {
             changeLoadingGlobal(false)
+            sendStatistics(false)
             console.error("No existe resizeResults")
-            // Swal.fire({
-            //    position: "center",
-            //    icon: "warning",
-            //    title: "Intente de nuevo",
-            //    showConfirmButton: false,
-            //    timer: 2000
-            // });
+            if(ocr) operative({step: 'home', identifyUser: true})
             return;
          }
 
