@@ -259,7 +259,8 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
          middle_text: middleText,
          right_text: rightText,
          ocr_state: ocrState,
-         facial_recognition: faceState
+         facial_recognition: faceState,
+         affiliate_id: user.nup
       }
       authMethodRegistration(body)
    }
