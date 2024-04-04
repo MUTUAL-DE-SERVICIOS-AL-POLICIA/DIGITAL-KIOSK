@@ -111,7 +111,8 @@ export const OcrView = memo(forwardRef((_, ref) => {
          middle_text: middleText,
          right_text: rightText,
          ocr_state: false,
-         facial_recognition: false
+         facial_recognition: false,
+         affiliate_id: user.nup
       }
       authMethodRegistration(body)
    }
