@@ -13,6 +13,7 @@ import Footer from '@/components/Footer';
 import { PreviousRecognition } from './recognition/PreviousRecognition';
 
 import { TimerContext } from '@/context/TimerContext';
+import { ComponentButton } from '@/components';
 
 interface ChildRefType {
   action: (prop?: boolean) => void;
@@ -23,7 +24,7 @@ export const AuthView = () => {
 
   const childRef = useRef<ChildRefType>()
   const {
-    step, identityCard,
+    step, identityCard, name,
     changeStep, changeIdentifyUser,
     changeIdentityCard, changeStateInstruction
   } = useCredentialStore();
@@ -52,14 +53,26 @@ export const AuthView = () => {
     if(childRef) if(childRef.current) childRef.current.onRemoveCam()
   },[childRef])
 
+  const resetStep = () => {
+    changeStep('identityCard')
+    changeIdentityCard('')
+    handleClean()
+  }
+
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
       { step != 'home' &&
         <AppBar position="static" style={{ background: '#008698', flex: '0 0 7%' }}>
           <Toolbar>
             <img src={imageLogoBlanco} alt="Imagen tipo logo" style={{ width: '10vw' }} />
-            { identityCard && <Typography variant='h4' color='white'><b>CI ingresado: </b> {identityCard}</Typography> }
-            <Typography variant='h4' color='white'> {seconds}</Typography>
+            { identityCard && <Typography variant='h4' color='white'>{name}<b> &nbsp; CI: {identityCard} </b></Typography> }
+            <ComponentButton
+              onClick={() => resetStep()}
+              text={`SALIR ${seconds}`}
+              sx={{ fontSize: innerWidth > innerHeight ? '2vw' : '3.5vw', width: '12%', padding: "0px 15px" }}
+              color="warning"
+            />
+            {/* <Typography variant='h4' color='white'>{seconds}</Typography> */}
           </Toolbar>
         </AppBar>
       }{/* barra superior */}

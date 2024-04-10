@@ -61,8 +61,8 @@ export const IdentityCard = memo(forwardRef((_, ref) => {
           justifyContent="center"
           alignItems="center"
         >
-            <Card sx={{ml: 7, mb: 7, borderRadius: '30px', py:3}} variant="outlined">
-              <Typography align="center" style={{ fontSize: '2vw', fontWeight: 200 }}>Por favor ingrese su número de <b>carnet de identidad</b> y luego presione en <b>continuar</b></Typography>
+            <Card sx={{ml: 10, mb: 7, borderRadius: '30px', py:3}} variant="outlined">
+              <Typography align="center" style={{ fontSize: '2.5vw', fontWeight: 200 }}>Por favor ingrese su <b>número de carnet de identidad</b> y luego presione en <b>continuar</b></Typography>
             </Card>
             <ComponentInput
               type="text"

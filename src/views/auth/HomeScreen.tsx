@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 //@ts-expect-error do not proceed
-import logo from '@/assets/images/muserpol_casa.jpg';
+import logo from '@/assets/images/muserpol.jpg';
 //@ts-expect-error do not proceed
 import imageLogo from '@/assets/images/muserpol.png';
 import { useEffect, useState, memo} from "react";
@@ -45,27 +45,6 @@ export const HomeScreen = memo(() => {
       style={{ height: `${screenHeight}px` }}
     >
       <Grid container>
-        <Grid item container sm={6}
-          direction="column"
-          justifyContent="center" >
-            <Grid>
-              <Box display="flex" justifyContent="center">
-                <img src={imageLogo} alt="Descripción de la imagen" style={{ width: '40vw' }} />
-              </Box>
-            </Grid>
-            {/* <Grid>
-              <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '3.5vw', fontWeight: 500 }}>
-                Punto de consulta de trámites
-              </Typography>
-            </Grid> */}
-            <Grid>
-              <Box sx={{ backgroundColor: '#D0D3D4', mt: 20, mx: 10, borderRadius: 5}}>
-                <Typography sx={{ p: 2 }} align="center" style={{fontSize: '3.5vw', fontWeight: 500}}>
-                  Presione para ingresar
-                </Typography>
-              </Box>
-            </Grid>
-        </Grid>
         <Grid item sm={6}>
           <Box
             component="img"
@@ -79,6 +58,31 @@ export const HomeScreen = memo(() => {
             alt="The house from the offer."
             src={logo}
           />
+        </Grid>
+        <Grid item container sm={6}
+          direction="column"
+          justifyContent="center"
+        >
+            <Grid sx={{marginBottom: 7}}>
+              <Box display="flex" justifyContent="center">
+                <img src={imageLogo} alt="Descripción de la imagen" style={{ width: '40vw' }} />
+              </Box>
+            </Grid>
+            <Grid sx={{marginBottom: 7}}>
+              <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
+                Certificación de Aportes
+              </Typography>
+              <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
+                Extracto de Pago de Préstamos
+              </Typography>
+            </Grid>
+            <Grid sx={{marginBottom: 7}}>
+              <Box sx={{ backgroundColor: '#D0D3D4', mt: 5, mx: 10, borderRadius: 5}}>
+                <Typography sx={{ p: 2 }} align="center" style={{fontSize: '3vw', fontWeight: 500}}>
+                  Presione para ingresar
+                </Typography>
+              </Box>
+            </Grid>
         </Grid>
       </Grid>
     </div>

@@ -1,5 +1,5 @@
 import { /*ImageCanvas,*/ ImageCapture } from "@/components";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Card, Grid, Stack, Typography } from "@mui/material";
 import { RefObject, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState, memo } from "react";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Webcam from "react-webcam";
@@ -82,7 +82,8 @@ export const OcrView = memo(forwardRef((_, ref) => {
    const handleImageCapture = useCallback((image: string, text: string) => {
       setImage(image)
       if (isWithinErrorRange(identityCard, text)) {
-         changeStep('previousFaceRecognition')
+         // changeStep('previousFaceRecognition')
+         changeStep('faceRecognition')
          changeRecognizedByOcr(true)
          changeImage(image)
          cleanup()
@@ -168,27 +169,35 @@ export const OcrView = memo(forwardRef((_, ref) => {
    }, [])
 
    return (
-      <Box sx={{
-         display: 'flex',
-         justifyContent: 'center',
-         alignItems: 'center',
-         height: '70vh'
-      }}>
-         <Stack>
-            <Typography style={{ fontSize: '2vw', display: image ? 'none' : 'flex'}} align="center">
-               Coloque su Cédula de identidad
-            </Typography>
-            {
-               image == null && (
-                  <ImageCapture
-                     onChange={handleImageCapture}
-                     ref={imageCaptureRef}
-                     webcamRef={webcamRef}
-                     canvasWebcamRef={canvasWebcamRef}
-                  />
-               )
-            }
-         </Stack>
-      </Box>
+      <Grid container alignItems="center" >
+         <Grid item container sm={6} direction="column" justifyContent="space-between">
+            <Card sx={{ mx: 10, borderRadius: '30px', p: 2}} variant="outlined">
+               <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
+                  Introduzca su <b>carnet de identidad</b> en la bandeja de abajo y luego presione en <b>continuar</b>.<br/>
+               </Typography>
+            </Card>
+         </Grid>
+         <Grid item container sm={6} direction="column">
+            <Box sx={{
+               display: 'flex',
+               justifyContent: 'center',
+               alignItems: 'center',
+               height: '70vh'
+            }}>
+               <Stack>
+                  {
+                     image == null && (
+                        <ImageCapture
+                           onChange={handleImageCapture}
+                           ref={imageCaptureRef}
+                           webcamRef={webcamRef}
+                           canvasWebcamRef={canvasWebcamRef}
+                        />
+                     )
+                  }
+               </Stack>
+            </Box>
+         </Grid>
+      </Grid>
    )
 }))

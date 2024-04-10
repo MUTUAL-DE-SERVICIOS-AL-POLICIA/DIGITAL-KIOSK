@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, memo } from "react"
 import * as faceapi from "face-api.js"
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Card, Grid, Stack, Typography } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob } from "@/helpers"
@@ -272,43 +272,51 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
    }
 
    return (
-      <Box sx={{
-         display: 'flex',
-         justifyContent: 'center',
-         alignItems: 'center',
-         height: '70vh'
-      }}
-      >
-         <Stack spacing={2} >
-            <Typography style={{ fontSize: '2vw' }} align="center">
-               Reconocimiento Facial
-            </Typography>
-            <Stack >
-               <video
-                  muted
-                  autoPlay
-                  ref={videoRef}
-                  style={{
-                     objectFit: "fill",
-                     borderRadius: '30px',
-                     backgroundColor: '#fff',
-                     padding: '10px',
-                     width: '40vw',
-                     height: '30vw'
-                  }}
-               />
-               <canvas
-                  ref={canvasVideoRef}
-                  style={{
-                     position: "absolute",
-                     pointerEvents: "none",
-                     padding: '10px',
-                     width: '40vw',
-                     height: '30vw'
-                  }}
-               />
-            </Stack>
-         </Stack>
-      </Box>
+      <Grid container alignItems="center">
+         <Grid item container sm={6} direction="column" justifyContent="space-between">
+            <Card sx={{mx: 10, borderRadius: '30px', p: 2}} variant="outlined">
+               <Typography sx={{p: 2}} align="center" style={{fontSize: '2.5vw', fontWeight: 500}}>
+                  Por favor recoja su <b>carnet de identidad</b> de la bandeja. Quitese el sombrero, lentes y barbijo para el reconocimiento facial y a continuación presione en <b>continuar.</b>
+               </Typography>
+            </Card>
+         </Grid>
+         <Grid item container sm={6} direction="column" >
+            <Box sx={{
+               display: 'flex',
+               justifyContent: 'center',
+               alignItems: 'center',
+               height: '70vh'
+            }}
+            >
+               <Stack spacing={2} >
+                  <Stack >
+                     <video
+                        muted
+                        autoPlay
+                        ref={videoRef}
+                        style={{
+                           objectFit: "fill",
+                           borderRadius: '30px',
+                           backgroundColor: '#fff',
+                           padding: '10px',
+                           width: '40vw',
+                           height: '30vw'
+                        }}
+                     />
+                     <canvas
+                        ref={canvasVideoRef}
+                        style={{
+                           position: "absolute",
+                           pointerEvents: "none",
+                           padding: '10px',
+                           width: '40vw',
+                           height: '30vw'
+                        }}
+                     />
+                  </Stack>
+               </Stack>
+            </Box>
+         </Grid>
+      </Grid>
    );
 }));
