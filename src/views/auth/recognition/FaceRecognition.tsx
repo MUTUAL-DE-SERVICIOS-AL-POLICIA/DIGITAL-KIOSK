@@ -3,7 +3,7 @@ import * as faceapi from "face-api.js"
 import { Box, Stack, Typography } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { round, base64toBlob } from "@/helpers"
+import { base64toBlob } from "@/helpers"
 
 const TINY_OPTIONS = {
    inputSize: 320,
@@ -139,7 +139,7 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
                   let label = faceMatcher.findBestMatch(descriptor).toString();
                   label = label.substring(0, 9)
                   const boxStyle = {
-                     label: `${label} (${round(detection.score).toString()})`,
+                     label: `${label}`,
                      lineWidth: 2,
                      boxColor: "green",
                      drawLabel: true,

@@ -25,7 +25,7 @@ export const PreviousRecognition = memo(forwardRef((_, ref) => {
          <Grid item container sm={6} direction="column">
             <Card sx={{ ml: 10, borderRadius: '30px', p: 2}} variant="outlined">
                <Typography sx={{ pl: 5 }} style={{ fontSize: '3.5vw' }} align="center">
-                  Por favor recoja su carnet de identidad de la bandeja
+                  Por favor recoja su carnet de identidad de la bandeja y presione en <b>continuar.</b>
                </Typography>
             </Card>
          </Grid>

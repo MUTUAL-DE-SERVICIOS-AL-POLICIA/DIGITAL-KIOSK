@@ -70,7 +70,7 @@ export const useContributionStore = () => {
       try {
          // @ts-expect-error no necesary
          const { data } = await Promise.race([
-            api.get(`/kiosk/contribution_passive/${affiliateId}/`, { responseType: 'arraybuffer' }),
+            api.get(`/kiosk/contributions_passive/${affiliateId}/`, { responseType: 'arraybuffer' }),
             new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
          ])
          if(data) {

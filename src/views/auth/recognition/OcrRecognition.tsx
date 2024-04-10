@@ -6,7 +6,6 @@ import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
 import Swal from "sweetalert2";
 import './styles.css'
-import { round } from "@/helpers"
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob } from "@/helpers";
 
@@ -136,7 +135,7 @@ export const OcrView = memo(forwardRef((_, ref) => {
                const resizedDetections = faceapi.resizeResults(detections, dims)
                detections.forEach(({ detection }) =>{
                   const boxStyle = {
-                     label: round(detection.score).toString(),
+                     label: 'Persona',
                      lineWidth: 3,
                      boxColor: "green",
                      drawLabel: true,
