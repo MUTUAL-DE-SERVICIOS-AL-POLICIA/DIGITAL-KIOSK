@@ -27,8 +27,7 @@ export const InstructionCard = memo(forwardRef((_, ref) => {
       <Grid item container sm={6} direction="column" justifyContent="spacebetween">
         <Card sx={{ ml: 10, borderRadius: '30px', p: 2}} variant="outlined">
           <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
-            Introduzca su carnet de identidad en la ranura de abajo.<br/>
-            Quitese los anteojos, sombrero y barbijo para realizar el proceso correctamente.
+            Introduzca su carnet de identidad en la bandeja de abajo y luego presione en <b>continuar</b>.<br/>
           </Typography>
         </Card>
       </Grid>

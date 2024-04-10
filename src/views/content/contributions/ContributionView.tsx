@@ -41,6 +41,7 @@ export const ContributionView = (props: Props) => {
             text: 'Recoja su hoja impresa',
             icon: 'success',
             confirmButtonText: 'Aceptar',
+            timer: 3000
          });
          break;
          case 400:
@@ -49,6 +50,7 @@ export const ContributionView = (props: Props) => {
             text: 'Contactese con soporte',
             icon: 'warning',
             confirmButtonText: 'Aceptar',
+            timer: 1500
          });
          break;
          case 501:break;
@@ -58,6 +60,7 @@ export const ContributionView = (props: Props) => {
             text: 'El servicio de impresión no se encuentra disponible',
             icon: 'error',
             confirmButtonText: 'Aceptar',
+            timer: 1500
          })
          break;
       }
@@ -73,7 +76,7 @@ export const ContributionView = (props: Props) => {
             text: 'Recoja su hoja impresa',
             icon: 'success',
             confirmButtonText: 'Aceptar',
-            timer: 1500
+            timer: 3000
          });
          break;
          case 400:

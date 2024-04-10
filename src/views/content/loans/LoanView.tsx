@@ -64,7 +64,7 @@ export const LoanView = (props: Props) => {
     <Box sx={{padding: 5}}>
       {
         loans && <Grid container justifyContent="center" alignItems="center">
-          <Typography variant="h3" sx={{textAlign: 'center', fontWeight: 700, mb: 1}}>PRÉSTAMOS</Typography>
+          <Typography variant="h3" sx={{textAlign: 'center', fontWeight: 700, mb: 1}}>PRÉSTAMOS - EXTRACTO</Typography>
           { loans && loans.current.length == 0 && <Grid container justifyContent="center" alignItems="center" style={{ minHeight: 'calc(50vh)' }}>
             <Grid item>
               <Typography variant="h3">
