@@ -2,10 +2,11 @@ import { Box, Grid, Stack, Typography } from "@mui/material"
 import { CardComponent } from "@/components"
 // @ts-expect-error no proceded
 import logo from '@/assets/images/aportes.png'
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { useContributionStore } from "@/hooks/useContributionStore"
 import { useAuthStore } from "@/hooks/useAuthStore"
 import Swal from "sweetalert2"
+import { TimerContext } from "@/context/TimerContext"
 
 interface Props {
    setLoading: (flag: boolean) => void
@@ -26,6 +27,8 @@ export const ContributionView = (props: Props) => {
    } = useContributionStore()
 
    const { user } = useAuthStore()
+
+   const { resetTimer } = useContext(TimerContext)
 
    useEffect(() => {
       getAllContributions(user.nup)
@@ -65,6 +68,7 @@ export const ContributionView = (props: Props) => {
          break;
       }
       setLoading(false)
+      resetTimer()
    }
 
    const handlePrintContributionPassive = async () => {
@@ -99,6 +103,7 @@ export const ContributionView = (props: Props) => {
          })
          break;
       }
+      resetTimer()
    }
 
    return (
