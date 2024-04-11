@@ -69,11 +69,11 @@ export const HomeScreen = memo(() => {
               </Box>
             </Grid>
             <Grid sx={{marginBottom: 7}}>
-              <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
-                Certificación de Aportes
+              <Typography sx={{ p: 2, paddingLeft: 10 }} align="left" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
+                - Certificación de Aportes
               </Typography>
-              <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
-                Extracto de Pago de Préstamos
+              <Typography sx={{ p: 2, paddingLeft: 10 }} align="left" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
+                - Extracto de Préstamos
               </Typography>
             </Grid>
             <Grid sx={{marginBottom: 7}}>

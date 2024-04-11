@@ -6,10 +6,12 @@ import { AppBar, CircularProgress, Grid, Paper, Toolbar, Typography } from "@mui
 import { useContext, useEffect, useState } from "react";
 import { LoanView } from "./loans/LoanView";
 import { ContributionView } from "./contributions/ContributionView";
+//@ts-expect-error do not proceed
+import imageLogoBlanco from '@/assets/images/muserpol-logo-blanco.png';
 
 export const MainView = () => {
 
-  const { changeIdentityCard, changeIdentifyUser, changeStep } = useCredentialStore();
+  const { changeIdentityCard, changeIdentifyUser, changeStep, name, identityCard } = useCredentialStore();
   const { startLogout } = useAuthStore();
   const { seconds, resetTimer } = useContext(TimerContext)
   const [ loading, setLoading ] = useState(false)
@@ -32,13 +34,15 @@ export const MainView = () => {
 
    return (
       <div style={{display: 'flex', flexDirection: 'column', height: '100vh' }}>
-         <AppBar position="static" style={{ background: '#f2f2f2', flex: '0 0 7%' }}>
-            <Toolbar>
-               <Typography style={{ fontSize: '3vw', fontWeight: 700}}>TRÁMITES</Typography>
-               <Typography style={{ fontSize: '2vw', fontWeight: 700}}>{ seconds }</Typography>
-            </Toolbar>
-         </AppBar>
-         <Grid container spacing={2} style={{display: 'flex', height: '100vh'}}>
+         <AppBar position="static" style={{ background: '#008698', flex: '0 0 7%' }}>
+          <Toolbar>
+            <img src={imageLogoBlanco} alt="Imagen tipo logo" style={{ width: '10vw' }} />
+            { identityCard && <Typography variant='h4' color='white'>{name}<b> &nbsp; CI: {identityCard} </b></Typography> }
+            {/* <Typography variant='h4' color='white'>{seconds}</Typography> */}
+               <Typography style={{ color: 'white', fontSize: '2vw', fontWeight: 700}}>{ seconds }</Typography>
+          </Toolbar>
+        </AppBar>
+         <Grid container spacing={2} style={{display: 'flex', height: '100vh', marginTop: 5}}>
             <Grid item xs={12}>
                <Grid container spacing={10}>
                   <Grid xs={6} item style={{display: 'flex', flexDirection: 'column'}}>

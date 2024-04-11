@@ -276,7 +276,8 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
          <Grid item container sm={6} direction="column" justifyContent="space-between">
             <Card sx={{mx: 10, borderRadius: '30px', p: 2}} variant="outlined">
                <Typography sx={{p: 2}} align="center" style={{fontSize: '2.5vw', fontWeight: 500}}>
-                  Por favor recoja su <b>carnet de identidad</b> de la bandeja. Quitese el sombrero, lentes y barbijo para el reconocimiento facial y a continuación presione en <b>continuar.</b>
+                  Por favor, retire su <b>carnet de identidad</b> del soporte.<br />
+                  Quítese el sombrero, lentes y barbijo para el reconocimiento facial y presione en <b>continuar.</b>
                </Typography>
             </Card>
          </Grid>

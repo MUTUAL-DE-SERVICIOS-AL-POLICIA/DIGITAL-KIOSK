@@ -58,7 +58,7 @@ export const IdentityCard = memo(forwardRef((_, ref) => {
       <Grid container>
         <Grid item container sm={6}
           direction="column"
-          justifyContent="center"
+          justifyContent="flex-start"
           alignItems="center"
         >
             <Card sx={{ml: 10, mb: 7, borderRadius: '30px', py:3}} variant="outlined">

@@ -173,7 +173,7 @@ export const OcrView = memo(forwardRef((_, ref) => {
          <Grid item container sm={6} direction="column" justifyContent="space-between">
             <Card sx={{ mx: 10, borderRadius: '30px', p: 2}} variant="outlined">
                <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
-                  Introduzca su <b>carnet de identidad</b> en la bandeja de abajo y luego presione en <b>continuar</b>.<br/>
+                  Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y presione en <b>continuar</b>.<br/>
                </Typography>
             </Card>
          </Grid>
