@@ -1,11 +1,12 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useLoanStore } from "@/hooks/useLoanStore";
 import { Box, Grid, Stack, Typography } from "@mui/material";
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import Swal from 'sweetalert2'
 import { CardComponent } from "@/components";
 // @ts-expect-error no proceded
 import logo from '@/assets/images/PlanDePagos.png';
+import { TimerContext } from "@/context/TimerContext";
 
 interface Props {
   setLoading: (flag: boolean) => void
@@ -15,6 +16,8 @@ export const LoanView = (props: Props) => {
   const { user } = useAuthStore();
   const { loans, getLoans } = useLoanStore();
   const { printKardexLoan } = useLoanStore();
+
+  const { resetTimer } = useContext(TimerContext)
 
   const { setLoading } = props
 
@@ -58,6 +61,7 @@ export const LoanView = (props: Props) => {
         break;
     }
     setLoading(false)
+    resetTimer()
   };
 
   return (
