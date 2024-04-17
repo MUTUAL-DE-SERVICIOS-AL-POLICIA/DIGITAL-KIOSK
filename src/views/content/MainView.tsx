@@ -64,6 +64,7 @@ export const MainView = () => {
                   <ComponentButton
                      onClick={() => handleExit()}
                      text={`SALIR`}
+                     color="warning"
                      sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '4.5vw', width: '100%', padding: "0px 30px" }}
                   />
                </Grid>

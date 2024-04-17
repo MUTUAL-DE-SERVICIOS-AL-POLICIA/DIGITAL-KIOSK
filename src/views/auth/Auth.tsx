@@ -54,7 +54,7 @@ export const AuthView = () => {
   },[childRef])
 
   const resetStep = () => {
-    changeStep('identityCard')
+    changeStep('home')
     changeIdentityCard('')
     handleClean()
   }
