@@ -80,7 +80,7 @@ export const ContributionView = (props: Props) => {
             text: 'Recoja su hoja impresa',
             icon: 'success',
             confirmButtonText: 'Aceptar',
-            timer: 3000
+            timer: 5000
          });
          break;
          case 400:

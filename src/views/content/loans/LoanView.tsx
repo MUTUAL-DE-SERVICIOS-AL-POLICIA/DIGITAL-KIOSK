@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useLoanStore } from "@/hooks/useLoanStore";
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Alert, Box, Grid, Stack, Typography } from "@mui/material";
 import { useContext, useEffect } from 'react';
 import Swal from 'sweetalert2'
 import { CardComponent } from "@/components";
@@ -69,6 +69,9 @@ export const LoanView = (props: Props) => {
       {
         loans && <Grid container justifyContent="center" alignItems="center">
           <Typography variant="h3" sx={{textAlign: 'center', fontWeight: 700, mb: 1}}>Extracto de Préstamos</Typography>
+          <Alert severity="info" sx={{fontSize: '20px', marginTop: 0, paddingTop: 0, color: 'black'}}>
+            <b>Trámites registrados a partir del mes de junio del 2021</b>
+          </Alert>
           { loans && loans.current.length == 0 && <Grid container justifyContent="center" alignItems="center" style={{ minHeight: 'calc(50vh)' }}>
             <Grid item>
               <Typography variant="h3">
