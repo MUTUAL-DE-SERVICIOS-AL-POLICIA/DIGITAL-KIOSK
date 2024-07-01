@@ -1,0 +1,41 @@
+
+.keyboardNumeric,
+.keyboardAlphanumeric {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+div.key,
+.keyalphanumeric {
+  padding: 45px;
+  font-size: 3em;
+  font-weight: 500;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid gray;
+  cursor: pointer;
+  transition: transform 50ms, box-shadow 50ms;
+  text-align: center;
+}
+.key:hover,
+.keyalphanumeric:hover {
+  background-color: rgb(217, 217, 217);
+  transform: scale(0.96);
+}
+
+.keyboardAlphanumeric {
+  margin-right: 60px;
+  grid-template-columns: repeat(10, 1fr);
+}
+
+.keyalphanumeric {
+  padding: 30px;
+  font-size: 1.5em;
+}
+.MuiLoadingButton-loadingIndicator {
+  scale: 5;
+}
+.MuiCircularProgress-svg {
+  color:  white;
+}
