@@ -31,7 +31,7 @@ export const HomeScreen = memo(() => {
   }
 
   const handleClick = () => {
-    changeStep('identityCard')
+    changeStep('chooser')
     if(!document.fullscreenElement) {
       if(document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen()

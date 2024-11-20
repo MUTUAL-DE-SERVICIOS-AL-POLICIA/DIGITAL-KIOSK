@@ -1,4 +1,3 @@
-import { AppBar, Toolbar, Typography } from '@mui/material';
 
 import { IdentityCard } from './IdentityCard';
 import { useCallback, useContext, useEffect, useRef } from 'react';
@@ -13,7 +12,10 @@ import Footer from '@/components/Footer';
 import { PreviousRecognition } from './recognition/PreviousRecognition';
 
 import { TimerContext } from '@/context/TimerContext';
-import { ComponentButton } from '@/components';
+import { AuthMethodChooser } from './AuthMethodChooser';
+import { BiometricRecognition } from './biometric/BiometricRecognition';
+import { Chooser } from './Chooser';
+import Header from '@/components/Header';
 
 interface ChildRefType {
   action: (prop?: boolean) => void;
@@ -53,38 +55,27 @@ export const AuthView = () => {
     if(childRef) if(childRef.current) childRef.current.onRemoveCam()
   },[childRef])
 
-  const resetStep = () => {
+  const resetStep = useCallback(() => {
     changeStep('home')
     changeIdentityCard('')
     handleClean()
-  }
+  },[])
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
-      { step != 'home' &&
-        <AppBar position="static" style={{ background: '#008698', flex: '0 0 7%' }}>
-          <Toolbar>
-            <img src={imageLogoBlanco} alt="Imagen tipo logo" style={{ width: '10vw' }} />
-            { identityCard && <Typography variant='h4' color='white'>{name}<b> &nbsp; CI: {identityCard} </b></Typography> }
-            <ComponentButton
-              onClick={() => resetStep()}
-              text={`SALIR ${seconds}`}
-              sx={{ fontSize: innerWidth > innerHeight ? '2vw' : '3.5vw', width: '12%', padding: "0px 15px" }}
-              color="warning"
-            />
-            {/* <Typography variant='h4' color='white'>{seconds}</Typography> */}
-          </Toolbar>
-        </AppBar>
-      }{/* barra superior */}
-        <div style={{ flex: '1 1 auto', overflowX: 'auto'}}>
-          { step == 'home' && <HomeScreen /> }{/* Pantall casita */}
-          { step == 'identityCard' && <IdentityCard ref={childRef} /> }{/* pantalla input carnet */}
-          { step == 'instructionCard' && identityCard != '' && <InstructionCard ref={childRef} /> }{/* pantalla instruccion */}
-          { step == 'recognitionCard' && <OcrView ref={childRef} /> } {/* pantalla reconocimiento ocr */}
-          { step == 'previousFaceRecognition' && <PreviousRecognition ref={childRef} />}
-          { step == 'faceRecognition' && <FaceRecognition ref={childRef} />}
-         </div>
-      { step != 'home' && <Footer action={handleClick} onRemoveCam={handleClean}/>}
+      { step != 'home' && <Header name={name} identityCard={identityCard} seconds={seconds} resetStep={resetStep}/> }
+      <div style={{ flex: '1 1 auto', overflowX: 'auto'}}>
+        { step == 'home' && <HomeScreen /> }{/* Pantalla casita */}
+        { step == 'chooser' && <Chooser />} {/* Pantalla selección de servicio */}
+        { step == 'identityCard' && <IdentityCard ref={childRef} /> }{/* Pantalla input carnet */}
+        { step == 'authMethodChooser' && <AuthMethodChooser />} {/* Pantalla de selección de autenticación */}
+        { step == 'instructionCard' && identityCard != '' && <InstructionCard ref={childRef} /> }{/* Pantalla instrucción */}
+        { step == 'recognitionCard' && <OcrView ref={childRef} /> } {/* Pantalla reconocimiento ocr */}
+        { step == 'previousFaceRecognition' && <PreviousRecognition ref={childRef} />} {/* Pantalla para retirar el carnet */}
+        { step == 'faceRecognition' && <FaceRecognition ref={childRef} />} {/* Pantalla de reconocimiento facial */}
+        { step == 'biometricRecognition' && <BiometricRecognition/>} {/* Pantalla reconocimiento de huellas */}
+      </div>
+      { step != 'home' && step != 'chooser' && step != 'authMethodChooser' && <Footer action={handleClick} onRemoveCam={handleClean}/>}
     </div>
   );
 };
