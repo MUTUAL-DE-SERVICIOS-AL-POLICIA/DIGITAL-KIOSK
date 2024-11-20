@@ -38,7 +38,7 @@ export const useAuthStore = () => {
         changeIdentityCard(identityCard)
         changeName(data.payload.full_name) /* nueva implementación */
         dispatch(onLogin(dataUser));
-        changeStep('recognitionCard')
+        changeStep('authMethodChooser')
         changeLoadingGlobal(false)
       }, 1000)
     } catch (error: any) {
