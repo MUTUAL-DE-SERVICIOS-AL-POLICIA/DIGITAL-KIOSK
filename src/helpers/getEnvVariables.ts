@@ -12,5 +12,7 @@ export const getEnvVariables = () => {
         ACTIVITY_TIME: import.meta.env.VITE_ACTIVITY_TIME,
         // @ts-expect-error no necesary
         MAC_DEVICE: import.meta.env.VITE_MAC_DEVICE,
+        // @ts-expect-error no necesary
+        VITE_HOST_BACKEND_BIOMETRIC: import.meta.env.VITE_HOST_BACKEND_BIOMETRIC,
     }
 }
