@@ -58,25 +58,71 @@ export const OcrView = memo(forwardRef((_, ref) => {
       }
    }
 
-   const isWithinErrorRange = (text1: string, str2: string): boolean => {
-      const text2 = str2.replace(/[^a-zA-Z0-9-]/g, '')
-      console.log("***************************************************")
-      console.log("TEXTO RECONOCIDO: \n-->\t", text2)
-      console.log("***************************************************")
-      if (text2.includes(text1)) return true
-      let coincidence = 0
-      for (let i = 0; i < text2.length; i++) {
-         for (let j = 0; j < text1.length; j++) {
-            if (text2[i] === text1[j] && text2[i + 1] === text1[j + 1]) {
-               coincidence++
-            }
+   const findSimilarSubstring = (needle:string, haystack:string) => {
+      const MARGIN_OF_ERROR = 2
+      // Primero intentamos buscar la cadena completa (needle) en haystack
+      let foundIndex = haystack.indexOf(needle)
+
+      // Si encontramos una coincidencia exacta, la devolvemos
+      if(foundIndex !== -1) {
+         return { found: true, index: foundIndex}
+      }
+
+      // Si no la encontramos, probamos con cadenas más pequeñas
+      for(let i = 0; i < needle.length; i++) {
+         if( i > MARGIN_OF_ERROR ) break;
+         console.log("se ejecuta : ", i)
+         const subNeedle1 = needle.slice(0, needle.length - i) // Eliminando desde el final
+         const subNeedle2 = needle.slice(i) // Eliminado desde el inicio
+
+         // Buscamos en la cadena más grande (haystack)
+         if(haystack.includes(subNeedle1)) {
+            return { found: true, index: haystack.indexOf(subNeedle1), modified: subNeedle1}
+         }
+         if(haystack.includes(subNeedle2)) {
+            return { found: true, index: haystack.indexOf(subNeedle2), modified: subNeedle2}
          }
       }
-      if (coincidence < text1.length - 3) {
-         return false
+      // Si no encontramos ninguna coincidencia
+      return { found: false }
+
+   }
+
+
+   const isWithinErrorRange = (enteredText: string, previouslyRecognizedText: string): boolean => {
+      const recognizedText = previouslyRecognizedText.replace(/[^a-zA-Z0-9-]/g, '')
+      console.log("***************************************************")
+      console.log("TEXTO RECONOCIDO: \n-->\t\t", recognizedText)
+      console.log("***************************************************")
+      console.log("TEXTO INGRESADO: \n-->\t\t", enteredText)
+      console.log("***************************************************")
+      // const needle = "1213332"
+      // const needle = "9948"
+      // const haystack = "018994084"
+      // console.log("needle: ",needle)
+      // console.log("haystack: ",haystack)
+      // const result = findSimilarSubstring(needle, haystack)
+      const result = findSimilarSubstring(enteredText, recognizedText)
+      if(result.found) {
+         console.log(`Cadena encontrada en el indice ${result.index} con la variante: ${result.modified || enteredText}`)
+      } else {
+         console.log("No se encontró ninguna coincidencia")
       }
-      else if (coincidence == 0) return false
-      return true
+      return false
+      // if (recognizedText.includes(enteredText)) return true
+      // let coincidence = 0
+      // for (let i = 0; i < recognizedText.length; i++) {
+      //    for (let j = 0; j < enteredText.length; j++) {
+      //       if (recognizedText[i] === enteredText[j] && recognizedText[i + 1] === enteredText[j + 1]) {
+      //          coincidence++
+      //       }
+      //    }
+      // }
+      // if (coincidence < enteredText.length - 3) {
+      //    return false
+      // }
+      // else if (coincidence == 0) return false
+      // return true
    }
 
    const handleImageCapture = useCallback((image: string, text: string) => {
