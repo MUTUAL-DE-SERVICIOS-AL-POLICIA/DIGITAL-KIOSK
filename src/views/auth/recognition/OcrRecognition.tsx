@@ -132,6 +132,7 @@ export const OcrView = memo(forwardRef((_, ref) => {
       const result = findSimilarSubstring(enteredText, recognizedText)
       if(result.found) {
          console.log(`Cadena encontrada en el indice ${result.index} con la variante: ${result.modified || enteredText}`)
+         return true;
       } else {
          console.log("No se encontró ninguna coincidencia")
       }
