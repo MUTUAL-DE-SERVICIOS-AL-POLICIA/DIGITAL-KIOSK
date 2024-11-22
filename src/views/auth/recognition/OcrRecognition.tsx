@@ -65,13 +65,17 @@ export const OcrView = memo(forwardRef((_, ref) => {
 
       // Si encontramos una coincidencia exacta, la devolvemos
       if(foundIndex !== -1) {
-         return { found: true, index: foundIndex}
+         return { found: true, index: foundIndex }
+      } else {
+         foundIndex = needle.indexOf(haystack)
+         if(foundIndex !== -1) {
+            return { found: true, index: foundIndex }
+         }
       }
 
       // Si no la encontramos, probamos con cadenas más pequeñas
       for(let i = 0; i < needle.length; i++) {
          if( i > MARGIN_OF_ERROR ) break;
-         console.log("se ejecuta : ", i)
          const subNeedle1 = needle.slice(0, needle.length - i) // Eliminando desde el final
          const subNeedle2 = needle.slice(i) // Eliminado desde el inicio
 
