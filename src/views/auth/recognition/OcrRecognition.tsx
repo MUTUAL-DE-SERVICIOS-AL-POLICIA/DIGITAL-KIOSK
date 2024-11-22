@@ -85,6 +85,11 @@ export const OcrView = memo(forwardRef((_, ref) => {
       // ? solo varian por dos digitos al inicio y final. Ej. (inicio) 8900123, 1100123
       // ? Ej. (final) 8900123, 8900178
       const MARGIN_OF_ERROR = 2
+      const NEEDLE_MIN_LENGTH = 4
+      const HAYSTACK_MIN_LENGTH = NEEDLE_MIN_LENGTH - MARGIN_OF_ERROR
+      // Longitudes minimas permitidas
+      if(needle.length < NEEDLE_MIN_LENGTH && haystack.length < HAYSTACK_MIN_LENGTH)
+         return { found: false }
       // Primero intentamos buscar la cadena completa (needle) en haystack
       let foundIndex = haystack.indexOf(needle)
       // Si encontramos una coincidencia exacta, la devolvemos
@@ -93,7 +98,7 @@ export const OcrView = memo(forwardRef((_, ref) => {
       for (let i = 1; i <= MARGIN_OF_ERROR; i++) {
          const subNeedle1 = needle.slice(0, needle.length - i) // Eliminando desde el final
          const subNeedle2 = needle.slice(i) // Eliminado desde el inicio
-         // Buscamos en la cadena más grande (haystack)
+         // Buscamos en las cadenas recortadas en el pajar
          if (haystack.includes(subNeedle1))
             return { found: true, index: haystack.indexOf(subNeedle1), modified: subNeedle1 }
          if (haystack.includes(subNeedle2))
@@ -103,13 +108,13 @@ export const OcrView = memo(forwardRef((_, ref) => {
       return { found: false }
    }
 
-   const isWithinErrorRange = (previouslyEnteredText: string, recognizedText: string): boolean => {
-      // const recognizedText = previouslyRecognizedText.replace(/[^a-zA-Z0-9-]/g, '')
-      const enteredText = previouslyEnteredText.replace(/[0-9]/g, '')
-      console.log("***************************************************")
-      console.log("TEXTO RECONOCIDO: \n-->\t", recognizedText)
+   const isWithinErrorRange = (previouslyEnteredText: string, previouslyRecognizedText: string): boolean => {
+      const enteredText = previouslyEnteredText.replace(/[^\d]/g, '')
+      const recognizedText = previouslyRecognizedText.replace(/[\s]/g, '')
       console.log("***************************************************")
       console.log("TEXTO INGRESADO: \n-->\t", enteredText)
+      console.log("***************************************************")
+      console.log("TEXTO RECONOCIDO: \n-->\t", recognizedText)
       console.log("***************************************************")
       const result = findSimilarSubstring(enteredText, recognizedText)
       if (result.found) {
