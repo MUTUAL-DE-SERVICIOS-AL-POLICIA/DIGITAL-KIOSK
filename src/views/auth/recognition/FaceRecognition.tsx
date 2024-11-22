@@ -67,9 +67,31 @@ export const FaceRecognition = memo(forwardRef((_, ref) => {
       ]);
    }
 
+   const setAutomaticFocus = async (stream: MediaStream) => {
+    const track = stream.getVideoTracks()[0];
+    const capabilities: any = track.getCapabilities();
+    // console.log("Capabilities:", capabilities);
+    // Configura el enfoque si está disponible
+    if (
+      capabilities.focusMode &&
+      capabilities.focusMode.includes("continuous")
+    ) {
+      const constraints: any = {
+        focusMode: "continuous",
+      };
+      await track.applyConstraints(constraints);
+      console.log("Enfoque automatico aplicado:", track.getSettings());
+    } else {
+      console.log(
+        "El enfoque automatico no es compatible con este dispositivo."
+      );
+    }
+ }
+
    const getLocalUserVideo = async () => {
       try {
          const userStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } });
+         setAutomaticFocus(userStream);
          videoRef?.current && (videoRef.current.srcObject = userStream);
 
          // SOLO PARA DESARROLLO

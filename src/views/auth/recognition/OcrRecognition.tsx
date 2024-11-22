@@ -48,9 +48,32 @@ export const OcrView = memo(forwardRef((_, ref) => {
 
    }, [webcamRef]);
 
+   const setManualFocus = async (stream: MediaStream, focusDistance: number) => {
+      const track = stream.getVideoTracks()[0];
+      const capabilities: any = track.getCapabilities();
+      // console.log("Capabilities:", capabilities);
+      // Configura el enfoque si está disponible
+      if (
+        capabilities.focusMode &&
+        capabilities.focusMode.includes("manual")
+      ) {
+        const constraints: any = {
+          focusMode: "manual",
+          focusDistance: focusDistance,
+        };
+        await track.applyConstraints(constraints);
+        console.log("Enfoque manual aplicado:", track.getSettings());
+      } else {
+        console.log(
+          "El enfoque manual no es compatible con este dispositivo."
+        );
+      }
+   }
+
    const getLocalUserVideo = async () => {
       try {
          const environmentStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "environment" } })
+         setManualFocus(environmentStream, 160);
          // @ts-expect-error type is not known
          webcamRef?.current && (webcamRef.current.srcObject = environmentStream)
       } catch (error) {
@@ -109,6 +132,7 @@ export const OcrView = memo(forwardRef((_, ref) => {
       const result = findSimilarSubstring(enteredText, recognizedText)
       if(result.found) {
          console.log(`Cadena encontrada en el indice ${result.index} con la variante: ${result.modified || enteredText}`)
+         return true;
       } else {
          console.log("No se encontró ninguna coincidencia")
       }
