@@ -43,9 +43,9 @@ export const AuthMethodChooser = () => {
           sm={6}
           item
           direction="column"
+          key={method.title}
         >
           <CardMethodChooser
-            key={method.title}
             title={method.title}
             image={method.image}
             action={() => handleAction(method.action)}
