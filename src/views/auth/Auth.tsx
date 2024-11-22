@@ -73,7 +73,7 @@ export const AuthView = () => {
         { step == 'recognitionCard' && <OcrView ref={childRef} /> } {/* Pantalla reconocimiento ocr */}
         { step == 'previousFaceRecognition' && <PreviousRecognition ref={childRef} />} {/* Pantalla para retirar el carnet */}
         { step == 'faceRecognition' && <FaceRecognition ref={childRef} />} {/* Pantalla de reconocimiento facial */}
-        { step == 'biometricRecognition' && <BiometricRecognition/>} {/* Pantalla reconocimiento de huellas */}
+        { step == 'biometricRecognition' && <BiometricRecognition ref={childRef} />} {/* Pantalla reconocimiento de huellas */}
       </div>
       { step != 'home' && step != 'chooser' && step != 'authMethodChooser' && <Footer action={handleClick} onRemoveCam={handleClean}/>}
     </div>

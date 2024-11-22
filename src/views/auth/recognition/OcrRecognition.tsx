@@ -43,9 +43,10 @@ export const OcrView = memo(forwardRef((_, ref) => {
 
    const cleanup = useCallback(() => {
       intervalWebCam && clearInterval(intervalWebCam);
-      // @ts-expect-error type is not known
-      if (webcamRef.current) webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
-
+         // @ts-expect-error type is not known
+      if (webcamRef.current && webcamRef.current.srcObject )
+         // @ts-expect-error type is not known
+         webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
    }, [webcamRef]);
 
    const setManualFocus = async (stream: MediaStream, focusDistance: number) => {
@@ -76,7 +77,9 @@ export const OcrView = memo(forwardRef((_, ref) => {
          // @ts-expect-error type is not known
          webcamRef?.current && (webcamRef.current.srcObject = environmentStream)
       } catch (error) {
-         console.error("Error:", error)
+         console.error("Dispositivo no conectado")
+         // @ts-expect-error type is not known
+         if(webcamRef.current) webcamRef.current.srcObject = null
       }
    }
 
