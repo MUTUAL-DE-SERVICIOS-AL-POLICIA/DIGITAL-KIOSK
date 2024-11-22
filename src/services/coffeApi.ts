@@ -1,7 +1,12 @@
 import axios from 'axios';
 import { getEnvVariables } from '../helpers';
 
-const { VITE_HOST_BACKEND, VITE_HOST_BACKEND_PRINT, VITE_HOST_BACKEND_BIOMETRIC } = getEnvVariables();
+const {
+    VITE_HOST_BACKEND,
+    VITE_HOST_BACKEND_PRINT,
+    VITE_HOST_BACKEND_BIOMETRIC,
+    VITE_HOST_API_GATEWAY
+} = getEnvVariables();
 
 // Creamos una función que devuelve la instancia de axios con el host deseado
 const createAxiosInstance = (baseURL: string) => {
@@ -21,3 +26,4 @@ const createAxiosInstance = (baseURL: string) => {
 export const coffeApi = createAxiosInstance(VITE_HOST_BACKEND);
 export const externalApi = createAxiosInstance(VITE_HOST_BACKEND_PRINT);
 export const biometricApi = createAxiosInstance(VITE_HOST_BACKEND_BIOMETRIC);
+export const gatewayApi = createAxiosInstance(VITE_HOST_API_GATEWAY);

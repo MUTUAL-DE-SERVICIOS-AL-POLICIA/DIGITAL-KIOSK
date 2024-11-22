@@ -2,8 +2,9 @@ import { Card, Grid, Typography } from "@mui/material"
 // @ts-expect-error
 import Hands from '@/assets/images/hands.png'
 import Fingerprint from "./Fingerprint"
-import { forwardRef, useImperativeHandle } from "react"
+import { forwardRef, useEffect, useImperativeHandle } from "react"
 import { useLoading } from "@/hooks/useLoading"
+import { useBiometricStore } from "@/hooks/useBiometric"
 // import { useAuthStore } from "@/hooks/useAuthStore"
 
 export const BiometricRecognition = forwardRef((_, ref) => {
@@ -15,6 +16,7 @@ export const BiometricRecognition = forwardRef((_, ref) => {
   }))
 
   const { isLoading, setLoading } = useLoading()
+  const { getFingerprints } = useBiometricStore()
   // const { user } = useAuthStore()
 
   const handleBiometric = () => {
@@ -27,6 +29,12 @@ export const BiometricRecognition = forwardRef((_, ref) => {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // (1) Obtener el id de la persona (API)
+    // (2) Obtener las huellas
+    getFingerprints(1)
+  }, [])
 
   return (
     <Grid container alignItems="center" sx={{my: 5 }}>
