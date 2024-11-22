@@ -1,4 +1,4 @@
-import { /*ImageCanvas,*/ ImageCapture } from "@/components";
+import { ImageCapture } from "@/components";
 import { Box, Card, Grid, Stack, Typography } from "@mui/material";
 import { RefObject, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState, memo } from "react";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
@@ -51,22 +51,21 @@ export const OcrView = memo(forwardRef((_, ref) => {
    const setManualFocus = async (stream: MediaStream, focusDistance: number) => {
       const track = stream.getVideoTracks()[0];
       const capabilities: any = track.getCapabilities();
-      // console.log("Capabilities:", capabilities);
       // Configura el enfoque si está disponible
       if (
-        capabilities.focusMode &&
-        capabilities.focusMode.includes("manual")
+         capabilities.focusMode &&
+         capabilities.focusMode.includes("manual")
       ) {
-        const constraints: any = {
-          focusMode: "manual",
-          focusDistance: focusDistance,
-        };
-        await track.applyConstraints(constraints);
-        console.log("Enfoque manual aplicado:", track.getSettings());
+         const constraints: any = {
+            focusMode: "manual",
+            focusDistance: focusDistance,
+         };
+         await track.applyConstraints(constraints);
+         console.log("Enfoque manual aplicado:", track.getSettings());
       } else {
-        console.log(
-          "El enfoque manual no es compatible con este dispositivo."
-        );
+         console.log(
+            "El enfoque manual no es compatible con este dispositivo."
+         );
       }
    }
 
@@ -81,88 +80,55 @@ export const OcrView = memo(forwardRef((_, ref) => {
       }
    }
 
-   const findSimilarSubstring = (needle:string, haystack:string) => {
+   const findSimilarSubstring = (needle: string, haystack: string) => {
+      // ? falsos positivos: cuando el número de carnet digitado y el carnet introducido
+      // ? solo varian por dos digitos al inicio y final. Ej. (inicio) 8900123, 1100123
+      // ? Ej. (final) 8900123, 8900178
       const MARGIN_OF_ERROR = 2
       // Primero intentamos buscar la cadena completa (needle) en haystack
       let foundIndex = haystack.indexOf(needle)
-
       // Si encontramos una coincidencia exacta, la devolvemos
-      if(foundIndex !== -1) {
-         return { found: true, index: foundIndex }
-      } else {
-         foundIndex = needle.indexOf(haystack)
-         if(foundIndex !== -1) {
-            return { found: true, index: foundIndex }
-         }
-      }
-
+      if (foundIndex !== -1) return { found: true, index: foundIndex }
       // Si no la encontramos, probamos con cadenas más pequeñas
-      for(let i = 0; i < needle.length; i++) {
-         if( i > MARGIN_OF_ERROR ) break;
+      for (let i = 1; i <= MARGIN_OF_ERROR; i++) {
          const subNeedle1 = needle.slice(0, needle.length - i) // Eliminando desde el final
          const subNeedle2 = needle.slice(i) // Eliminado desde el inicio
-
          // Buscamos en la cadena más grande (haystack)
-         if(haystack.includes(subNeedle1)) {
-            return { found: true, index: haystack.indexOf(subNeedle1), modified: subNeedle1}
-         }
-         if(haystack.includes(subNeedle2)) {
-            return { found: true, index: haystack.indexOf(subNeedle2), modified: subNeedle2}
-         }
+         if (haystack.includes(subNeedle1))
+            return { found: true, index: haystack.indexOf(subNeedle1), modified: subNeedle1 }
+         if (haystack.includes(subNeedle2))
+            return { found: true, index: haystack.indexOf(subNeedle2), modified: subNeedle2 }
       }
       // Si no encontramos ninguna coincidencia
       return { found: false }
-
    }
 
-
-   const isWithinErrorRange = (enteredText: string, previouslyRecognizedText: string): boolean => {
-      const recognizedText = previouslyRecognizedText.replace(/[^a-zA-Z0-9-]/g, '')
+   const isWithinErrorRange = (previouslyEnteredText: string, recognizedText: string): boolean => {
+      // const recognizedText = previouslyRecognizedText.replace(/[^a-zA-Z0-9-]/g, '')
+      const enteredText = previouslyEnteredText.replace(/[0-9]/g, '')
       console.log("***************************************************")
-      console.log("TEXTO RECONOCIDO: \n-->\t\t", recognizedText)
+      console.log("TEXTO RECONOCIDO: \n-->\t", recognizedText)
       console.log("***************************************************")
-      console.log("TEXTO INGRESADO: \n-->\t\t", enteredText)
+      console.log("TEXTO INGRESADO: \n-->\t", enteredText)
       console.log("***************************************************")
-      // const needle = "1213332"
-      // const needle = "9948"
-      // const haystack = "018994084"
-      // console.log("needle: ",needle)
-      // console.log("haystack: ",haystack)
-      // const result = findSimilarSubstring(needle, haystack)
       const result = findSimilarSubstring(enteredText, recognizedText)
-      if(result.found) {
+      if (result.found) {
          console.log(`Cadena encontrada en el indice ${result.index} con la variante: ${result.modified || enteredText}`)
          return true;
-      } else {
-         console.log("No se encontró ninguna coincidencia")
       }
+      console.log("No se encontró ninguna coincidencia")
       return false
-      // if (recognizedText.includes(enteredText)) return true
-      // let coincidence = 0
-      // for (let i = 0; i < recognizedText.length; i++) {
-      //    for (let j = 0; j < enteredText.length; j++) {
-      //       if (recognizedText[i] === enteredText[j] && recognizedText[i + 1] === enteredText[j + 1]) {
-      //          coincidence++
-      //       }
-      //    }
-      // }
-      // if (coincidence < enteredText.length - 3) {
-      //    return false
-      // }
-      // else if (coincidence == 0) return false
-      // return true
    }
 
    const handleImageCapture = useCallback((image: string, text: string) => {
       setImage(image)
       if (isWithinErrorRange(identityCard, text)) {
-         // changeStep('previousFaceRecognition')
          changeStep('faceRecognition')
          changeRecognizedByOcr(true)
          changeImage(image)
          cleanup()
          changeOcrState(true)
-         savePhoto({affiliateId: user.nup, photo_ci: base64toBlob(image)})
+         savePhoto({ affiliateId: user.nup, photo_ci: base64toBlob(image) })
       } else {
          setImage(null)
          getLocalUserVideo()
@@ -208,7 +174,7 @@ export const OcrView = memo(forwardRef((_, ref) => {
             if (canvasWebcamRef.current && img) {
                const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true)
                const resizedDetections = faceapi.resizeResults(detections, dims)
-               detections.forEach(({ detection }) =>{
+               detections.forEach(({ detection }) => {
                   const boxStyle = {
                      label: 'Persona',
                      lineWidth: 3,
@@ -245,9 +211,9 @@ export const OcrView = memo(forwardRef((_, ref) => {
    return (
       <Grid container alignItems="center" >
          <Grid item container sm={6} direction="column" justifyContent="space-between">
-            <Card sx={{ mx: 10, borderRadius: '30px', p: 2}} variant="outlined">
+            <Card sx={{ mx: 10, borderRadius: '30px', p: 2 }} variant="outlined">
                <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
-                  Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y presione en <b>continuar</b>.<br/>
+                  Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
                </Typography>
             </Card>
          </Grid>
