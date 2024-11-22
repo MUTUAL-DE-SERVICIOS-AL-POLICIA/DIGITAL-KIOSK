@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { authSlice, chooserSlice, loanSlice, statisticsSlice } from '.';
+import { authSlice, chooserSlice, loanSlice, personSlice, statisticsSlice } from '.';
 import { contributionSlice } from './contribution/contributionSlice';
 import { fingerprintSlice } from './biometric/fingerprintSlice';
 
@@ -10,7 +10,8 @@ export const store = configureStore({
         statistics: statisticsSlice.reducer,
         contributions: contributionSlice.reducer,
         fingerprints: fingerprintSlice.reducer,
-        chooser: chooserSlice.reducer
+        chooser: chooserSlice.reducer,
+        person: personSlice.reducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false

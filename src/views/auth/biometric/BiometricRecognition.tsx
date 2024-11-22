@@ -5,7 +5,9 @@ import Fingerprint from "./Fingerprint"
 import { forwardRef, useEffect, useImperativeHandle } from "react"
 import { useLoading } from "@/hooks/useLoading"
 import { useBiometricStore } from "@/hooks/useBiometric"
-// import { useAuthStore } from "@/hooks/useAuthStore"
+import { usePersonStore } from "@/hooks/usePersonStore"
+import { useCredentialStore } from "@/hooks"
+import Swal from "sweetalert2"
 
 export const BiometricRecognition = forwardRef((_, ref) => {
 
@@ -16,13 +18,35 @@ export const BiometricRecognition = forwardRef((_, ref) => {
   }))
 
   const { isLoading, setLoading } = useLoading()
-  const { getFingerprints } = useBiometricStore()
-  // const { user } = useAuthStore()
+  const { fingerprints, getFingerprints, compareFingerprints } = useBiometricStore()
+  const { getPerson } = usePersonStore()
+  const { identityCard, changeStep, changeIdentifyUser } = useCredentialStore()
 
-  const handleBiometric = () => {
+  const assembleAnswer = (fingerprints: any[]) => {
+    return fingerprints.map((fingerprint: any) => {
+      const wsq = fingerprint.wsqBase64
+      const quality = fingerprint.quality
+      const fingerprintTypeId = fingerprint.fingerprintType.id
+      return { wsq, quality, fingerprintTypeId }
+    })
+  }
+
+  const handleBiometric = async () => {
     try {
       setLoading(true)
-      // llamar a la api que realiza la comparación de las huellas
+      console.log("Esto en handleBiometric: ", fingerprints)
+      const body = assembleAnswer(fingerprints)
+      const response = await compareFingerprints(body)
+      if(response) {
+        changeStep('home')
+        changeIdentifyUser(true)
+      } else {
+        Swal.fire({
+          title: "Hubo un error",
+          text: "No se pudo realizar la comparación",
+          icon: "error",
+        })
+      }
     } catch (e: any) {
       console.error(e)
     } finally {
@@ -30,10 +54,17 @@ export const BiometricRecognition = forwardRef((_, ref) => {
     }
   }
 
+  const totalData = async () => {
+    console.log("identity card: ", identityCard)
+    const personId = await getPerson(identityCard)
+    console.log("personId", personId)
+    if(personId !== undefined) {
+      await getFingerprints(personId)
+    }
+  }
+
   useEffect(() => {
-    // (1) Obtener el id de la persona (API)
-    // (2) Obtener las huellas
-    getFingerprints(1)
+    totalData()
   }, [])
 
   return (

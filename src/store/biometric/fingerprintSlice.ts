@@ -9,7 +9,6 @@ export const fingerprintSlice = createSlice({
   reducers: {
     setFingerprints: (state, action) => {
       state.fingerprints = action.payload.fingerprints
-      console.log("fingerprints:", action.payload.fingerprints)
     }
   }
 });
