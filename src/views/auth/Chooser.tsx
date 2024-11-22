@@ -37,7 +37,13 @@ export const Chooser = () => {
         <Grid container spacing={5} alignContent="center">
           {
             SERVICES.map((service) => (
-              <CardChooser title={service.title} subTitle={service.subTitle} icon={service.icon} action={() => action(service.code)} />
+              <CardChooser
+                key={service.code}
+                title={service.title}
+                subTitle={service.subTitle}
+                icon={service.icon}
+                action={() => action(service.code)}
+              />
             ))
           }
         </Grid>

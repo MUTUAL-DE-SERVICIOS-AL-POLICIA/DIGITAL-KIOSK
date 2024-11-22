@@ -44,7 +44,12 @@ export const AuthMethodChooser = () => {
           item
           direction="column"
         >
-          <CardMethodChooser title={method.title} image={method.image} action={() => handleAction(method.action)}/>
+          <CardMethodChooser
+            key={method.title}
+            title={method.title}
+            image={method.image}
+            action={() => handleAction(method.action)}
+          />
         </Grid>
       ))}
     </Grid>
