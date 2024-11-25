@@ -35,8 +35,10 @@ export const BiometricRecognition = forwardRef((_, ref) => {
     try {
       setLoading(true)
       const body = assembleAnswer(fingerprints)
-      const response = await compareFingerprints(body)
-      if(response) {
+      const { isValid }:any = await compareFingerprints(body)
+      if(isValid) {
+        // ? Registrar la huella con mejor calidad
+        // ? Registrar la forma de autenticación
         changeStep('home')
         changeIdentifyUser(true)
       }
@@ -59,7 +61,7 @@ export const BiometricRecognition = forwardRef((_, ref) => {
       <Grid item container sm={7} direction="column" justifyContent="space-between">
         <Card sx={{mx: 10, borderRadius: '30px', p: 2}} variant="outlined">
           <Typography sx={{ p: 2}} align="center" style={{fontSize: '2.5vw', fontWeight: 500}}>
-            Por favor, coloque uno de los <b>dedos indicados</b> en la imagen para realizar el <b>reconocimiento biométrico</b> de la huella.
+            Por favor, coloque uno de los <b>dedos indicados</b> en la imagen para realizar el <b>reconocimiento biométrico</b> de la huella y a continuación presione en <b>continuar.</b>
           </Typography>
         </Card>
       </Grid>
@@ -69,11 +71,12 @@ export const BiometricRecognition = forwardRef((_, ref) => {
         </Card>
       </Grid>
       { isLoading &&
-        <div className="overlay">
-          <div style={{ fontSize: '84px', color: '#E0E0E0'}}>Comparando huellas
-          <span className="dot">.</span>
-          <span className="dot">.</span>
-          <span className="dot">.</span>
+        <div className="overlay" style={{display: 'flex'}}>
+          <div style={{ fontSize: '84px', color: '#E0E0E0', display: 'flex', textAlign: 'center', justifyContent: 'center'}}>
+            <span>Comparando huellas<br/></span>
+            <span className="dot">.</span>
+            <span className="dot">.</span>
+            <span className="dot">.</span>
           </div>
         </div>
       }

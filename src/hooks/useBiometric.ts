@@ -19,9 +19,8 @@ export const useBiometricStore = () => {
   const compareFingerprints = async (fingerprints: any) => {
     try {
       const { data } = await biometricApi.post(`/biometrico/comparar/huella`, fingerprints)
-      if(data) {
-        return true
-      } else return false
+      const { fingerprintTypeId, isValid, quality, wsq } = data
+      return { fingerprintTypeId, isValid, quality, wsq }
     } catch(e: any) {
       console.error("Error al comparar huella")
       return false
