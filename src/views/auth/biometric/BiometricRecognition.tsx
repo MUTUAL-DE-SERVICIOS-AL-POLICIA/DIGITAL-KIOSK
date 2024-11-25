@@ -2,10 +2,9 @@ import { Card, Grid, Typography } from "@mui/material"
 // @ts-expect-error
 import Hands from '@/assets/images/hands.png'
 import Fingerprint from "./Fingerprint"
-import { forwardRef, useEffect, useImperativeHandle } from "react"
+import { forwardRef, useImperativeHandle } from "react"
 import { useLoading } from "@/hooks/useLoading"
 import { useBiometricStore } from "@/hooks/useBiometric"
-import { usePersonStore } from "@/hooks/usePersonStore"
 import { useCredentialStore } from "@/hooks"
 import Swal from "sweetalert2"
 
@@ -18,23 +17,23 @@ export const BiometricRecognition = forwardRef((_, ref) => {
   }))
 
   const { isLoading, setLoading } = useLoading()
-  const { fingerprints, getFingerprints, compareFingerprints } = useBiometricStore()
-  const { getPerson } = usePersonStore()
-  const { identityCard, changeStep, changeIdentifyUser } = useCredentialStore()
+  const { fingerprints, compareFingerprints } = useBiometricStore()
+  const { changeStep, changeIdentifyUser } = useCredentialStore()
 
   const assembleAnswer = (fingerprints: any[]) => {
-    return fingerprints.map((fingerprint: any) => {
-      const wsq = fingerprint.wsqBase64
-      const quality = fingerprint.quality
-      const fingerprintTypeId = fingerprint.fingerprintType.id
-      return { wsq, quality, fingerprintTypeId }
-    })
+    if(fingerprints !== undefined) {
+      return fingerprints.map((fingerprint: any) => {
+        const wsq = fingerprint.wsqBase64
+        const quality = fingerprint.quality
+        const fingerprintTypeId = fingerprint.fingerprintType.id
+        return { wsq, quality, fingerprintTypeId }
+      })
+    }
   }
 
   const handleBiometric = async () => {
     try {
       setLoading(true)
-      console.log("Esto en handleBiometric: ", fingerprints)
       const body = assembleAnswer(fingerprints)
       const response = await compareFingerprints(body)
       if(response) {
@@ -53,19 +52,6 @@ export const BiometricRecognition = forwardRef((_, ref) => {
       setLoading(false)
     }
   }
-
-  const totalData = async () => {
-    console.log("identity card: ", identityCard)
-    const personId = await getPerson(identityCard)
-    console.log("personId", personId)
-    if(personId !== undefined) {
-      await getFingerprints(personId)
-    }
-  }
-
-  useEffect(() => {
-    totalData()
-  }, [])
 
   return (
     <Grid container alignItems="center" sx={{my: 5 }}>
