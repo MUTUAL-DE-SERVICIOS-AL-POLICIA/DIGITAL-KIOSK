@@ -8,7 +8,7 @@ export const usePersonStore = () => {
 
   const getPerson = async (identityCard: string) => {
     try {
-      const { data } = await gatewayApi.get(`/persons/${identityCard}`)
+      const { data } = await gatewayApi.get(`/kiosk/person/${identityCard}`)
       dispatch(setPerson({ person: data }))
       return data.id
     } catch(e: any) {
