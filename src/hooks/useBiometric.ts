@@ -19,6 +19,7 @@ export const useBiometricStore = () => {
   const compareFingerprints = async (fingerprints: any) => {
     // ? (1) necesito el array de huellas
     try {
+      console.log(fingerprints)
       const { data } = await biometricApi.post(`/biometrico/comparar/huella`, {fingerprints})
       console.log(data)
       if(data) {
