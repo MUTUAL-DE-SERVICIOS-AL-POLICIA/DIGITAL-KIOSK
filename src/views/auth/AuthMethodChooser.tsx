@@ -52,7 +52,7 @@ export const AuthMethodChooser = () => {
       style={{ minHeight: '70vh'}}
     >
       { METHODS_AUTH.map((method) => {
-        if(fingerprints.length !== 0) {
+        if(fingerprints !== undefined && fingerprints.length !== 0) {
           return (
             <Grid
               container
