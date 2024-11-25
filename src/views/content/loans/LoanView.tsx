@@ -7,25 +7,19 @@ import { CardComponent } from "@/components";
 // @ts-expect-error no proceded
 import logo from '@/assets/images/PlanDePagos.png';
 import { TimerContext } from "@/context/TimerContext";
+import { useLoading } from "@/hooks/useLoading";
 
-interface Props {
-  setLoading: (flag: boolean) => void
-}
-
-export const LoanView = (props: Props) => {
+export const LoanView = () => {
   const { user } = useAuthStore();
   const { loans, getLoans } = useLoanStore();
   const { printKardexLoan } = useLoanStore();
+  const { setLoading } = useLoading()
 
   const { resetTimer } = useContext(TimerContext)
-
-  const { setLoading } = props
-
 
   useEffect(() => {
     getLoans(user.nup);
   }, [])
-
 
   const handlePaperClick = async (loanId: number) => {
     setLoading(true)

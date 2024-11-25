@@ -3,18 +3,22 @@ import { TimerContext } from "@/context/TimerContext";
 import { useCredentialStore } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { AppBar, CircularProgress, Grid, Paper, Toolbar, Typography } from "@mui/material"
-import { useContext, useEffect, useState } from "react";
-import { LoanView } from "./loans/LoanView";
-import { ContributionView } from "./contributions/ContributionView";
+import { useContext, useEffect } from "react";
 //@ts-expect-error do not proceed
 import imageLogoBlanco from '@/assets/images/muserpol-logo-blanco.png';
+import { useChooserStore } from "@/hooks/useChooserStore";
+import SERVICES from "./menu";
+import { useLoading } from "@/hooks/useLoading";
 
 export const MainView = () => {
 
    const { changeIdentityCard, changeIdentifyUser, changeStep, name, identityCard } = useCredentialStore();
    const { startLogout } = useAuthStore();
    const { seconds, resetTimer } = useContext(TimerContext)
-   const [loading, setLoading] = useState(false)
+   const { selection } = useChooserStore()
+   const { isLoading } = useLoading()
+
+   const selectedService = SERVICES.find((service:any) => service.code === selection)
 
    const handleExit = () => {
       startLogout()
@@ -41,21 +45,20 @@ export const MainView = () => {
                <Typography style={{ color: 'white', fontSize: '2vw', fontWeight: 700 }}>{seconds}</Typography>
             </Toolbar>
          </AppBar>
-         <Grid container spacing={2} style={{ display: 'flex', height: '100vh', marginTop: 5 }}>
-            <Grid item xs={12}>
-               <Grid container spacing={10}>
+         <Grid container spacing={3} style={{ display: 'flex', height: '100vh', marginTop: 5 }}>
+            {/* <Grid item xs={12}> */}
+               {/* <Grid container spacing={10}> */}
                   <Grid xs={6} item style={{ display: 'flex', flexDirection: 'column' }}>
                      <Paper elevation={0} sx={{ height: '73vh', borderRadius: '20px', ml: 10 }}>
-                        <ContributionView setLoading={setLoading} />
+                        {selectedService?.view ? (
+                           selectedService.view
+                        ) : (
+                           <></>
+                        )}
                      </Paper>
                   </Grid>
-                  <Grid xs={6} item>
-                     <Paper elevation={0} sx={{ height: '73vh', borderRadius: '20px', mr: 10 }}>
-                        <LoanView setLoading={setLoading} />
-                     </Paper>
-                  </Grid>
-               </Grid>
-            </Grid>
+               {/* </Grid> */}
+            {/* </Grid> */}
          </Grid>
          <AppBar position="static" sx={{ backgroundColor: '#EEEEEE' }} style={{ flex: '0 0 17%' }}>
             <Grid container justifyContent="center" alignContent="center">
@@ -69,7 +72,7 @@ export const MainView = () => {
                </Grid>
             </Grid>
          </AppBar>
-         {loading &&
+         {isLoading &&
             <div className="overlay">
                <CircularProgress
                   size={120}

@@ -1,30 +1,13 @@
 import CardChooser from "@/components/CardChooser"
 import { useCredentialStore } from "@/hooks"
 import { useChooserStore } from "@/hooks/useChooserStore"
-import { AttachMoney, ExtensionOutlined } from "@mui/icons-material"
 import { Box, Container, Grid } from "@mui/material"
-
-
-const SERVICES = [
-  {
-    code: "CE",
-    title: "COMPLEMENTO ECONÓMICO",
-    subTitle: "Creación de trámites de Complemento Económico.",
-    icon: <ExtensionOutlined />
-  },
-  {
-    code: "LOAN",
-    title: "PRÉSTAMOS",
-    subTitle: "Creación de trámites de Préstamos.",
-    icon: <AttachMoney />
-  }
-]
+import SERVICES from "@/views/content/menu"
 
 export const Chooser = () => {
 
   const { changeStep } = useCredentialStore()
   const { saveSelection } = useChooserStore()
-
 
   const action =  (code: string) => {
     saveSelection(code)
