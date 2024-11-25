@@ -39,7 +39,8 @@ export const BiometricRecognition = forwardRef((_, ref) => {
       if(response) {
         changeStep('home')
         changeIdentifyUser(true)
-      } else {
+      }
+      else {
         Swal.fire({
           title: "Hubo un error",
           text: "No se pudo realizar la comparación",
@@ -69,7 +70,11 @@ export const BiometricRecognition = forwardRef((_, ref) => {
       </Grid>
       { isLoading &&
         <div className="overlay">
-          <div >Comparando huellas...</div>
+          <div style={{ fontSize: '84px', color: '#E0E0E0'}}>Comparando huellas
+          <span className="dot">.</span>
+          <span className="dot">.</span>
+          <span className="dot">.</span>
+          </div>
         </div>
       }
     </Grid>
