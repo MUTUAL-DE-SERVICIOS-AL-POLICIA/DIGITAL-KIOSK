@@ -7,16 +7,9 @@ import { useContributionStore } from "@/hooks/useContributionStore"
 import { useAuthStore } from "@/hooks/useAuthStore"
 import Swal from "sweetalert2"
 import { TimerContext } from "@/context/TimerContext"
+import { useLoading } from "@/hooks/useLoading"
 
-interface Props {
-   setLoading: (flag: boolean) => void
-}
-
-export const ContributionView = (props: Props) => {
-
-   const {
-      setLoading
-   } = props
+export const ContributionView = () => {
 
    const {
       getAllContributions,
@@ -27,6 +20,7 @@ export const ContributionView = (props: Props) => {
    } = useContributionStore()
 
    const { user } = useAuthStore()
+   const { setLoading } = useLoading()
 
    const { resetTimer } = useContext(TimerContext)
 
