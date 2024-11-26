@@ -1,6 +1,7 @@
 import { AttachMoney, ExtensionOutlined, Money } from "@mui/icons-material";
 import { LoanView } from "./loans/LoanView";
 import { ContributionView } from "./contributions/ContributionView";
+import { EconomicComplementView } from "./EconomicComplement/EconomicComplementView";
 
 
 const SERVICES = [
@@ -8,7 +9,8 @@ const SERVICES = [
     code: "CE",
     title: "COMPLEMENTO ECONÓMICO",
     subTitle: "Creación de trámites de Complemento Económico.",
-    icon: <ExtensionOutlined />
+    icon: <ExtensionOutlined />,
+    view: <EconomicComplementView />
   },
   {
     code: "LOAN",
