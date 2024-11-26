@@ -17,6 +17,10 @@ export const getEnvVariables = () => {
         // @ts-expect-error no necesary
         VITE_HOST_API_GATEWAY: import.meta.env.VITE_HOST_API_GATEWAY,
         // @ts-expect-error no necesary
+        VITE_HOST_API_PVT_BE: import.meta.env.VITE_HOST_API_PVT_BE,
+        // @ts-expect-error no necesary
+        VITE_API_PVT_BE_TOKEN: import.meta.env.VITE_API_PVT_BE_TOKEN,
+        // @ts-expect-error no necesary
         DEV_MODE: import.meta.env.VITE_DEV_MODE,
     }
 }
