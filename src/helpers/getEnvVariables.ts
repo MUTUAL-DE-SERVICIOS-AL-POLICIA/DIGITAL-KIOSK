@@ -16,5 +16,7 @@ export const getEnvVariables = () => {
         VITE_HOST_BACKEND_BIOMETRIC: import.meta.env.VITE_HOST_BACKEND_BIOMETRIC,
         // @ts-expect-error no necesary
         VITE_HOST_API_GATEWAY: import.meta.env.VITE_HOST_API_GATEWAY,
+        // @ts-expect-error no necesary
+        DEV_MODE: import.meta.env.VITE_DEV_MODE,
     }
 }
