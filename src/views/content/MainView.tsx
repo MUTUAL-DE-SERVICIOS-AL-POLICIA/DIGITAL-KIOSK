@@ -45,23 +45,19 @@ export const MainView = () => {
                <Typography style={{ color: 'white', fontSize: '2vw', fontWeight: 700 }}>{seconds}</Typography>
             </Toolbar>
          </AppBar>
-         <Grid container spacing={3} style={{ display: 'flex', height: '100vh', marginTop: 5 }}>
-            {/* <Grid item xs={12}> */}
-               {/* <Grid container spacing={10}> */}
-                  <Grid xs={6} item style={{ display: 'flex', flexDirection: 'column' }}>
-                     <Paper elevation={0} sx={{ height: '73vh', borderRadius: '20px', ml: 10 }}>
-                        {selectedService?.view ? (
-                           selectedService.view
-                        ) : (
-                           <></>
-                        )}
-                     </Paper>
-                  </Grid>
-               {/* </Grid> */}
-            {/* </Grid> */}
+         <Grid container spacing={3} justifyContent="center" alignItems="center" style={{ display: 'flex', height: '100vh', marginTop: 4 }}>
+            <Grid xs={6} item style={{ display: 'flex', flexDirection: 'column' }}>
+               <Paper elevation={0} sx={{ height: '73vh', borderRadius: '20px' }}>
+                  {selectedService?.view ? (
+                     selectedService.view
+                  ) : (
+                     <></>
+                  )}
+               </Paper>
+            </Grid>
          </Grid>
          <AppBar position="static" sx={{ backgroundColor: '#EEEEEE' }} style={{ flex: '0 0 17%' }}>
-            <Grid container justifyContent="center" alignContent="center">
+            <Grid container justifyContent="center" alignItems="center">
                <Grid item >
                   <ComponentButton
                      onClick={() => handleExit()}
