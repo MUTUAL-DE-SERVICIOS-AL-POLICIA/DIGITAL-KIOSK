@@ -168,9 +168,6 @@ export const OcrView = memo(
 
     const handleImageCapture = useCallback(
       (image: string, text: string) => {
-        console.log("handleImageCapture -> start");
-        console.log(image);
-        console.log(text);
         setImage(image);
         if (isWithinErrorRange(identityCard, text)) {
           changeStep("faceRecognition");
@@ -192,7 +189,6 @@ export const OcrView = memo(
             timer: 2000,
           });
         }
-        console.log("handleImageCapture -> end");
       },
       [image, changeImage]
     );
@@ -264,7 +260,6 @@ export const OcrView = memo(
     };
 
     const uploadImage = async (e: any) => {
-      console.log("uploadImage");
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();

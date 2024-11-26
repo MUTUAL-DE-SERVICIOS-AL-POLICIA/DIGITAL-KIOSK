@@ -92,7 +92,6 @@ export const FaceRecognition = memo(
     };
 
     const uploadImage = async (e: any) => {
-      console.log("uploadImage");
       cleanup();
       const file = e.target.files[0];
       if (file) {
@@ -112,8 +111,6 @@ export const FaceRecognition = memo(
     const setAutomaticFocus = async (stream: MediaStream) => {
       const track = stream.getVideoTracks()[0];
       const capabilities: any = track.getCapabilities();
-      // console.log("Capabilities:", capabilities);
-      // Configura el enfoque si está disponible
       if (
         capabilities.focusMode &&
         capabilities.focusMode.includes("continuous")
@@ -200,7 +197,6 @@ export const FaceRecognition = memo(
           console.log("El input es un elemento HTML válido.");
         } else {
           console.log("El input no es un elemento válido para face-api.js.");
-          console.log(imageRef.current);
         }
       }
       const detections = await faceapi
