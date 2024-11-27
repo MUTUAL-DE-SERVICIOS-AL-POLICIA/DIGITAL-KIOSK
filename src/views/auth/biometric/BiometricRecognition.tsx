@@ -35,7 +35,7 @@ export const BiometricRecognition = forwardRef((_, ref) => {
       setLoading(true);
       const body = assembleAnswer(fingerprints);
       const { isValid }: any = await compareFingerprints(body);
-      if (!isValid) {
+      if (isValid) {
         // TODO Registrar la huella con mejor calidad
         // TODO Registrar la forma de autenticación
         changeStep("home");
@@ -56,11 +56,22 @@ export const BiometricRecognition = forwardRef((_, ref) => {
 
   return (
     <Grid container alignItems="center" sx={{ my: 5 }}>
-      <Grid item container sm={7} direction="column" justifyContent="space-between">
+      <Grid
+        item
+        container
+        sm={7}
+        direction="column"
+        justifyContent="space-between"
+      >
         <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">
-          <Typography sx={{ p: 2 }} align="center" style={{ fontSize: "2.5vw", fontWeight: 500 }}>
-            Por favor, presione en <b>continuar</b> y a continuación coloque uno de los <b>dedo indicados</b> en la
-            imagen para realizar el <b>reconocimiento biométrico.</b>
+          <Typography
+            sx={{ p: 2 }}
+            align="center"
+            style={{ fontSize: "2.5vw", fontWeight: 500 }}
+          >
+            Por favor, presione en <b>continuar</b> y a continuación coloque uno
+            de los <b>dedo indicados</b> en la imagen para realizar el{" "}
+            <b>reconocimiento biométrico.</b>
           </Typography>
         </Card>
       </Grid>
