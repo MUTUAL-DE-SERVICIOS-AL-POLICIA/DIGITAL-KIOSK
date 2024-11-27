@@ -1,4 +1,3 @@
-
 .keyboardNumeric,
 .keyboardAlphanumeric {
   display: grid;
@@ -15,7 +14,9 @@ div.key,
   background-color: white;
   border: 1px solid gray;
   cursor: pointer;
-  transition: transform 50ms, box-shadow 50ms;
+  transition:
+    transform 50ms,
+    box-shadow 50ms;
   text-align: center;
 }
 .key:hover,
@@ -37,5 +38,5 @@ div.key,
   scale: 5;
 }
 .MuiCircularProgress-svg {
-  color:  white;
+  color: white;
 }
