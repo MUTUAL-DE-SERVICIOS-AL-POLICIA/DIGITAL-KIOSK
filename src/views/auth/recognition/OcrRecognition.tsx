@@ -1,15 +1,6 @@
 import { ImageCapture } from "@/components";
 import { Box, Card, Grid, Stack, Typography } from "@mui/material";
-import {
-  RefObject,
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-  memo,
-} from "react";
+import { RefObject, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState, memo } from "react";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
@@ -46,14 +37,8 @@ export const OcrView = memo(
     const webcamRef: RefObject<Webcam> = useRef(null);
     const canvasWebcamRef: any = useRef(null);
 
-    const {
-      identityCard,
-      changeStep,
-      changeImage,
-      changeRecognizedByOcr,
-      changeLoadingGlobal,
-      savePhoto,
-    } = useCredentialStore();
+    const { identityCard, changeStep, changeImage, changeRecognizedByOcr, changeLoadingGlobal, savePhoto } =
+      useCredentialStore();
     const { changeOcrState } = useStastisticsStore();
     const { authMethodRegistration, user } = useAuthStore();
     const { leftText, middleText, rightText } = useStastisticsStore();
@@ -63,15 +48,10 @@ export const OcrView = memo(
       // @ts-expect-error type is not known
       if (webcamRef.current && webcamRef.current.srcObject)
         // @ts-expect-error type is not known
-        webcamRef.current.srcObject
-          .getTracks()
-          .forEach((track: MediaStreamTrack) => track.stop());
+        webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     }, [webcamRef]);
 
-    const setManualFocus = async (
-      stream: MediaStream,
-      focusDistance: number
-    ) => {
+    const setManualFocus = async (stream: MediaStream, focusDistance: number) => {
       const track = stream.getVideoTracks()[0];
       const capabilities: any = track.getCapabilities();
       // Configura el enfoque si está disponible
@@ -111,11 +91,7 @@ export const OcrView = memo(
       const NEEDLE_MIN_LENGTH = 4;
       const HAYSTACK_MIN_LENGTH = NEEDLE_MIN_LENGTH - MARGIN_OF_ERROR;
       // Longitudes minimas permitidas
-      if (
-        needle.length < NEEDLE_MIN_LENGTH &&
-        haystack.length < HAYSTACK_MIN_LENGTH
-      )
-        return { found: false };
+      if (needle.length < NEEDLE_MIN_LENGTH && haystack.length < HAYSTACK_MIN_LENGTH) return { found: false };
       // Primero intentamos buscar la cadena completa (needle) en haystack
       const foundIndex = haystack.indexOf(needle);
       // Si encontramos una coincidencia exacta, la devolvemos
@@ -142,10 +118,7 @@ export const OcrView = memo(
       return { found: false };
     };
 
-    const isWithinErrorRange = (
-      previouslyEnteredText: string,
-      previouslyRecognizedText: string
-    ): boolean => {
+    const isWithinErrorRange = (previouslyEnteredText: string, previouslyRecognizedText: string): boolean => {
       const enteredText = previouslyEnteredText.replace(/[^\d]/g, "");
       const recognizedText = previouslyRecognizedText.replace(/[\s]/g, "");
       console.log("***************************************************");
@@ -156,9 +129,7 @@ export const OcrView = memo(
       const result = findSimilarSubstring(enteredText, recognizedText);
       if (result.found) {
         console.log(
-          `Cadena encontrada en el indice ${result.index} con la variante: ${
-            result.modified || enteredText
-          }`
+          `Cadena encontrada en el indice ${result.index} con la variante: ${result.modified || enteredText}`
         );
         return true;
       }
@@ -206,8 +177,7 @@ export const OcrView = memo(
       authMethodRegistration(body);
     };
 
-    const isFaceDetectionModelLoad = () =>
-      !!faceapi.nets.tinyFaceDetector.params;
+    const isFaceDetectionModelLoad = () => !!faceapi.nets.tinyFaceDetector.params;
 
     const scanWebcam = async () => {
       if (!isFaceDetectionModelLoad) return;
@@ -218,16 +188,9 @@ export const OcrView = memo(
           const imageSrc = webcamRef.current.getScreenshot();
           if (!imageSrc) return;
           const img = await faceapi.fetchImage(imageSrc);
-          const detections = await faceapi
-            .detectAllFaces(img, options)
-            .withFaceLandmarks()
-            .withFaceDescriptors();
+          const detections = await faceapi.detectAllFaces(img, options).withFaceLandmarks().withFaceDescriptors();
           if (canvasWebcamRef.current && img) {
-            const dims = faceapi.matchDimensions(
-              canvasWebcamRef.current,
-              img,
-              true
-            );
+            const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true);
             const resizedDetections = faceapi.resizeResults(detections, dims);
             detections.forEach(({ detection }) => {
               const boxStyle = {
@@ -236,14 +199,9 @@ export const OcrView = memo(
                 boxColor: "green",
                 drawLabel: true,
               };
-              new faceapi.draw.DrawBox(detection.box, boxStyle).draw(
-                canvasWebcamRef.current
-              );
+              new faceapi.draw.DrawBox(detection.box, boxStyle).draw(canvasWebcamRef.current);
             });
-            faceapi.draw.drawFaceLandmarks(
-              canvasWebcamRef.current,
-              resizedDetections
-            );
+            faceapi.draw.drawFaceLandmarks(canvasWebcamRef.current, resizedDetections);
           }
         }
       }, 60);
@@ -269,7 +227,7 @@ export const OcrView = memo(
             handleImageCapture(imgData ?? "", "8448346");
           }
         };
-        reader.readAsDataURL(file); // Leer el archivo como una URL base64
+        reader.readAsDataURL(file);
       }
     };
 
@@ -286,21 +244,10 @@ export const OcrView = memo(
 
     return (
       <Grid container alignItems="center">
-        <Grid
-          item
-          container
-          sm={6}
-          direction="column"
-          justifyContent="space-between"
-        >
+        <Grid item container sm={6} direction="column" justifyContent="space-between">
           <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">
-            <Typography
-              sx={{ p: 2 }}
-              align="center"
-              style={{ fontSize: "2.5vw", fontWeight: 500 }}
-            >
-              Deposite su <b>carnet de identidad</b> en el{" "}
-              <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
+            <Typography sx={{ p: 2 }} align="center" style={{ fontSize: "2.5vw", fontWeight: 500 }}>
+              Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
             </Typography>
           </Card>
         </Grid>
