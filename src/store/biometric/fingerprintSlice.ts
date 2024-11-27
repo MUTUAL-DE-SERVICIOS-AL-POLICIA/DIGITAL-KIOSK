@@ -1,16 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
 export const fingerprintSlice = createSlice({
-  name: 'fingerprints',
+  name: "fingerprints",
   initialState: {
-    fingerprints: <any>undefined
+    fingerprints: <any>undefined,
   },
   reducers: {
     setFingerprints: (state, action) => {
-      state.fingerprints = action.payload.fingerprints
-    }
-  }
+      state.fingerprints = action.payload.fingerprints;
+    },
+  },
 });
 
-export const { setFingerprints } = fingerprintSlice.actions
+export const { setFingerprints } = fingerprintSlice.actions;
