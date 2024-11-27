@@ -1,9 +1,9 @@
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import { AppRouter } from './router';
-import { store } from './store';
-import { TimerProvider } from './context/TimerContext';
-import { LoadingProvider } from './context/LoadingContext';
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { AppRouter } from "./router";
+import { store } from "./store";
+import { TimerProvider } from "./context/TimerContext";
+import { LoadingProvider } from "./context/LoadingContext";
 
 export const App = () => {
   return (
@@ -16,5 +16,5 @@ export const App = () => {
         </TimerProvider>
       </Provider>
     </BrowserRouter>
-  )
-}
+  );
+};
