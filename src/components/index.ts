@@ -5,5 +5,4 @@ export * from "./ImageCanvas";
 export * from "./Alphanumeric";
 export * from "./keyboardNumeric";
 export * from "./keyboardAlphanumeric";
-export * from "./Tab";
 export * from "./Card";
