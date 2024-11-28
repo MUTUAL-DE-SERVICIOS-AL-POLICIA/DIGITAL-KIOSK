@@ -12,6 +12,7 @@ import { Box, Card, Grid, Stack, Typography } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob, getEnvVariables } from "@/helpers";
+import { usePersonStore } from "@/hooks/usePersonStore";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -45,6 +46,7 @@ export const FaceRecognition = memo(
     } = useCredentialStore();
     const { ocrState, leftText, middleText, rightText } = useStastisticsStore();
     const { authMethodRegistration, user } = useAuthStore();
+    const { person } = usePersonStore();
 
     const videoRef: any = useRef();
     const canvasVideoRef: any = useRef();
@@ -69,7 +71,6 @@ export const FaceRecognition = memo(
           .forEach((track: MediaStreamTrack) => track.stop());
     }, [videoRef]);
 
-    /* Carga de modelos */
     useEffect(() => {
       changeLoadingGlobal(true);
       loadModels()
@@ -97,12 +98,9 @@ export const FaceRecognition = memo(
       if (file) {
         const reader = new FileReader();
         reader.onload = async (event) => {
-          //const imgData = event.target?.result;
           if (typeof event.target?.result === "string") {
             setImageSrc(event.target?.result);
           }
-          //const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS);
-          //scanVideo();
         };
         reader.readAsDataURL(file); // Leer el archivo como una URL base64
       }
@@ -119,7 +117,7 @@ export const FaceRecognition = memo(
           focusMode: "continuous",
         };
         await track.applyConstraints(constraints);
-        console.log("Enfoque automatico aplicado:", track.getSettings());
+        // console.log("Enfoque automatico aplicado:", track.getSettings());
       } else {
         console.log(
           "El enfoque automatico no es compatible con este dispositivo."
@@ -135,40 +133,10 @@ export const FaceRecognition = memo(
         });
         setAutomaticFocus(userStream);
         videoRef?.current && (videoRef.current.srcObject = userStream);
-
-        // SOLO PARA DESARROLLO
-        // const streams = await getAllCameras();
-        // videoRef?.current && (videoRef.current.srcObject = streams[0])
       } catch (error) {
         console.error("Error:", error);
       }
     };
-
-    // // @ts-expect-error used for development
-    // const getAllCameras = async () => {
-    //    try {
-    //       const devices = await navigator.mediaDevices.enumerateDevices()
-    //       const videoDevices = devices.filter(device => device.kind === 'videoinput')
-
-    //       const streams = await Promise.all(videoDevices.map(async device => {
-    //          try {
-    //             return await navigator.mediaDevices.getUserMedia({
-    //                audio: false,
-    //                video: {
-    //                   deviceId: { exact: device.deviceId }
-    //                }
-    //             })
-    //          } catch (error) {
-    //             console.error(`Error al acceder a la cámara ${device.label}`)
-    //             return null
-    //          }
-    //       }))
-    //       return streams.filter(stream => stream !== null)
-    //    } catch (error) {
-    //       console.error("Error al enumerar dispositivos", error)
-    //       return []
-    //    }
-    // }
 
     const isFaceDetectionModelLoad = () =>
       !!faceapi.nets.tinyFaceDetector.params;
@@ -256,8 +224,6 @@ export const FaceRecognition = memo(
       // video
       if (!isFaceDetectionModelLoad()) return;
 
-      const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS);
-
       intervalVideo = setInterval(async () => {
         scanVideo();
       }, 60);
@@ -274,7 +240,6 @@ export const FaceRecognition = memo(
         const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS_PHOTO);
         img = await faceapi.fetchImage(image);
 
-        // creando el elemento
         const canvas = document.createElement("canvas");
 
         img.onload = () => {
@@ -371,7 +336,8 @@ export const FaceRecognition = memo(
         right_text: rightText,
         ocr_state: ocrState,
         facial_recognition: faceState,
-        affiliate_id: user.nup,
+        // affiliate_id: user.nup,
+        person_id: person.id,
       };
       authMethodRegistration(body);
     };

@@ -1,25 +1,32 @@
-import { Card, CardActionArea, CardHeader, CardMedia, Typography } from "@mui/material"
-
+import {
+  Card,
+  CardActionArea,
+  CardHeader,
+  CardMedia,
+  Typography,
+} from "@mui/material";
 
 interface CardMethodChooserProp {
-  title: string
-  image: any
-  action: () => void
+  title: string;
+  image: any;
+  action: () => void;
 }
 
-
 const CardMethodChooser = (props: CardMethodChooserProp) => {
-
-  const { title, image, action } = props
+  const { title, image, action } = props;
 
   return (
-    <Card
-      sx={{minWidth: 450, borderRadius: '40px'}}
-      variant="elevation"
-    >
+    <Card sx={{ minWidth: 450, borderRadius: "40px" }} variant="elevation">
       <CardActionArea onClick={action}>
         <CardHeader
-          title={<Typography align="center" style={{fontSize: '1.6vw', fontWeight: 700}}>{ title }</Typography>}
+          title={
+            <Typography
+              align="center"
+              style={{ fontSize: "1.6vw", fontWeight: 700 }}
+            >
+              {title}
+            </Typography>
+          }
         />
         <CardMedia
           component="img"
@@ -29,7 +36,7 @@ const CardMethodChooser = (props: CardMethodChooserProp) => {
         />
       </CardActionArea>
     </Card>
-  )
-}
+  );
+};
 
 export default CardMethodChooser;

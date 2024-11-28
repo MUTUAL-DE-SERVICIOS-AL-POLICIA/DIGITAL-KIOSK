@@ -1,18 +1,23 @@
-
 import { DoNotDisturbOn } from "@mui/icons-material";
-import { Button, ClickAwayListener, IconButton, Stack, Typography, styled } from "@mui/material"
-import { useState } from "react"
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
-
+import {
+  Button,
+  ClickAwayListener,
+  IconButton,
+  Stack,
+  Typography,
+  styled,
+} from "@mui/material";
+import { useState } from "react";
+import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: theme.palette.common.white,
-    color: 'rgba(0, 0, 0, 0.87)',
+    color: "rgba(0, 0, 0, 0.87)",
     boxShadow: theme.shadows[1],
-    borderRadius: '20px'
+    borderRadius: "20px",
   },
 }));
 
@@ -23,10 +28,13 @@ const Popper = (close: () => void, upKeyboard: () => void) => {
         ¿Cuenta con un carnet alfanumérico? <br />
         Ej: 123456-1M
       </Typography>
-      <Stack direction="row"
-        justifyContent="space-between">
-        <Button style={{ fontSize: 20, fontWeight: 700 }} onClick={upKeyboard}>Si</Button>
-        <Button style={{ fontSize: 20, fontWeight: 700 }} onClick={close}>No</Button>
+      <Stack direction="row" justifyContent="space-between">
+        <Button style={{ fontSize: 20, fontWeight: 700 }} onClick={upKeyboard}>
+          Si
+        </Button>
+        <Button style={{ fontSize: 20, fontWeight: 700 }} onClick={close}>
+          No
+        </Button>
       </Stack>
     </>
   );
@@ -36,9 +44,7 @@ interface alpghaNumericProps {
   handleKeyboardComplete: (value: boolean) => void;
 }
 export const AlphaNumeric = (props: alpghaNumericProps) => {
-  const {
-    handleKeyboardComplete
-  } = props;
+  const { handleKeyboardComplete } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -57,7 +63,10 @@ export const AlphaNumeric = (props: alpghaNumericProps) => {
           disableHoverListener
           disableTouchListener
           placement="top-start"
-          title={Popper(() => handleTooltip(false), () => handleTooltip(true))}
+          title={Popper(
+            () => handleTooltip(false),
+            () => handleTooltip(true)
+          )}
           arrow
         >
           <DoNotDisturbOn sx={{ fontSize: 60 }} onClick={() => setOpen(true)} />

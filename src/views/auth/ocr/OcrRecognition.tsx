@@ -14,9 +14,11 @@ import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
 import Swal from "sweetalert2";
-import "./styles.css";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob, getEnvVariables } from "@/helpers";
+import { usePersonStore } from "@/hooks/usePersonStore";
+import "src/styles.css";
+import { useBiometricStore } from "@/hooks/useBiometric";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -57,6 +59,8 @@ export const OcrView = memo(
     const { changeOcrState } = useStastisticsStore();
     const { authMethodRegistration, user } = useAuthStore();
     const { leftText, middleText, rightText } = useStastisticsStore();
+    const { person, getPerson } = usePersonStore();
+    const { fingerprints, getFingerprints } = useBiometricStore();
 
     const cleanup = useCallback(() => {
       intervalWebCam && clearInterval(intervalWebCam);
@@ -81,7 +85,7 @@ export const OcrView = memo(
           focusDistance: focusDistance,
         };
         await track.applyConstraints(constraints);
-        console.log("Enfoque manual aplicado:", track.getSettings());
+        // console.log("Enfoque manual aplicado:", track.getSettings());
       } else {
         console.log("El enfoque manual no es compatible con este dispositivo.");
       }
@@ -156,9 +160,7 @@ export const OcrView = memo(
       const result = findSimilarSubstring(enteredText, recognizedText);
       if (result.found) {
         console.log(
-          `Cadena encontrada en el indice ${result.index} con la variante: ${
-            result.modified || enteredText
-          }`
+          `Cadena encontrada en el indice ${result.index} con la variante: ${result.modified || enteredText}`
         );
         return true;
       }
@@ -170,7 +172,11 @@ export const OcrView = memo(
       (image: string, text: string) => {
         setImage(image);
         if (isWithinErrorRange(identityCard, text)) {
-          changeStep("faceRecognition");
+          if (fingerprints !== undefined && fingerprints.length !== 0) {
+            changeStep("authMethodChooser");
+          } else {
+            changeStep("faceRecognition");
+          }
           changeRecognizedByOcr(true);
           changeImage(image);
           cleanup();
@@ -201,7 +207,8 @@ export const OcrView = memo(
         right_text: rightText,
         ocr_state: false,
         facial_recognition: false,
-        affiliate_id: user.nup,
+        // affiliate_id: user.nup,
+        person_id: person.id,
       };
       authMethodRegistration(body);
     };
@@ -269,12 +276,20 @@ export const OcrView = memo(
             handleImageCapture(imgData ?? "", "8448346");
           }
         };
-        reader.readAsDataURL(file); // Leer el archivo como una URL base64
+        reader.readAsDataURL(file);
+      }
+    };
+
+    const totalData = async () => {
+      const personId = await getPerson(identityCard);
+      if (personId !== undefined) {
+        await getFingerprints(personId);
       }
     };
 
     useEffect(() => {
       changeLoadingGlobal(true);
+      totalData();
       loadModels()
         .then(async () => {
           await scanWebcam();
@@ -299,7 +314,7 @@ export const OcrView = memo(
               align="center"
               style={{ fontSize: "2.5vw", fontWeight: 500 }}
             >
-              Deposite su <b>carnet de identidad</b> en el{" "}
+              Deposite su <b>carnet de identidad</b> en el
               <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
             </Typography>
           </Card>

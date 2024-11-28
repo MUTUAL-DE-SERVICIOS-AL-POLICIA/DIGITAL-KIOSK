@@ -1,6 +1,6 @@
-import LoadingButton from '@mui/lab/LoadingButton';
-import { SxProps, Theme } from '@mui/material';
-import { MouseEventHandler, ReactNode, memo } from 'react';
+import LoadingButton from "@mui/lab/LoadingButton";
+import { SxProps, Theme } from "@mui/material";
+import { MouseEventHandler, ReactNode, memo } from "react";
 import "./index.css";
 
 interface buttonProps {
@@ -40,16 +40,15 @@ export const ComponentButton = memo((props: buttonProps) => {
       onClick={onClick}
       color={color}
       sx={{
-        marginTop: '10px',
-        marginBottom: '10px',
-        width: '100%',
-        fontWeight: 'bold',
-        backgroundColor: color || '#008698', // Usa el color proporcionado o el predeterminado
-        '&:hover': {
-          transform: 'scale(0.95)',
-          transition: 'transform 0.2s ease', // Añade la propiedad de transición
-          backgroundColor: color ? 'orange' : '#008698',
-          // No especificar backgroundColor aquí para que no cambie en hover
+        marginTop: "10px",
+        marginBottom: "10px",
+        width: "100%",
+        fontWeight: "bold",
+        backgroundColor: color || "#008698",
+        "&:hover": {
+          transform: "scale(0.95)",
+          transition: "transform 0.2s ease",
+          backgroundColor: color ? "orange" : "#008698",
         },
         ...sx,
       }}

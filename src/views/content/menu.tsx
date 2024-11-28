@@ -3,29 +3,28 @@ import { LoanView } from "./loans/LoanView";
 import { ContributionView } from "./contributions/ContributionView";
 import { EconomicComplementView } from "./EconomicComplement/EconomicComplementView";
 
-
 const SERVICES = [
   {
     code: "CE",
     title: "COMPLEMENTO ECONÓMICO",
     subTitle: "Creación de trámites de Complemento Económico.",
     icon: <ExtensionOutlined />,
-    view: <EconomicComplementView />
+    view: <EconomicComplementView />,
   },
   {
     code: "LOAN",
     title: "PRÉSTAMOS",
     subTitle: "Seguimiento de trámites de Préstamos.",
     icon: <AttachMoney />,
-    view: <LoanView />
+    view: <LoanView />,
   },
   {
     code: "CON",
     title: "APORTES",
     subTitle: "Seguimiento de aportes",
-    icon: <Money/>,
-    view: <ContributionView />
-  }
-]
+    icon: <Money />,
+    view: <ContributionView />,
+  },
+];
 
 export default SERVICES;

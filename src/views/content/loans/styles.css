@@ -1,6 +1,8 @@
 .dynamic {
   cursor: pointer;
-  transition: transform 50ms, box-shadow 50ms;
+  transition:
+    transform 50ms,
+    box-shadow 50ms;
 }
 
 .dynamic:hover {
@@ -42,7 +44,9 @@
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(1);
   }
   40% {

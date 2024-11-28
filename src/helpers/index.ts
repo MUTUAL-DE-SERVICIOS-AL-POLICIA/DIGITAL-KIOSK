@@ -1,2 +1,2 @@
-export * from './getEnvVariables';
-export * from './utils';
+export * from "./getEnvVariables";
+export * from "./utils";

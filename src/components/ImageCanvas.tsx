@@ -8,22 +8,18 @@ interface imageProps {
 }
 
 export const ImageCanvas = (props: imageProps) => {
-  const {
-    imageRef,
-    canvasImageRef,
-    src
-  } = props;
+  const { imageRef, canvasImageRef, src } = props;
 
   return (
-    <Stack sx={{display: 'none'}}>
+    <Stack sx={{ display: "none" }}>
       <img
         ref={imageRef}
         src={src}
         style={{
           objectFit: "fill",
-          borderRadius: '30px',
-          backgroundColor: '#fff',
-          padding: '10px',
+          borderRadius: "30px",
+          backgroundColor: "#fff",
+          padding: "10px",
         }}
       />
       <canvas
@@ -31,9 +27,9 @@ export const ImageCanvas = (props: imageProps) => {
         style={{
           position: "absolute",
           pointerEvents: "none",
-          padding: '10px',
+          padding: "10px",
         }}
       />
     </Stack>
-  )
-}
+  );
+};
