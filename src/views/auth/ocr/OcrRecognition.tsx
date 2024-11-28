@@ -175,11 +175,11 @@ export const OcrView = memo(
       console.log("TEXTO RECONOCIDO: \n-->\t", recognizedText);
       console.log("***************************************************");
       const result = findSimilarSubstring(enteredText, recognizedText);
-      console.log(result);
       if (result.found) {
         console.log(
           `Cadena encontrada en el cuadro N° ${result.chart}\ncon la variante: ${result.modified || enteredText}`
         );
+        console.log("***************************************************");
         return true;
       }
       console.log("No se encontró ninguna coincidencia");
