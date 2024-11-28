@@ -12,7 +12,7 @@ const RECTANGLES = [
   { left: 1350, top: 50, width: 500, height: 150 },
 ];
 interface captureProps {
-  onChange: (image: string, text: string) => void;
+  onChange: (image: string, text: string[]) => void;
   webcamRef: RefObject<Webcam>;
   canvasWebcamRef: RefObject<HTMLCanvasElement>;
 }
@@ -90,17 +90,15 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         changeMiddleText(""); // ya no se envia nada :)
         changeRightText(results[1].data.text);
 
-        const initialValue = "";
-        const concatenatedText = results.reduce(
-          (accumulator, currentValue) => accumulator + currentValue.data.text,
-          initialValue
-        );
+        const recognized = results.map(
+          (result) => result.data.text
+        ) as string[];
 
         (document.getElementById("imgi") as HTMLImageElement).src =
           results[1].data.imageBinary || "";
 
         changeLoadingGlobal(false);
-        onChange(canvasURL, concatenatedText);
+        onChange(canvasURL, recognized);
       };
       if (imageSrc != null) {
         img.src = imageSrc;

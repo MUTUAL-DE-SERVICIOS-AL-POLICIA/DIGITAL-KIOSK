@@ -107,40 +107,54 @@ export const OcrView = memo(
       }
     };
 
-    const findSimilarSubstring = (needle: string, haystack: string) => {
+    const findSimilarSubstring = (needle: string, haystack: string[]) => {
       // ? falsos positivos: cuando el número de carnet digitado y el carnet introducido
       // ? solo varian por dos digitos al inicio y final. Ej. (inicio) 8900123, 1100123
       // ? Ej. (final) 8900123, 8900178
+      // Longitudes minimas permitidas
       const MARGIN_OF_ERROR = 2;
       const NEEDLE_MIN_LENGTH = 4;
       const HAYSTACK_MIN_LENGTH = NEEDLE_MIN_LENGTH - MARGIN_OF_ERROR;
-      // Longitudes minimas permitidas
-      if (
-        needle.length < NEEDLE_MIN_LENGTH &&
-        haystack.length < HAYSTACK_MIN_LENGTH
-      )
-        return { found: false };
-      // Primero intentamos buscar la cadena completa (needle) en haystack
-      const foundIndex = haystack.indexOf(needle);
-      // Si encontramos una coincidencia exacta, la devolvemos
-      if (foundIndex !== -1) return { found: true, index: foundIndex };
+
+      for (let i = 0; i < haystack.length; i++) {
+        if (
+          needle.length < NEEDLE_MIN_LENGTH &&
+          haystack[i].length < HAYSTACK_MIN_LENGTH
+        )
+          return { found: false };
+        // Primero intentamos buscar la cadena completa (needle) en haystack
+        const foundIndex = haystack[i].indexOf(needle);
+
+        // Si encontramos una coincidencia exacta, la devolvemos
+        if (foundIndex !== -1)
+          return {
+            found: true,
+            index: foundIndex,
+            modified: needle,
+            chart: i + 1,
+          };
+      }
       // Si no la encontramos, probamos con cadenas más pequeñas
-      for (let i = 1; i <= MARGIN_OF_ERROR; i++) {
-        const subNeedle1 = needle.slice(0, needle.length - i); // Eliminando desde el final
-        const subNeedle2 = needle.slice(i); // Eliminado desde el inicio
-        // Buscamos en las cadenas recortadas en el pajar
-        if (haystack.includes(subNeedle1))
-          return {
-            found: true,
-            index: haystack.indexOf(subNeedle1),
-            modified: subNeedle1,
-          };
-        if (haystack.includes(subNeedle2))
-          return {
-            found: true,
-            index: haystack.indexOf(subNeedle2),
-            modified: subNeedle2,
-          };
+      for (let k = 0; k < haystack.length; k++) {
+        for (let i = 1; i <= MARGIN_OF_ERROR; i++) {
+          const subNeedle1 = needle.slice(0, needle.length - i); // Eliminando desde el final
+          const subNeedle2 = needle.slice(i); // Eliminado desde el inicio
+          // Buscamos las cadenas recortadas en el pajar
+          if (haystack[k].includes(subNeedle1))
+            return {
+              found: true,
+              index: haystack[k].indexOf(subNeedle1),
+              modified: subNeedle1,
+              chart: k + 1,
+            };
+          if (haystack[k].includes(subNeedle2))
+            return {
+              found: true,
+              index: haystack[k].indexOf(subNeedle2),
+              modified: subNeedle2,
+              chart: k + 1,
+            };
+        }
       }
       // Si no encontramos ninguna coincidencia
       return { found: false };
@@ -148,19 +162,23 @@ export const OcrView = memo(
 
     const isWithinErrorRange = (
       previouslyEnteredText: string,
-      previouslyRecognizedText: string
+      previouslyRecognizedText: string[]
     ): boolean => {
       const enteredText = previouslyEnteredText.replace(/[^\d]/g, "");
-      const recognizedText = previouslyRecognizedText.replace(/[\s]/g, "");
+      const recognizedText = previouslyRecognizedText.map((recognized) => {
+        return recognized.replace(/[\s]/g, "");
+      });
+      // const recognizedText = previouslyRecognizedText.replace(/[\s]/g, "");
       console.log("***************************************************");
       console.log("TEXTO INGRESADO: \n-->\t", enteredText);
       console.log("***************************************************");
       console.log("TEXTO RECONOCIDO: \n-->\t", recognizedText);
       console.log("***************************************************");
       const result = findSimilarSubstring(enteredText, recognizedText);
+      console.log(result);
       if (result.found) {
         console.log(
-          `Cadena encontrada en el indice ${result.index} con la variante: ${result.modified || enteredText}`
+          `Cadena encontrada en el cuadro N° ${result.chart}\ncon la variante: ${result.modified || enteredText}`
         );
         return true;
       }
@@ -169,7 +187,7 @@ export const OcrView = memo(
     };
 
     const handleImageCapture = useCallback(
-      (image: string, text: string) => {
+      (image: string, text: string[]) => {
         setImage(image);
         if (isWithinErrorRange(identityCard, text)) {
           if (fingerprints !== undefined && fingerprints.length !== 0) {
@@ -273,7 +291,7 @@ export const OcrView = memo(
         reader.onload = (event) => {
           const imgData = event.target?.result;
           if (typeof imgData === "string") {
-            handleImageCapture(imgData ?? "", "8448346");
+            handleImageCapture(imgData ?? "", ["8448346", ""]);
           }
         };
         reader.readAsDataURL(file);
