@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { coffeApi } from "@/services";
+import { coffeApi, gatewayApi } from "@/services";
 import { onLogin, onLogout } from "@/store";
 import { useCredentialStore } from ".";
 import { getEnvVariables } from "@/helpers";
@@ -35,13 +35,18 @@ export const useAuthStore = () => {
         changeIdentityCard(identityCard);
         changeName(data.payload.full_name);
         dispatch(onLogin(dataUser));
-        changeStep("authMethodChooser");
+        changeStep("chooser");
         changeLoadingGlobal(false);
       }, 1000);
     } catch (error: any) {
       changeLoadingGlobal(false);
       changeIdentityCard("");
-      if (!error.response) return Swal.fire("Intentalo nuevamente", "Error en el servidor", "error");
+      if (!error.response)
+        return Swal.fire(
+          "Intentalo nuevamente",
+          "Error en el servidor",
+          "error"
+        );
       dispatch(onLogout());
       const message = error.response.data.message;
       Swal.fire({
@@ -72,9 +77,13 @@ export const useAuthStore = () => {
 
   const authMethodRegistration = async (body: object) => {
     try {
-      await coffeApi.post("/report/register_auth_kiosk", body);
+      // await coffeApi.post("/report/register_auth_kiosk", body);
+      await gatewayApi.post("/kiosk/saveDataKioskAuth", body);
     } catch (error: any) {
-      console.error("Hubo un error: ", error);
+      console.error(
+        "Salió un error al guardar el método de autenticación: ",
+        error
+      );
     }
   };
 

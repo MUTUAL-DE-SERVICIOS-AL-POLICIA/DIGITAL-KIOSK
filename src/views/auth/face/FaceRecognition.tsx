@@ -1,9 +1,18 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, memo, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  memo,
+  useState,
+} from "react";
 import * as faceapi from "face-api.js";
 import { Box, Card, Grid, Stack, Typography } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob, getEnvVariables } from "@/helpers";
+import { usePersonStore } from "@/hooks/usePersonStore";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -37,6 +46,7 @@ export const FaceRecognition = memo(
     } = useCredentialStore();
     const { ocrState, leftText, middleText, rightText } = useStastisticsStore();
     const { authMethodRegistration, user } = useAuthStore();
+    const { person } = usePersonStore();
 
     const videoRef: any = useRef();
     const canvasVideoRef: any = useRef();
@@ -55,7 +65,10 @@ export const FaceRecognition = memo(
     const cleanup = useCallback(() => {
       intervalVideo && clearInterval(intervalVideo);
 
-      if (videoRef.current) videoRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      if (videoRef.current)
+        videoRef.current.srcObject
+          .getTracks()
+          .forEach((track: MediaStreamTrack) => track.stop());
     }, [videoRef]);
 
     useEffect(() => {
@@ -96,14 +109,19 @@ export const FaceRecognition = memo(
     const setAutomaticFocus = async (stream: MediaStream) => {
       const track = stream.getVideoTracks()[0];
       const capabilities: any = track.getCapabilities();
-      if (capabilities.focusMode && capabilities.focusMode.includes("continuous")) {
+      if (
+        capabilities.focusMode &&
+        capabilities.focusMode.includes("continuous")
+      ) {
         const constraints: any = {
           focusMode: "continuous",
         };
         await track.applyConstraints(constraints);
-        console.log("Enfoque automatico aplicado:", track.getSettings());
+        // console.log("Enfoque automatico aplicado:", track.getSettings());
       } else {
-        console.log("El enfoque automatico no es compatible con este dispositivo.");
+        console.log(
+          "El enfoque automatico no es compatible con este dispositivo."
+        );
       }
     };
 
@@ -120,13 +138,21 @@ export const FaceRecognition = memo(
       }
     };
 
-    const isFaceDetectionModelLoad = () => !!faceapi.nets.tinyFaceDetector.params;
+    const isFaceDetectionModelLoad = () =>
+      !!faceapi.nets.tinyFaceDetector.params;
 
     const groupDescriptorsByName = (faceDescriptors: any) =>
       faceDescriptors.reduce(
-        (groupedDescriptors: GroupedDescriptors, { descriptor }: { descriptor: any }, index: number) => {
+        (
+          groupedDescriptors: GroupedDescriptors,
+          { descriptor }: { descriptor: any },
+          index: number
+        ) => {
           const name = `persona ${index}`;
-          groupedDescriptors[name] = [...(groupedDescriptors[name] || []), descriptor];
+          groupedDescriptors[name] = [
+            ...(groupedDescriptors[name] || []),
+            descriptor,
+          ];
           return groupedDescriptors;
         },
         {}
@@ -148,13 +174,18 @@ export const FaceRecognition = memo(
 
       const groupedDescriptors = groupDescriptorsByName(detections);
       const labeledDescriptors = Object.keys(groupedDescriptors).map(
-        (name) => new faceapi.LabeledFaceDescriptors(name, groupedDescriptors[name])
+        (name) =>
+          new faceapi.LabeledFaceDescriptors(name, groupedDescriptors[name])
       );
 
       if (labeledDescriptors.length > 0) {
         faceMatcher = new faceapi.FaceMatcher(labeledDescriptors);
         if (videoRef.current != null) {
-          const dims = faceapi.matchDimensions(canvasVideoRef.current, videoRef.current, true);
+          const dims = faceapi.matchDimensions(
+            canvasVideoRef.current,
+            videoRef.current,
+            true
+          );
           const resizedDetections = faceapi.resizeResults(detections, dims);
           resizedDetections.forEach(({ detection, descriptor }) => {
             let label = faceMatcher.findBestMatch(descriptor).toString();
@@ -165,16 +196,26 @@ export const FaceRecognition = memo(
               boxColor: "green",
               drawLabel: true,
             };
-            new faceapi.draw.DrawBox(detection.box, boxStyle).draw(canvasVideoRef.current);
+            new faceapi.draw.DrawBox(detection.box, boxStyle).draw(
+              canvasVideoRef.current
+            );
           });
-          faceapi.draw.drawFaceLandmarks(canvasVideoRef.current, resizedDetections);
+          faceapi.draw.drawFaceLandmarks(
+            canvasVideoRef.current,
+            resizedDetections
+          );
         }
       } else {
         if (canvasVideoRef.current != null) {
           const ctx = canvasVideoRef.current.getContext("2d", {
             willReadFrequently: true,
           });
-          ctx.clearRect(0, 0, canvasVideoRef.current.width, canvasVideoRef.current.height);
+          ctx.clearRect(
+            0,
+            0,
+            canvasVideoRef.current.width,
+            canvasVideoRef.current.height
+          );
         }
       }
     };
@@ -208,7 +249,10 @@ export const FaceRecognition = memo(
           canvas.height = height;
         };
 
-        const detections = await faceapi.detectAllFaces(img, options).withFaceLandmarks().withFaceDescriptors();
+        const detections = await faceapi
+          .detectAllFaces(img, options)
+          .withFaceLandmarks()
+          .withFaceDescriptors();
 
         if (detections.length === 0) {
           changeLoadingGlobal(false);
@@ -292,12 +336,19 @@ export const FaceRecognition = memo(
         right_text: rightText,
         ocr_state: ocrState,
         facial_recognition: faceState,
-        affiliate_id: user.nup,
+        // affiliate_id: user.nup,
+        person_id: person.id,
       };
       authMethodRegistration(body);
     };
 
-    const operative = ({ step, identifyUser }: { step: string; identifyUser: boolean }) => {
+    const operative = ({
+      step,
+      identifyUser,
+    }: {
+      step: string;
+      identifyUser: boolean;
+    }) => {
       changeStep(step);
       changeIdentifyUser(identifyUser);
       cleanup();
@@ -305,12 +356,23 @@ export const FaceRecognition = memo(
 
     return (
       <Grid container alignItems="center">
-        <Grid item container sm={6} direction="column" justifyContent="space-between">
+        <Grid
+          item
+          container
+          sm={6}
+          direction="column"
+          justifyContent="space-between"
+        >
           <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">
-            <Typography sx={{ p: 2 }} align="center" style={{ fontSize: "2.5vw", fontWeight: 500 }}>
+            <Typography
+              sx={{ p: 2 }}
+              align="center"
+              style={{ fontSize: "2.5vw", fontWeight: 500 }}
+            >
               Por favor, retire su <b>carnet de identidad</b> del soporte.
               <br />
-              Quítese el sombrero, lentes y barbijo para el reconocimiento facial y presione en <b>continuar.</b>
+              Quítese el sombrero, lentes y barbijo para el reconocimiento
+              facial y presione en <b>continuar.</b>
             </Typography>
           </Card>
         </Grid>

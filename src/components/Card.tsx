@@ -1,5 +1,5 @@
 import { Card, Grid, Paper, Stack, Typography } from "@mui/material";
-import "../views/content/loans/styles.css";
+import "src/styles.css";
 import { Print } from "@mui/icons-material";
 
 interface Props {

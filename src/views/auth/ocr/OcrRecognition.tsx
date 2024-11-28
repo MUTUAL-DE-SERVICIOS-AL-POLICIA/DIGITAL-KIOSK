@@ -1,13 +1,24 @@
 import { ImageCapture } from "@/components";
 import { Box, Card, Grid, Stack, Typography } from "@mui/material";
-import { RefObject, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState, memo } from "react";
+import {
+  RefObject,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  memo,
+} from "react";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
 import Swal from "sweetalert2";
-import "./styles.css";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob, getEnvVariables } from "@/helpers";
+import { usePersonStore } from "@/hooks/usePersonStore";
+import "src/styles.css";
+import { useBiometricStore } from "@/hooks/useBiometric";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -37,21 +48,34 @@ export const OcrView = memo(
     const webcamRef: RefObject<Webcam> = useRef(null);
     const canvasWebcamRef: any = useRef(null);
 
-    const { identityCard, changeStep, changeImage, changeRecognizedByOcr, changeLoadingGlobal, savePhoto } =
-      useCredentialStore();
+    const {
+      identityCard,
+      changeStep,
+      changeImage,
+      changeRecognizedByOcr,
+      changeLoadingGlobal,
+      savePhoto,
+    } = useCredentialStore();
     const { changeOcrState } = useStastisticsStore();
     const { authMethodRegistration, user } = useAuthStore();
     const { leftText, middleText, rightText } = useStastisticsStore();
+    const { person, getPerson } = usePersonStore();
+    const { fingerprints, getFingerprints } = useBiometricStore();
 
     const cleanup = useCallback(() => {
       intervalWebCam && clearInterval(intervalWebCam);
       // @ts-expect-error type is not known
       if (webcamRef.current && webcamRef.current.srcObject)
         // @ts-expect-error type is not known
-        webcamRef.current.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+        webcamRef.current.srcObject
+          .getTracks()
+          .forEach((track: MediaStreamTrack) => track.stop());
     }, [webcamRef]);
 
-    const setManualFocus = async (stream: MediaStream, focusDistance: number) => {
+    const setManualFocus = async (
+      stream: MediaStream,
+      focusDistance: number
+    ) => {
       const track = stream.getVideoTracks()[0];
       const capabilities: any = track.getCapabilities();
       // Configura el enfoque si está disponible
@@ -61,7 +85,7 @@ export const OcrView = memo(
           focusDistance: focusDistance,
         };
         await track.applyConstraints(constraints);
-        console.log("Enfoque manual aplicado:", track.getSettings());
+        // console.log("Enfoque manual aplicado:", track.getSettings());
       } else {
         console.log("El enfoque manual no es compatible con este dispositivo.");
       }
@@ -91,7 +115,11 @@ export const OcrView = memo(
       const NEEDLE_MIN_LENGTH = 4;
       const HAYSTACK_MIN_LENGTH = NEEDLE_MIN_LENGTH - MARGIN_OF_ERROR;
       // Longitudes minimas permitidas
-      if (needle.length < NEEDLE_MIN_LENGTH && haystack.length < HAYSTACK_MIN_LENGTH) return { found: false };
+      if (
+        needle.length < NEEDLE_MIN_LENGTH &&
+        haystack.length < HAYSTACK_MIN_LENGTH
+      )
+        return { found: false };
       // Primero intentamos buscar la cadena completa (needle) en haystack
       const foundIndex = haystack.indexOf(needle);
       // Si encontramos una coincidencia exacta, la devolvemos
@@ -118,7 +146,10 @@ export const OcrView = memo(
       return { found: false };
     };
 
-    const isWithinErrorRange = (previouslyEnteredText: string, previouslyRecognizedText: string): boolean => {
+    const isWithinErrorRange = (
+      previouslyEnteredText: string,
+      previouslyRecognizedText: string
+    ): boolean => {
       const enteredText = previouslyEnteredText.replace(/[^\d]/g, "");
       const recognizedText = previouslyRecognizedText.replace(/[\s]/g, "");
       console.log("***************************************************");
@@ -141,7 +172,11 @@ export const OcrView = memo(
       (image: string, text: string) => {
         setImage(image);
         if (isWithinErrorRange(identityCard, text)) {
-          changeStep("faceRecognition");
+          if (fingerprints !== undefined && fingerprints.length !== 0) {
+            changeStep("authMethodChooser");
+          } else {
+            changeStep("faceRecognition");
+          }
           changeRecognizedByOcr(true);
           changeImage(image);
           cleanup();
@@ -172,12 +207,14 @@ export const OcrView = memo(
         right_text: rightText,
         ocr_state: false,
         facial_recognition: false,
-        affiliate_id: user.nup,
+        // affiliate_id: user.nup,
+        person_id: person.id,
       };
       authMethodRegistration(body);
     };
 
-    const isFaceDetectionModelLoad = () => !!faceapi.nets.tinyFaceDetector.params;
+    const isFaceDetectionModelLoad = () =>
+      !!faceapi.nets.tinyFaceDetector.params;
 
     const scanWebcam = async () => {
       if (!isFaceDetectionModelLoad) return;
@@ -188,9 +225,16 @@ export const OcrView = memo(
           const imageSrc = webcamRef.current.getScreenshot();
           if (!imageSrc) return;
           const img = await faceapi.fetchImage(imageSrc);
-          const detections = await faceapi.detectAllFaces(img, options).withFaceLandmarks().withFaceDescriptors();
+          const detections = await faceapi
+            .detectAllFaces(img, options)
+            .withFaceLandmarks()
+            .withFaceDescriptors();
           if (canvasWebcamRef.current && img) {
-            const dims = faceapi.matchDimensions(canvasWebcamRef.current, img, true);
+            const dims = faceapi.matchDimensions(
+              canvasWebcamRef.current,
+              img,
+              true
+            );
             const resizedDetections = faceapi.resizeResults(detections, dims);
             detections.forEach(({ detection }) => {
               const boxStyle = {
@@ -199,9 +243,14 @@ export const OcrView = memo(
                 boxColor: "green",
                 drawLabel: true,
               };
-              new faceapi.draw.DrawBox(detection.box, boxStyle).draw(canvasWebcamRef.current);
+              new faceapi.draw.DrawBox(detection.box, boxStyle).draw(
+                canvasWebcamRef.current
+              );
             });
-            faceapi.draw.drawFaceLandmarks(canvasWebcamRef.current, resizedDetections);
+            faceapi.draw.drawFaceLandmarks(
+              canvasWebcamRef.current,
+              resizedDetections
+            );
           }
         }
       }, 60);
@@ -231,8 +280,16 @@ export const OcrView = memo(
       }
     };
 
+    const totalData = async () => {
+      const personId = await getPerson(identityCard);
+      if (personId !== undefined) {
+        await getFingerprints(personId);
+      }
+    };
+
     useEffect(() => {
       changeLoadingGlobal(true);
+      totalData();
       loadModels()
         .then(async () => {
           await scanWebcam();
@@ -244,10 +301,21 @@ export const OcrView = memo(
 
     return (
       <Grid container alignItems="center">
-        <Grid item container sm={6} direction="column" justifyContent="space-between">
+        <Grid
+          item
+          container
+          sm={6}
+          direction="column"
+          justifyContent="space-between"
+        >
           <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">
-            <Typography sx={{ p: 2 }} align="center" style={{ fontSize: "2.5vw", fontWeight: 500 }}>
-              Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
+            <Typography
+              sx={{ p: 2 }}
+              align="center"
+              style={{ fontSize: "2.5vw", fontWeight: 500 }}
+            >
+              Deposite su <b>carnet de identidad</b> en el
+              <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
             </Typography>
           </Card>
         </Grid>

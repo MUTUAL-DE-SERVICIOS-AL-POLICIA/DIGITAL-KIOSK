@@ -24,7 +24,11 @@ const colors = {
 };
 
 export const Fingerprint = () => {
-  const drawAndPaintFingers = (area: Area, ctx: CanvasRenderingContext2D, color: string) => {
+  const drawAndPaintFingers = (
+    area: Area,
+    ctx: CanvasRenderingContext2D,
+    color: string
+  ) => {
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.ellipse(
@@ -46,8 +50,12 @@ export const Fingerprint = () => {
   };
 
   useEffect(() => {
-    const img = document.getElementById("imageHands") as HTMLImageElement | null;
-    const canvas = document.getElementById("canvas") as HTMLCanvasElement | null;
+    const img = document.getElementById(
+      "imageHands"
+    ) as HTMLImageElement | null;
+    const canvas = document.getElementById(
+      "canvas"
+    ) as HTMLCanvasElement | null;
     const ctx = canvas!.getContext("2d") as CanvasRenderingContext2D | null;
 
     const initializeCanvas = () => {

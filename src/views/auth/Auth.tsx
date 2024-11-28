@@ -8,7 +8,6 @@ import imageLogoBlanco from "@/assets/images/muserpol-logo-blanco.png";
 import { HomeScreen } from "./HomeScreen";
 import { FaceRecognition, OcrView } from ".";
 import Footer from "@/components/Footer";
-import { PreviousRecognition } from "./PreviousRecognition";
 
 import { TimerContext } from "@/context/TimerContext";
 import { AuthMethodChooser } from "./AuthMethodChooser";
@@ -74,30 +73,26 @@ export const AuthView = () => {
         />
       )}
       <div style={{ flex: "1 1 auto", overflowX: "auto" }}>
-        {step == "home" && <HomeScreen />}
         {/* Pantalla casita */}
-        {step == "chooser" && <Chooser />}{" "}
-        {/* Pantalla selección de servicio */}
-        {step == "identityCard" && <IdentityCard ref={childRef} />}
+        {step == "home" && <HomeScreen />}
         {/* Pantalla input carnet */}
-        {step == "authMethodChooser" && <AuthMethodChooser />}{" "}
-        {/* Pantalla de selección de autenticación */}
+        {step == "identityCard" && <IdentityCard ref={childRef} />}
+        {/* Pantalla selección de servicio */}
+        {step == "chooser" && <Chooser />}
+        {/* Pantalla instrucción */}
         {step == "instructionCard" && identityCard != "" && (
           <InstructionCard ref={childRef} />
         )}
-        {/* Pantalla instrucción */}
-        {step == "recognitionCard" && <OcrView ref={childRef} />}{" "}
         {/* Pantalla reconocimiento ocr */}
-        {step == "previousFaceRecognition" && (
-          <PreviousRecognition ref={childRef} />
-        )}{" "}
-        {/* Pantalla para retirar el carnet */}
-        {step == "faceRecognition" && <FaceRecognition ref={childRef} />}{" "}
+        {step == "recognitionCard" && <OcrView ref={childRef} />}
+        {/* Pantalla de selección de autenticación */}
+        {step == "authMethodChooser" && <AuthMethodChooser />}
         {/* Pantalla de reconocimiento facial */}
+        {step == "faceRecognition" && <FaceRecognition ref={childRef} />}
+        {/* Pantalla reconocimiento de huellas */}
         {step == "biometricRecognition" && (
           <BiometricRecognition ref={childRef} />
-        )}{" "}
-        {/* Pantalla reconocimiento de huellas */}
+        )}
       </div>
       {step != "home" && step != "chooser" && step != "authMethodChooser" && (
         <Footer action={handleClick} onRemoveCam={handleClean} />
