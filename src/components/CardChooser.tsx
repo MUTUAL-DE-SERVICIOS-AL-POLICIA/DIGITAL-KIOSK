@@ -7,7 +7,7 @@ import {
   styled,
   Typography,
 } from "@mui/material";
-import React, { cloneElement } from "react";
+import React, { cloneElement, memo } from "react";
 
 const StyledCard = styled(Card)(() => ({
   backgroundColor: "white",
@@ -22,7 +22,8 @@ interface CardChooserProps {
   title: string;
   subTitle: string;
   icon: React.ReactElement;
-  action: () => void;
+  code: string;
+  onAction: (code: string) => void;
 }
 
 const sxIcon = {
@@ -33,12 +34,12 @@ const sxIcon = {
   my: 2,
 };
 
-const CardChooser = (props: CardChooserProps) => {
-  const { title, subTitle, icon, action } = props;
+const CardChooser = memo((props: CardChooserProps) => {
+  const { title, subTitle, icon, code, onAction } = props;
   return (
     <Grid item xs={12}>
       <StyledCard variant="outlined">
-        <CardActionArea onClick={action}>
+        <CardActionArea onClick={() => onAction(code)}>
           <CardContent sx={{ display: "flex", alignItems: "center" }}>
             {icon &&
               cloneElement(icon as React.ReactElement, {
@@ -56,6 +57,6 @@ const CardChooser = (props: CardChooserProps) => {
       </StyledCard>
     </Grid>
   );
-};
+});
 
 export default CardChooser;

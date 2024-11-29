@@ -5,19 +5,21 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
+import { memo } from "react";
 
 interface CardMethodChooserProp {
   title: string;
   image: any;
-  action: () => void;
+  step: string;
+  onAction: (step: string) => void;
 }
 
-const CardMethodChooser = (props: CardMethodChooserProp) => {
-  const { title, image, action } = props;
+const CardMethodChooser = memo((props: CardMethodChooserProp) => {
+  const { title, image, step, onAction } = props;
 
   return (
     <Card sx={{ minWidth: 450, borderRadius: "40px" }} variant="elevation">
-      <CardActionArea onClick={action}>
+      <CardActionArea onClick={() => onAction(step)}>
         <CardHeader
           title={
             <Typography
@@ -37,6 +39,6 @@ const CardMethodChooser = (props: CardMethodChooserProp) => {
       </CardActionArea>
     </Card>
   );
-};
+});
 
 export default CardMethodChooser;

@@ -28,6 +28,14 @@ export const ComponentButton = memo((props: buttonProps) => {
     color,
   } = props;
 
+  const defaultStyles: SxProps<Theme> = {
+    backgroundColor: color || "#008698",
+    "&:hover": {
+      backgroundColor: color || "#006577",
+    },
+    ...sx,
+  };
+
   return (
     <LoadingButton
       loading={loading}
@@ -37,12 +45,7 @@ export const ComponentButton = memo((props: buttonProps) => {
       endIcon={endIcon}
       onClick={onClick}
       color={color}
-      sx={{
-        backgroundColor: color || "#008698",
-        // backgroundColor: (props: any) =>
-        //   props.color ? "orange" : "#008698",
-        ...sx,
-      }}
+      sx={defaultStyles}
     >
       {text}
     </LoadingButton>

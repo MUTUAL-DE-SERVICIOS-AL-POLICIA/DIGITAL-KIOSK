@@ -87,7 +87,9 @@ export const FaceRecognition = memo(
         .then(async () => {
           await scanFace();
           await getLocalUserVideo();
-          changeLoadingGlobal(false);
+          setTimeout(() => {
+            changeLoadingGlobal(false);
+          }, 2000); // 2 segundos de espera para el enfoque automático
         })
         .catch(() => console.error("No se cargaron los modelos"));
     }, []);
