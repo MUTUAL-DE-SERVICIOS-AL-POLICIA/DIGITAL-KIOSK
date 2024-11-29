@@ -1,4 +1,4 @@
-import { Card, Grid, Typography } from "@mui/material";
+import { Card, Grid } from "@mui/material";
 // @ts-expect-error
 import Hands from "@/assets/images/hands.png";
 import Fingerprint from "./Fingerprint";
@@ -7,6 +7,16 @@ import { useLoading } from "@/hooks/useLoading";
 import { useBiometricStore } from "@/hooks/useBiometric";
 import { useCredentialStore } from "@/hooks";
 import Swal from "sweetalert2";
+import { usePersonStore } from "@/hooks/usePersonStore";
+import { CardInfo } from "@/components/CardInfo";
+
+const text = (
+  <>
+    Por favor, presione en <b>continuar</b> y a continuación coloque uno de los{" "}
+    <b>dedo indicados</b> en la imagen para realizar el{" "}
+    <b>reconocimiento biométrico.</b>
+  </>
+);
 
 export const BiometricRecognition = forwardRef((_, ref) => {
   useImperativeHandle(ref, () => ({
@@ -16,12 +26,13 @@ export const BiometricRecognition = forwardRef((_, ref) => {
   }));
 
   const { isLoading, setLoading } = useLoading();
-  const { fingerprints, compareFingerprints } = useBiometricStore();
+  const { compareFingerprints, getFingerprints } = useBiometricStore();
   const { changeStep, changeIdentifyUser } = useCredentialStore();
+  const { person } = usePersonStore();
 
-  const assembleAnswer = (fingerprints: any[]) => {
-    if (fingerprints !== undefined) {
-      return fingerprints.map((fingerprint: any) => {
+  const assembleAnswer = (fingers: any[]) => {
+    if (fingers !== undefined) {
+      return fingers.map((fingerprint: any) => {
         const wsq = fingerprint.wsqBase64;
         const quality = fingerprint.quality;
         const fingerprintTypeId = fingerprint.fingerprintType.id;
@@ -33,7 +44,8 @@ export const BiometricRecognition = forwardRef((_, ref) => {
   const handleBiometric = async () => {
     try {
       setLoading(true);
-      const body = assembleAnswer(fingerprints);
+      const fingers = await getFingerprints(person.id);
+      const body = assembleAnswer(fingers);
       const { isValid }: any = await compareFingerprints(body);
       if (isValid) {
         // TODO Registrar la huella con mejor calidad
@@ -63,17 +75,7 @@ export const BiometricRecognition = forwardRef((_, ref) => {
         direction="column"
         justifyContent="space-between"
       >
-        <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">
-          <Typography
-            sx={{ p: 2 }}
-            align="center"
-            style={{ fontSize: "2.5vw", fontWeight: 500 }}
-          >
-            Por favor, presione en <b>continuar</b> y a continuación coloque uno
-            de los <b>dedo indicados</b> en la imagen para realizar el{" "}
-            <b>reconocimiento biométrico.</b>
-          </Typography>
-        </Card>
+        <CardInfo text={text} />
       </Grid>
       <Grid item container sm={5} direction="column">
         <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">

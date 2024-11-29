@@ -8,11 +8,12 @@ import {
   useState,
 } from "react";
 import * as faceapi from "face-api.js";
-import { Box, Card, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob, getEnvVariables } from "@/helpers";
 import { usePersonStore } from "@/hooks/usePersonStore";
+import { CardInfo } from "@/components/CardInfo";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -31,6 +32,15 @@ let faceMatcher: any = null;
 interface GroupedDescriptors {
   [key: string]: any[];
 }
+
+const text = (
+  <>
+    Por favor, retire su <b>carnet de identidad</b> del soporte.
+    <br />
+    Quítese el sombrero, lentes y barbijo para el reconocimiento facial y
+    presione en <b>continuar.</b>
+  </>
+);
 
 export const FaceRecognition = memo(
   forwardRef((_, ref) => {
@@ -117,7 +127,6 @@ export const FaceRecognition = memo(
           focusMode: "continuous",
         };
         await track.applyConstraints(constraints);
-        // console.log("Enfoque automatico aplicado:", track.getSettings());
       } else {
         console.log(
           "El enfoque automatico no es compatible con este dispositivo."
@@ -363,18 +372,7 @@ export const FaceRecognition = memo(
           direction="column"
           justifyContent="space-between"
         >
-          <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">
-            <Typography
-              sx={{ p: 2 }}
-              align="center"
-              style={{ fontSize: "2.5vw", fontWeight: 500 }}
-            >
-              Por favor, retire su <b>carnet de identidad</b> del soporte.
-              <br />
-              Quítese el sombrero, lentes y barbijo para el reconocimiento
-              facial y presione en <b>continuar.</b>
-            </Typography>
-          </Card>
+          <CardInfo text={text} />
         </Grid>
         <Grid item container sm={6} direction="column">
           <Box

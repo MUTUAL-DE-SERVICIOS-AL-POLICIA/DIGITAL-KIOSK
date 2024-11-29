@@ -63,12 +63,15 @@ export const LoanView = () => {
     <Box sx={{ padding: 5 }}>
       {loans && (
         <Grid container justifyContent="center" alignItems="center">
-          <Typography variant="h3" sx={{ textAlign: "center", fontWeight: 700, mb: 1 }}>
-            Extracto de Préstamos
-          </Typography>
+          <Typography variant="h3">Extracto de Préstamos</Typography>
           <Alert
             severity="info"
-            sx={{ fontSize: "20px", marginTop: 0, paddingTop: 0, color: "black" }}
+            sx={{
+              fontSize: "20px",
+              marginTop: 0,
+              paddingTop: 0,
+              color: "black",
+            }}
           >
             <b>Trámites registrados a partir del mes de junio del 2021</b>
           </Alert>
@@ -84,7 +87,11 @@ export const LoanView = () => {
               </Grid>
             </Grid>
           )}
-          <Stack direction="column" spacing={3} sx={{ overflowX: "auto", maxHeight: "60vh" }}>
+          <Stack
+            direction="column"
+            spacing={3}
+            sx={{ overflowX: "auto", maxHeight: "60vh" }}
+          >
             {loans.current.map((loan: any) => {
               return (
                 <Grid item key={loan.id}>

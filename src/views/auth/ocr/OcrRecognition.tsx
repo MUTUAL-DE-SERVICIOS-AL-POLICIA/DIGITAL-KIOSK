@@ -1,5 +1,5 @@
 import { ImageCapture } from "@/components";
-import { Box, Card, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import {
   RefObject,
   forwardRef,
@@ -19,6 +19,7 @@ import { base64toBlob, getEnvVariables } from "@/helpers";
 import { usePersonStore } from "@/hooks/usePersonStore";
 import "src/styles.css";
 import { useBiometricStore } from "@/hooks/useBiometric";
+import { CardInfo } from "@/components/CardInfo";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -30,6 +31,13 @@ type ImageViewRef = {
 };
 
 const DEV_MODE = getEnvVariables().DEV_MODE === "true";
+
+const text = (
+  <>
+    Deposite su <b>carnet de identidad</b> en el
+    <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
+  </>
+);
 
 export const OcrView = memo(
   forwardRef((_, ref) => {
@@ -85,7 +93,6 @@ export const OcrView = memo(
           focusDistance: focusDistance,
         };
         await track.applyConstraints(constraints);
-        // console.log("Enfoque manual aplicado:", track.getSettings());
       } else {
         console.log("El enfoque manual no es compatible con este dispositivo.");
       }
@@ -326,16 +333,7 @@ export const OcrView = memo(
           direction="column"
           justifyContent="space-between"
         >
-          <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">
-            <Typography
-              sx={{ p: 2 }}
-              align="center"
-              style={{ fontSize: "2.5vw", fontWeight: 500 }}
-            >
-              Deposite su <b>carnet de identidad</b> en el
-              <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
-            </Typography>
-          </Card>
+          <CardInfo text={text} />
         </Grid>
         <Grid item container sm={6} direction="column">
           <Box

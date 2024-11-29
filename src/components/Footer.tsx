@@ -1,4 +1,4 @@
-import { AppBar, Grid, Toolbar } from "@mui/material";
+import { AppBar, Grid } from "@mui/material";
 import { ComponentButton } from ".";
 import { useCredentialStore } from "@/hooks";
 import { memo } from "react";
@@ -6,36 +6,30 @@ import { memo } from "react";
 interface Props {
   action: () => void;
   onRemoveCam: () => void;
+  text?: string;
+  color?: string;
 }
 
-const Footer = memo((props: Props) => {
-  const { action } = props;
+const fontSize = innerWidth > innerHeight ? "3.5vw" : "5.5vw";
 
-  const { loading, step } = useCredentialStore();
+const Footer = memo((props: Props) => {
+  const { action, text, color } = props;
+
+  const { loading } = useCredentialStore();
 
   return (
-    <AppBar
-      position="static"
-      sx={{ pb: 0, mb: 0, backgroundColor: "#EEEEEE" }}
-      style={{ flex: "0 0 20%" }}
-    >
-      <Toolbar>
-        <Grid container justifyContent="center" spacing={3}>
-          {step != "identityCard" && <Grid item></Grid>}
-          <Grid item>
-            <ComponentButton
-              onClick={action}
-              text="CONTINUAR"
-              sx={{
-                fontSize: innerWidth > innerHeight ? "3.5vw" : "5.5vw",
-                width: "100%",
-                padding: "0px 25px",
-              }}
-              loading={loading}
-            />
-          </Grid>
+    <AppBar position="static">
+      <Grid container justifyContent="center" spacing={3}>
+        <Grid item>
+          <ComponentButton
+            onClick={action}
+            text={text ?? "continuar"}
+            sx={{ fontSize }}
+            loading={loading}
+            color={color}
+          />
         </Grid>
-      </Toolbar>
+      </Grid>
     </AppBar>
   );
 });

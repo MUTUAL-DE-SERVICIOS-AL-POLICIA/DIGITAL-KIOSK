@@ -1,7 +1,7 @@
 import { AttachMoney, ExtensionOutlined, Money } from "@mui/icons-material";
 import { LoanView } from "./loans/LoanView";
 import { ContributionView } from "./contributions/ContributionView";
-import { EconomicComplementView } from "./EconomicComplement/EconomicComplementView";
+import { EconomicComplementView } from "./economicComplement/EconomicComplementView";
 
 const SERVICES = [
   {

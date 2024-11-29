@@ -1,9 +1,10 @@
 import { AlphaNumeric, ComponentInput } from "@/components";
+import { CardInfo } from "@/components/CardInfo";
 import KeyboardAlphanumeric from "@/components/keyboardAlphanumeric";
 import KeyboardNumeric from "@/components/keyboardNumeric";
 import { useCredentialStore, useForm } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { Card, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import {
   forwardRef,
   useEffect,
@@ -22,6 +23,13 @@ const formValidations = {
     "El carnet de identidad debe tener de 4 dígitos a 12 dígitos",
   ],
 };
+
+const text = (
+  <>
+    Por favor ingrese su <b>número de carnet de identidad</b> y luego presione
+    en <b>continuar.</b>
+  </>
+);
 
 export const IdentityCard = memo(
   forwardRef((_, ref) => {
@@ -72,18 +80,7 @@ export const IdentityCard = memo(
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Card
-              sx={{ ml: 10, mb: 7, borderRadius: "30px", py: 3 }}
-              variant="outlined"
-            >
-              <Typography
-                align="center"
-                style={{ fontSize: "2.5vw", fontWeight: 200 }}
-              >
-                Por favor ingrese su <b>número de carnet de identidad</b> y
-                luego presione en <b>continuar</b>
-              </Typography>
-            </Card>
+            <CardInfo text={text} />
             <ComponentInput
               type="text"
               name="identityCard"
@@ -96,23 +93,9 @@ export const IdentityCard = memo(
               }
               customSx={{
                 px: 10,
-                ml: 7,
-                display: "flex",
-                "& .MuiInputLabel-outlined.MuiInputLabel-shrink": {
-                  transform: "translate(10px, -70px)",
-                },
+                my: 10,
                 "& .MuiOutlinedInput-input": {
                   fontSize: innerWidth > innerHeight ? "3.5vw" : "5.5vw",
-                },
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "10px",
-                  background: "white",
-                  height: "fit-content",
-                  "& fieldset": { borderColor: "#2F3746" },
-                  "&:hover fieldset": { borderColor: "#0B815A" },
-                },
-                "& .MuiFormHelperText-root": {
-                  fontSize: "1.5vw",
                 },
               }}
             />
