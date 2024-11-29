@@ -20,20 +20,42 @@ const theme = createTheme({
   palette: createPalette(),
   typography: {
     fontFamily: "poppins",
+    h3: {
+      textAlign: "center",
+      fontWeight: 700,
+      marginBottom: "8px",
+    },
+    h4: {
+      textTransform: "uppercase",
+      fontWeight: 700,
+    },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
           borderRadius: "10px",
+          textTransform: "uppercase",
+          width: "100%",
+          padding: "0px 25px",
+          marginTop: "10px",
+          marginBottom: "10px",
+          fontWeight: "bold",
+          "&:hover": {
+            transform: "scale(0.95)",
+            transition: "transform 0.2s ease",
+          },
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
+          flex: "0 0 14%",
           boxShadow: "none",
-          color: "#594C51",
+          backgroundColor: "#EEEEEE",
+          paddingBottom: 0,
+          marginBottom: 0,
         },
       },
     },
@@ -42,6 +64,33 @@ const theme = createTheme({
         root: {
           flexDirection: "row",
           justifyContent: "space-between",
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        variant: "outlined",
+      },
+      styleOverrides: {
+        root: {
+          display: "flex",
+          "& .MuiInputLabel-outlined.MuiInputLabel-shrink": {
+            transform: "translate(10px, -70px)",
+          },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            backgroundColor: "white",
+            height: "fit-content",
+            "& fieldset": {
+              borderColor: "#2F3746",
+            },
+            "&:hover fieldset": {
+              borderColor: "#0B815A",
+            },
+          },
+          "& .MuiFormHelperText-root": {
+            fontSize: "1.5vw",
+          },
         },
       },
     },

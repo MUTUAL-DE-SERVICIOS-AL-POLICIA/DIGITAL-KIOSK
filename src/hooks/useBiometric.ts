@@ -8,8 +8,11 @@ export const useBiometricStore = () => {
 
   const getFingerprints = async (personId: number) => {
     try {
-      const { data } = await gatewayApi.get(`/persons/getFingerprintComparison/${personId}`);
+      const { data } = await gatewayApi.get(
+        `/persons/getFingerprintComparison/${personId}`
+      );
       dispatch(setFingerprints({ fingerprints: data }));
+      return data;
     } catch (e: any) {
       console.error(e);
       console.error("Error al obtener huellas para la comparación");
@@ -18,7 +21,10 @@ export const useBiometricStore = () => {
 
   const compareFingerprints = async (fingerprints: any) => {
     try {
-      const { data } = await biometricApi.post(`/biometrico/comparar/huella`, fingerprints);
+      const { data } = await biometricApi.post(
+        `/biometrico/comparar/huella`,
+        fingerprints
+      );
       const { fingerprintTypeId, isValid, quality, wsq } = data;
       return { fingerprintTypeId, isValid, quality, wsq };
     } catch (e: any) {

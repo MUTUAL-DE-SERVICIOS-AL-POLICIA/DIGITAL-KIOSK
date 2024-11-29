@@ -20,7 +20,11 @@ const KeyboardAlphanumeric = (props: KeyboardProps) => {
   return (
     <div className="keyboardAlphanumeric">
       {keys.map((key, index) => (
-        <div className="keyalphanumeric" key={index} onClick={() => onClick(key)}>
+        <div
+          className="keyalphanumeric"
+          key={index}
+          onClick={() => onClick(key)}
+        >
           {key}
         </div>
       ))}

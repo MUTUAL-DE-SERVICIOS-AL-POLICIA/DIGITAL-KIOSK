@@ -83,7 +83,6 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
             );
           })
         );
-        // console.log(results.map((r:any, index:number) => `Cuadro N° ${index}, Texto reconocido: ${r.data.text == '' ? '(vacío)' : r.data.text}`))
         await scheduler.terminate();
 
         changeLeftText(results[0].data.text);

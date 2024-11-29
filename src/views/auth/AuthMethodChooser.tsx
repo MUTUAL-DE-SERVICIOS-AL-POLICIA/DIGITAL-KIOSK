@@ -5,6 +5,7 @@ import Face from "@/assets/images/face.png";
 // @ts-expect-error no proceded
 import Fingerprint from "@/assets/images/fingerprint.jpg";
 import CardMethodChooser from "@/components/CardMethodChooser";
+import { useCallback } from "react";
 
 const METHODS_AUTH = [
   {
@@ -22,9 +23,12 @@ const METHODS_AUTH = [
 export const AuthMethodChooser = () => {
   const { changeStep } = useCredentialStore();
 
-  const handleAction = (step: string) => {
-    changeStep(step);
-  };
+  const handleAction = useCallback(
+    (step: string) => {
+      changeStep(step);
+    },
+    [changeStep]
+  );
 
   return (
     <Grid
@@ -46,7 +50,8 @@ export const AuthMethodChooser = () => {
           <CardMethodChooser
             title={method.title}
             image={method.image}
-            action={() => handleAction(method.action)}
+            step={method.action}
+            onAction={handleAction}
           />
         </Grid>
       ))}

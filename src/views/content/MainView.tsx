@@ -1,21 +1,16 @@
-import { ComponentButton } from "@/components";
 import { TimerContext } from "@/context/TimerContext";
 import { useCredentialStore } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import {
-  AppBar,
-  CircularProgress,
-  Grid,
-  Paper,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { CircularProgress, Grid, Paper } from "@mui/material";
 import { useContext, useEffect } from "react";
 //@ts-expect-error do not proceed
 import imageLogoBlanco from "@/assets/images/muserpol-logo-blanco.png";
 import { useChooserStore } from "@/hooks/useChooserStore";
 import SERVICES from "./menu";
 import { useLoading } from "@/hooks/useLoading";
+import Header from "@/components/Header";
+import "src/views/content/loans/styles.css";
+import Footer from "@/components/Footer";
 
 export const MainView = () => {
   const {
@@ -52,29 +47,7 @@ export const MainView = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <AppBar
-        position="static"
-        style={{ background: "#008698", flex: "0 0 7%" }}
-      >
-        <Toolbar>
-          <img
-            src={imageLogoBlanco}
-            alt="Imagen tipo logo"
-            style={{ width: "10vw" }}
-          />
-          {identityCard && (
-            <Typography variant="h4" color="white">
-              {name}
-              <b> &nbsp; CI: {identityCard} </b>
-            </Typography>
-          )}
-          <Typography
-            style={{ color: "white", fontSize: "2vw", fontWeight: 700 }}
-          >
-            {seconds}
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Header name={name} identityCard={identityCard} seconds={seconds} />
       <Grid
         container
         spacing={3}
@@ -88,30 +61,16 @@ export const MainView = () => {
           </Paper>
         </Grid>
       </Grid>
-      <AppBar
-        position="static"
-        sx={{ backgroundColor: "#EEEEEE" }}
-        style={{ flex: "0 0 17%" }}
-      >
-        <Grid container justifyContent="center" alignItems="center">
-          <Grid item>
-            <ComponentButton
-              onClick={() => handleExit()}
-              text={`SALIR`}
-              color="warning"
-              sx={{
-                fontSize: innerWidth > innerHeight ? "3.5vw" : "4.5vw",
-                width: "100%",
-                padding: "0px 30px",
-              }}
-            />
-          </Grid>
-        </Grid>
-      </AppBar>
+      <Footer
+        action={handleExit}
+        onRemoveCam={() => {}}
+        text="salir"
+        color="warning"
+      />
       {isLoading && (
         <div className="overlay">
           <CircularProgress
-            size={120}
+            size={50}
             sx={{
               color: "#42c9b7",
               position: "absolute",

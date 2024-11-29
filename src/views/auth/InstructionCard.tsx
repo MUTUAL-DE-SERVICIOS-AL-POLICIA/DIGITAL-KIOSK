@@ -1,8 +1,16 @@
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 // @ts-expect-error do not proceed
 import imageLogo from "@/assets/images/carnet.png";
 import { useCredentialStore } from "@/hooks";
 import { forwardRef, useImperativeHandle, memo } from "react";
+import { CardInfo } from "@/components/CardInfo";
+
+const text = (
+  <>
+    Introduzca su carnet de identidad en la bandeja de abajo y luego presione en{" "}
+    <b>continuar</b>.<br />
+  </>
+);
 
 export const InstructionCard = memo(
   forwardRef((_, ref) => {
@@ -36,16 +44,7 @@ export const InstructionCard = memo(
           direction="column"
           justifyContent="spacebetween"
         >
-          <Card sx={{ ml: 10, borderRadius: "30px", p: 2 }} variant="outlined">
-            <Typography
-              sx={{ p: 2 }}
-              align="center"
-              style={{ fontSize: "2.5vw", fontWeight: 500 }}
-            >
-              Introduzca su carnet de identidad en la bandeja de abajo y luego
-              presione en <b>continuar</b>.<br />
-            </Typography>
-          </Card>
+          <CardInfo text={text} />
         </Grid>
         <Grid item container sm={6} direction="column">
           <Box display="flex" justifyContent="center">

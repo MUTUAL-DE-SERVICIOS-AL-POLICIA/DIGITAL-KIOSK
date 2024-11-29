@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 // @ts-expect-error
 import Hands from "@/assets/images/hands.png";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 
 interface Area {
   id: number;
@@ -23,7 +23,7 @@ const colors = {
   UNREGISTERED: "rgba(255, 50, 0, 0.5)",
 };
 
-export const Fingerprint = () => {
+export const Fingerprint = memo(() => {
   const drawAndPaintFingers = (
     area: Area,
     ctx: CanvasRenderingContext2D,
@@ -104,6 +104,6 @@ export const Fingerprint = () => {
       />
     </Box>
   );
-};
+});
 
 export default Fingerprint;

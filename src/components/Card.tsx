@@ -1,13 +1,14 @@
 import { Card, Grid, Paper, Stack, Typography } from "@mui/material";
 import "src/styles.css";
 import { Print } from "@mui/icons-material";
+import { memo } from "react";
 
 interface Props {
   onPressed: () => void;
   logo: any;
   procedureTitle: string;
 }
-export const CardComponent = (props: Props) => {
+export const CardComponent = memo((props: Props) => {
   const { onPressed, logo, procedureTitle } = props;
 
   return (
@@ -64,4 +65,4 @@ export const CardComponent = (props: Props) => {
       </Paper>
     </>
   );
-};
+});

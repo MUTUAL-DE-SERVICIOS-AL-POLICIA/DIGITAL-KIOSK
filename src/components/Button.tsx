@@ -28,30 +28,24 @@ export const ComponentButton = memo((props: buttonProps) => {
     color,
   } = props;
 
+  const defaultStyles: SxProps<Theme> = {
+    backgroundColor: color || "#008698",
+    "&:hover": {
+      backgroundColor: color || "#006577",
+    },
+    ...sx,
+  };
+
   return (
     <LoadingButton
       loading={loading}
-      className="mt-2"
       variant={variant}
-      disableRipple
       disabled={disable}
       startIcon={startIcon}
       endIcon={endIcon}
       onClick={onClick}
       color={color}
-      sx={{
-        marginTop: "10px",
-        marginBottom: "10px",
-        width: "100%",
-        fontWeight: "bold",
-        backgroundColor: color || "#008698",
-        "&:hover": {
-          transform: "scale(0.95)",
-          transition: "transform 0.2s ease",
-          backgroundColor: color ? "orange" : "#008698",
-        },
-        ...sx,
-      }}
+      sx={defaultStyles}
     >
       {text}
     </LoadingButton>

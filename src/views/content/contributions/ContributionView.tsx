@@ -66,6 +66,7 @@ export const ContributionView = () => {
   };
 
   const handlePrintContributionPassive = async () => {
+    setLoading(true);
     const response: any = await printContributionPassive(user.nup);
     switch (response) {
       case 200:
@@ -98,15 +99,14 @@ export const ContributionView = () => {
         });
         break;
     }
+    setLoading(false);
     resetTimer();
   };
 
   return (
     <Box sx={{ padding: 5 }}>
       <Grid container justifyContent="center" alignItems="center">
-        <Typography variant="h3" sx={{ textAlign: "center", fontWeight: 700, mb: 1 }}>
-          Certificación de Aportes
-        </Typography>
+        <Typography variant="h4">Certificación de Aportes</Typography>
         <Stack direction="column" spacing={3}>
           <Grid item>
             {hasContributionActive && (
