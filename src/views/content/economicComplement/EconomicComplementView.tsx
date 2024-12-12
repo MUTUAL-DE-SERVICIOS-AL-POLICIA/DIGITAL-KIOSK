@@ -11,42 +11,116 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useCredentialStore } from "@/hooks";
+import Swal from "sweetalert2";
+
+interface Display {
+  key: string;
+  value: string;
+}
+
+interface InfoObject {
+  id: number;
+  title: string;
+  subtitle: string;
+  printable: boolean;
+  display: Display[];
+}
+
+interface Info {
+  error: boolean;
+  message: string;
+  data: InfoObject;
+}
 
 export const EconomicComplementView = () => {
   const [expandedHolder, setExpandedHolder] = useState(false);
+  const [infoEcoCom, setInfoEcoCom] = useState<Info | undefined>(undefined);
 
-  const { getCity } = useEconomicComplementStore();
+  const {
+    ecoCom,
+    checkSemesterEnabled,
+    createEconomicComplementProcess,
+    getInformationEconomicComplement,
+  } = useEconomicComplementStore();
+  const { identityCard } = useCredentialStore();
 
-  const createProcedureHolder = () => {
-    setExpandedHolder(true);
+  const createProcedureHolder = async () => {
+    if (ecoCom && !ecoCom.error) {
+      const eco_com_procedure_id =
+        ecoCom.data[ecoCom.data.length - 1].procedure_id;
+      const userAux: any = localStorage.getItem("user");
+      const user = JSON.parse(userAux);
+      if (user && user.nup) {
+        const response = await createEconomicComplementProcess({
+          eco_com_procedure_id,
+          affiliate_id: user.nup,
+        });
+        if (response && response.status == 201) {
+          if (response.data) {
+            const res = response.data;
+            const message = res.message;
+            console.log("respuesta de creación", res);
+            if (!res.error) {
+              const eco_com_id = res.eco_com_id;
+              const info: any =
+                await getInformationEconomicComplement(eco_com_id);
+              console.log("info:", info);
+              setInfoEcoCom(info);
+              setExpandedHolder(true);
+              Swal.fire({
+                title: "Trámite creado correctamente",
+                text: message,
+                icon: "success",
+                confirmButtonText: "Aceptar",
+              });
+            } else {
+              Swal.fire({
+                title: "Trámite no creado",
+                text: message,
+                icon: "warning",
+                confirmButtonText: "Aceptar",
+              });
+            }
+          }
+        }
+      }
+    }
   };
 
   const InfoProcedure = () => {
-    return (
-      <>
-        <Typography variant="h6" sx={{ fontWeight: 900, pb: 1 }}>
-          SEGUNDO SEMESTRE 2024
-        </Typography>
-        <Divider
-          variant="fullWidth"
-          sx={{ backgroundColor: "#008698", height: "2px", mb: 1 }}
-        />
-        <Typography sx={{ fontWeight: 900, fontSize: "15px", mb: 1 }}>
-          FECHA DE RECEPCIÓN:{" "}
-          <span style={{ fontWeight: 400 }}>15/03/2024</span>
-        </Typography>
-        <Typography sx={{ fontWeight: 900, fontSize: "15px", mb: 1 }}>
-          TIPO DE PRESTACIÓN: <span style={{ fontWeight: 400 }}>VEJEZ</span>
-        </Typography>
-        <Typography sx={{ fontWeight: 900, fontSize: "15px" }}>
-          TIPO DE TRÁMITE: <span style={{ fontWeight: 400 }}>VIUDEDAD</span>
-        </Typography>
-      </>
-    );
+    console.log("infoEcoCom: ", infoEcoCom);
+    if (infoEcoCom !== undefined && !infoEcoCom.error) {
+      return (
+        <>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 900, fontSize: "15px", pb: 1 }}
+          >
+            {infoEcoCom.data.title}
+          </Typography>
+          <Divider
+            variant="fullWidth"
+            sx={{ backgroundColor: "#008698", height: "2px", mb: 1 }}
+          />
+          {infoEcoCom.data &&
+            infoEcoCom.data.display.map((info: any) => (
+              <>
+                <Typography sx={{ fontWeight: 900, fontSize: "15px", pb: 1 }}>
+                  {info.key}
+                </Typography>
+                <span style={{ fontWeight: 400 }}>{info.value}</span>
+              </>
+            ))}
+        </>
+      );
+    } else {
+      console.log("sin datos");
+    }
   };
 
   useEffect(() => {
-    getCity();
+    checkSemesterEnabled(identityCard);
   }, []);
 
   return (
@@ -57,10 +131,20 @@ export const EconomicComplementView = () => {
       >
         Trámite de Complemento Económico
       </Typography>
-      <Grid container spacing={3} sx={{ mt: 15 }} justifyContent="center">
+      <Grid container spacing={3} sx={{ mt: 2 }} justifyContent="center">
         <Grid item xs={6}>
           <Card sx={{ width: "100%" }}>
-            <CardActionArea onClick={createProcedureHolder}>
+            <CardActionArea
+              onClick={() => {
+                if (ecoCom && !ecoCom.error) {
+                  createProcedureHolder();
+                }
+              }}
+              sx={{
+                pointerEvents: ecoCom && ecoCom.error ? "none" : "auto",
+                opacity: ecoCom && ecoCom.error ? 0.5 : 1,
+              }}
+            >
               <CardHeader
                 titleTypographyProps={{
                   sx: {
@@ -70,7 +154,8 @@ export const EconomicComplementView = () => {
                   },
                 }}
                 sx={{
-                  backgroundColor: "#008698",
+                  backgroundColor:
+                    ecoCom && ecoCom.error ? "#B0BEC5" : "#008698",
                   textAlign: "center",
                   borderRadius: "7px",
                 }}
@@ -78,8 +163,11 @@ export const EconomicComplementView = () => {
               />
             </CardActionArea>
             <Collapse in={expandedHolder} timeout="auto" unmountOnExit>
-              <CardContent sx={{ backgroundColor: "#e2e2e2", px: 3, pb: 3 }}>
+              <CardContent sx={{ backgroundColor: "#e2e2e2", pb: 3 }}>
+                {/* {infoEcoCom &&
+                infoEcoCom.data.map(() => ( */}
                 <InfoProcedure />
+                {/* ))} */}
               </CardContent>
             </Collapse>
           </Card>

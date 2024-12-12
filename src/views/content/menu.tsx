@@ -5,21 +5,21 @@ import { EconomicComplementView } from "./economicComplement/EconomicComplementV
 
 const SERVICES = [
   {
-    code: "CE",
+    code: "ecoCom",
     title: "COMPLEMENTO ECONÓMICO",
     subTitle: "Creación de trámites de Complemento Económico.",
     icon: <ExtensionOutlined />,
     view: <EconomicComplementView />,
   },
   {
-    code: "LOAN",
-    title: "PRÉSTAMOS",
-    subTitle: "Seguimiento de trámites de Préstamos.",
+    code: "loans",
+    title: "PRÉSTAMOS VIGENTES",
+    subTitle: "Seguimiento de trámites de Préstamos Vigentes",
     icon: <AttachMoney />,
     view: <LoanView />,
   },
   {
-    code: "CON",
+    code: "con",
     title: "APORTES",
     subTitle: "Seguimiento de aportes",
     icon: <Money />,
