@@ -5,6 +5,7 @@ import logo from "@/assets/images/muserpol.jpg";
 import imageLogo from "@/assets/images/muserpol.png";
 import { useEffect, useState, memo } from "react";
 import { useCredentialStore } from "@/hooks";
+import VideoComponent from "../../components/Video";
 
 export const HomeScreen = memo(() => {
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
@@ -41,7 +42,7 @@ export const HomeScreen = memo(() => {
   return (
     <div onClick={handleClick} style={{ height: `${screenHeight}px` }}>
       <Grid container>
-        <Grid item sm={6}>
+        <Grid item sm={5}>
           <Box
             component="img"
             sx={{
@@ -55,17 +56,17 @@ export const HomeScreen = memo(() => {
             src={logo}
           />
         </Grid>
-        <Grid item container sm={6} direction="column" justifyContent="center">
-          <Grid sx={{ marginBottom: 7 }}>
-            <Box display="flex" justifyContent="center">
+        <Grid item container sm={7} direction="column" justifyContent="center">
+          <Grid>
+            <Box display="flex" justifyContent="center" sx={{ mb: 15 }}>
               <img
                 src={imageLogo}
                 alt="Descripción de la imagen"
-                style={{ width: "40vw" }}
+                style={{ width: "30vw" }}
               />
             </Box>
           </Grid>
-          <Grid sx={{ marginBottom: 7 }}>
+          {/* <Grid sx={{ marginBottom: 7 }}>
             <Typography
               sx={{ p: 2, paddingLeft: 10 }}
               align="left"
@@ -80,8 +81,8 @@ export const HomeScreen = memo(() => {
             >
               - Extracto de Préstamos
             </Typography>
-          </Grid>
-          <Grid sx={{ marginBottom: 7 }}>
+          </Grid> */}
+          {/* <Grid sx={{ marginBottom: 7 }}>
             <Box
               sx={{
                 backgroundColor: "#D0D3D4",
@@ -98,7 +99,8 @@ export const HomeScreen = memo(() => {
                 Presione para ingresar
               </Typography>
             </Box>
-          </Grid>
+          </Grid> */}
+          <VideoComponent />
         </Grid>
       </Grid>
     </div>
