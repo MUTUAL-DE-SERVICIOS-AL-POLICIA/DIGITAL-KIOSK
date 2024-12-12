@@ -1,4 +1,4 @@
-import { Card, Grid } from "@mui/material";
+import { Card, Grid, styled } from "@mui/material";
 // @ts-expect-error
 import Hands from "@/assets/images/hands.png";
 import Fingerprint from "./Fingerprint";
@@ -17,6 +17,33 @@ const text = (
     <b>reconocimiento biométrico.</b>
   </>
 );
+
+const StyledGridContainer = styled(Grid)(({ theme }) => ({
+  marginBlock: theme.spacing(5),
+  alignItems: "center",
+}));
+
+const StyledFingerprintCard = styled(Card)(({ theme }) => ({
+  marginInline: theme.spacing(10),
+  borderRadius: "30px",
+  padding: theme.spacing(2),
+}));
+
+const StyledOverlay = styled("div")(() => ({
+  display: "flex",
+  fontSize: "84px",
+  color: "#E0E0E0",
+  textAlign: "center",
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.7)",
+  zIndex: 1000,
+}));
 
 export const BiometricRecognition = memo(
   forwardRef((_, ref) => {
@@ -68,7 +95,8 @@ export const BiometricRecognition = memo(
     };
 
     return (
-      <Grid container alignItems="center" sx={{ my: 5 }}>
+      // <Grid container alignItems="center" sx={{ my: 5 }}>
+      <StyledGridContainer container>
         <Grid
           item
           container
@@ -79,32 +107,38 @@ export const BiometricRecognition = memo(
           <CardInfo text={text} />
         </Grid>
         <Grid item container sm={5} direction="column">
-          <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined">
+          <StyledFingerprintCard variant="outlined">
             <Fingerprint />
-          </Card>
+          </StyledFingerprintCard>
+          {/* <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined"> */}
+          {/* </Card> */}
         </Grid>
         {isLoading && (
-          <div className="overlay" style={{ display: "flex" }}>
-            <div
-              style={{
-                fontSize: "84px",
-                color: "#E0E0E0",
-                display: "flex",
-                textAlign: "center",
-                justifyContent: "center",
-              }}
-            >
+          <StyledOverlay>
+            <div>
               <span>
                 Comparando huellas
-                <br />
+                {/* <br /> */}
               </span>
               <span className="dot">.</span>
               <span className="dot">.</span>
               <span className="dot">.</span>
             </div>
-          </div>
+          </StyledOverlay>
+          // <div className="overlay" style={{ display: "flex" }}>
+          // <div
+          //   style={{
+          //     fontSize: "84px",
+          //     color: "#E0E0E0",
+          //     display: "flex",
+          //     textAlign: "center",
+          //     justifyContent: "center",
+          //   }}
+          // >
+          //  </div>
+          // </div>
         )}
-      </Grid>
+      </StyledGridContainer>
     );
   })
 );

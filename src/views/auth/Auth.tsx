@@ -14,11 +14,23 @@ import { AuthMethodChooser } from "./AuthMethodChooser";
 import { BiometricRecognition } from "./biometric/BiometricRecognition";
 import { Chooser } from "./Chooser";
 import Header from "@/components/Header";
+import styled from "@emotion/styled";
 
 interface ChildRefType {
   action: (prop?: boolean) => void;
   onRemoveCam: () => void;
 }
+
+const Container = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  height: "100vh",
+});
+
+const ContainerSteps = styled("div")({
+  flex: "1 1 auto",
+  overflowX: "auto",
+});
 
 export const AuthView = () => {
   const childRef = useRef<ChildRefType>();
@@ -63,7 +75,7 @@ export const AuthView = () => {
   }, []);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <Container>
       {step != "home" && (
         <Header
           name={name}
@@ -72,7 +84,7 @@ export const AuthView = () => {
           resetStep={resetStep}
         />
       )}
-      <div style={{ flex: "1 1 auto", overflowX: "auto" }}>
+      <ContainerSteps>
         {/* Pantalla casita */}
         {step == "home" && <HomeScreen />}
         {/* Pantalla input carnet */}
@@ -93,10 +105,10 @@ export const AuthView = () => {
         {step == "biometricRecognition" && (
           <BiometricRecognition ref={childRef} />
         )}
-      </div>
+      </ContainerSteps>
       {step != "home" && step != "chooser" && step != "authMethodChooser" && (
         <Footer action={handleClick} onRemoveCam={handleClean} />
       )}
-    </div>
+    </Container>
   );
 };

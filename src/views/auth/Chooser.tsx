@@ -1,13 +1,35 @@
 import CardChooser from "@/components/CardChooser";
 import { useCredentialStore } from "@/hooks";
 import { useChooserStore } from "@/hooks/useChooserStore";
-import { Box, Container, Grid } from "@mui/material";
+import { Container, Grid, styled } from "@mui/material";
 import SERVICES from "@/views/content/menu";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+const StyledBox = styled("div")({
+  flexGrow: 1,
+  minHeight: "80vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+});
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+  padding: theme.spacing(8),
+}));
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: theme.spacing(5),
+}));
 
 export const Chooser = () => {
-  const { changeStep } = useCredentialStore();
-  const { saveSelection } = useChooserStore();
+  const { changeStep, identityCard } = useCredentialStore();
+  const { saveSelection, getValidProcedures, procedures } = useChooserStore();
+
+  const [enabledServices, setEnabledServices] = useState<any>();
 
   const action = useCallback(
     (code: string) => {
@@ -17,11 +39,25 @@ export const Chooser = () => {
     [saveSelection, changeStep]
   );
 
+  useEffect(() => {
+    if (identityCard) getValidProcedures(identityCard);
+  }, [identityCard]);
+
+  useEffect(() => {
+    if (procedures !== undefined) {
+      const filteredServices = SERVICES.filter(
+        (service) => service.code in procedures && procedures[service.code]
+      );
+      setEnabledServices(filteredServices);
+    }
+  }, [procedures]);
+
   return (
-    <Box sx={{ flexGrow: 1, minHeight: "80vh" }} alignContent="center">
-      <Container maxWidth="md" sx={{ p: 8 }}>
-        <Grid container spacing={5} alignContent="center">
-          {SERVICES.map((service) => (
+    <StyledBox>
+      {JSON.stringify(procedures)}
+      <StyledContainer maxWidth="md">
+        <StyledGrid container>
+          {SERVICES.map((service: any) => (
             <CardChooser
               key={service.code}
               title={service.title}
@@ -31,8 +67,8 @@ export const Chooser = () => {
               onAction={action}
             />
           ))}
-        </Grid>
-      </Container>
-    </Box>
+        </StyledGrid>
+      </StyledContainer>
+    </StyledBox>
   );
 };
