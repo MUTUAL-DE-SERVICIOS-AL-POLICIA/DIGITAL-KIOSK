@@ -1,5 +1,5 @@
 import { ImageCapture } from "@/components";
-import { Box, Grid, Stack } from "@mui/material";
+import { Box, Grid, Stack, styled } from "@mui/material";
 import {
   RefObject,
   forwardRef,
@@ -39,6 +39,16 @@ const text = (
   </>
 );
 
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "70vh",
+  [theme.breakpoints.down("sm")]: {
+    height: "60vh",
+  },
+}));
+
 export const OcrView = memo(
   forwardRef((_, ref) => {
     useImperativeHandle(ref, () => ({
@@ -65,8 +75,8 @@ export const OcrView = memo(
       savePhoto,
     } = useCredentialStore();
     const { changeOcrState } = useStastisticsStore();
-    const { authMethodRegistration, user } = useAuthStore();
-    const { leftText, middleText, rightText } = useStastisticsStore();
+    const { authMethodRegistration } = useAuthStore();
+    const { leftText, rightText } = useStastisticsStore();
     const { person, getPerson } = usePersonStore();
     const { fingerprints, getFingerprints } = useBiometricStore();
 
@@ -206,7 +216,10 @@ export const OcrView = memo(
           changeImage(image);
           cleanup();
           changeOcrState(true);
-          savePhoto({ affiliateId: user.nup, photo_ci: base64toBlob(image) });
+          savePhoto({
+            personId: person.id,
+            photoIdentityCard: base64toBlob(image),
+          });
         } else {
           setImage(null);
           getLocalUserVideo();
@@ -228,12 +241,12 @@ export const OcrView = memo(
       const body = {
         identity_card: identityCard,
         left_text: leftText,
-        middle_text: middleText,
+        // middle_text: middleText,
         right_text: rightText,
         ocr_state: false,
         facial_recognition: false,
         // affiliate_id: user.nup,
-        person_id: person.id,
+        person_id: parseInt(person.id, 10),
       };
       authMethodRegistration(body);
     };
@@ -336,14 +349,15 @@ export const OcrView = memo(
           <CardInfo text={text} />
         </Grid>
         <Grid item container sm={6} direction="column">
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               height: "70vh",
             }}
-          >
+          > */}
+          <StyledBox>
             <Stack>
               {DEV_MODE && (
                 <div>
@@ -359,7 +373,8 @@ export const OcrView = memo(
                 />
               )}
             </Stack>
-          </Box>
+          </StyledBox>
+          {/* </Box> */}
         </Grid>
       </Grid>
     );

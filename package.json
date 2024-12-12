@@ -19,6 +19,7 @@
     "@mui/material": "^5.14.18",
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^1.6.2",
+    "click-to-react-component": "^1.1.2",
     "face-api.js": "0.22.2",
     "i": "^0.3.7",
     "image-js": "^0.35.5",
