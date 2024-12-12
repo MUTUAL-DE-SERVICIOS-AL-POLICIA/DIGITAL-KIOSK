@@ -54,8 +54,8 @@ export const FaceRecognition = memo(
       identityCard,
       savePhoto,
     } = useCredentialStore();
-    const { ocrState, leftText, middleText, rightText } = useStastisticsStore();
-    const { authMethodRegistration, user } = useAuthStore();
+    const { ocrState, leftText, rightText } = useStastisticsStore();
+    const { authMethodRegistration } = useAuthStore();
     const { person } = usePersonStore();
 
     const videoRef: any = useRef();
@@ -305,8 +305,8 @@ export const FaceRecognition = memo(
                   ctx?.drawImage(video, 0, 0, cvs.width, cvs.height);
                   const imageDataURL = cvs.toDataURL("image/jpeg");
                   savePhoto({
-                    affiliateId: user.nup,
-                    photo_face: base64toBlob(imageDataURL),
+                    personId: person.id as number,
+                    photoFace: base64toBlob(imageDataURL),
                   });
                 }
               }
@@ -343,12 +343,12 @@ export const FaceRecognition = memo(
       const body = {
         identity_card: identityCard,
         left_text: leftText,
-        middle_text: middleText,
+        // middle_text: middleText,
         right_text: rightText,
         ocr_state: ocrState,
         facial_recognition: faceState,
         // affiliate_id: user.nup,
-        person_id: person.id,
+        person_id: parseInt(person.id, 10),
       };
       authMethodRegistration(body);
     };

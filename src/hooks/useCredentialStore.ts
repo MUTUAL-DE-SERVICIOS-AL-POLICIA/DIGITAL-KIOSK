@@ -1,4 +1,4 @@
-import { coffeApi } from "@/services";
+import { /*coffeApi,*/ gatewayApi } from "@/services";
 import {
   setChangeStep,
   setIdentifyUser,
@@ -14,11 +14,21 @@ import {
 } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 
-const api = coffeApi;
+// const api = coffeApi;
 
 export const useCredentialStore = () => {
-  const { step, identityCard, userIdentify, timer, InstructionState, name, image, ocr, facialRecognition, loading } =
-    useSelector((state: any) => state.auth);
+  const {
+    step,
+    identityCard,
+    userIdentify,
+    timer,
+    InstructionState,
+    name,
+    image,
+    ocr,
+    facialRecognition,
+    loading,
+  } = useSelector((state: any) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -49,27 +59,31 @@ export const useCredentialStore = () => {
   const changeRecognizedByOcr = async (ocr: boolean) => {
     dispatch(setOcr({ ocr }));
   };
-  const changeRecognizedByFacialRecognition = async (facialRecognition: boolean) => {
+  const changeRecognizedByFacialRecognition = async (
+    facialRecognition: boolean
+  ) => {
     dispatch(setFacialRecognition({ facialRecognition }));
   };
   const changeLoadingGlobal = async (loading: boolean) => {
     dispatch(setLoadingGlobal({ loading }));
   };
   const savePhoto = async ({
-    affiliateId,
-    photo_ci = null,
-    photo_face = null,
+    personId,
+    photoIdentityCard = null,
+    photoFace = null,
   }: {
-    affiliateId: string;
-    photo_ci?: any;
-    photo_face?: any;
+    personId: number;
+    photoIdentityCard?: any;
+    photoFace?: any;
   }) => {
-    const formData = new FormData();
-    if (photo_ci) formData.append("photo_ci", photo_ci, "carnet.jpg");
-    if (photo_face) formData.append("photo_face", photo_face, "rostro.jpg");
-    formData.append("affiliate_id", affiliateId.toString());
     try {
-      const data = await api.post(`/kiosk/save_photo`, formData);
+      const formData = new FormData();
+      if (photoIdentityCard) {
+        formData.append("photoIdentityCard", photoIdentityCard, "carnet.jpg");
+      }
+      if (photoFace) formData.append("photoFace", photoFace, "rostro.jpg");
+      formData.append("personId", personId.toString());
+      const data = await gatewayApi.post(`/kiosk/savePhoto`, formData);
       if (data.status == 201) {
         console.log("se guardo exitosamente la fotografía");
       }
