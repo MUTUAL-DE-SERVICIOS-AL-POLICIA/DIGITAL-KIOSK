@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
 import { coffeApi, gatewayApi } from "@/services";
 import { onLogin, onLogout } from "@/store";
 import { useCredentialStore } from ".";
 import { getEnvVariables } from "@/helpers";
+import { useSweetAlert } from "./useSweetAlert";
 
 export const useAuthStore = () => {
   const { status, user } = useSelector((state: any) => state.auth);
   const { changeIdentityCard, changeStep, changeName } = useCredentialStore();
+  const { showAlert } = useSweetAlert();
   const dispatch = useDispatch();
 
   const { changeLoadingGlobal } = useCredentialStore();
@@ -18,9 +19,11 @@ export const useAuthStore = () => {
       changeLoadingGlobal(true);
       const { data } = await coffeApi.post("/kiosk/get_session", {
         device_name: MAC_DEVICE,
-        // * "identity_card": "1060667", // con 2 aportes, ni un préstamo
-        // * "identity_card": "4362223", // 1 aporte y 1 préstamo
-        // * "identity_card": "4778148", // 1 aporte y 2 préstamos
+        /*
+         * "identity_card": "1060667", // con 2 aportes, ni un préstamo
+         * "identity_card": "4362223", // 1 aporte y 1 préstamo
+         * "identity_card": "4778148", // 1 aporte y 2 préstamos
+         */
         identity_card: identityCard,
       });
       localStorage.setItem("token", data.payload.access_token);
@@ -41,19 +44,20 @@ export const useAuthStore = () => {
     } catch (error: any) {
       changeLoadingGlobal(false);
       changeIdentityCard("");
-      if (!error.response)
-        return Swal.fire(
-          "Intentalo nuevamente",
-          "Error en el servidor",
-          "error"
-        );
       dispatch(onLogout());
+      if (!error.response) {
+        showAlert({
+          title: "Intentalo nuevamente",
+          message: "Error en el servidor",
+          icon: "error",
+        });
+        return;
+      }
       const message = error.response.data.message;
-      Swal.fire({
+      showAlert({
         title: "Carnet no valido",
-        text: message,
+        message,
         icon: "error",
-        confirmButtonText: "Aceptar",
       });
     }
   };
