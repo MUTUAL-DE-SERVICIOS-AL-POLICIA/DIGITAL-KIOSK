@@ -4,7 +4,7 @@ import KeyboardAlphanumeric from "@/components/keyboardAlphanumeric";
 import KeyboardNumeric from "@/components/keyboardNumeric";
 import { useCredentialStore, useForm } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { Grid } from "@mui/material";
+import { Grid, styled } from "@mui/material";
 import {
   forwardRef,
   useEffect,
@@ -30,6 +30,24 @@ const text = (
     en <b>continuar.</b>
   </>
 );
+
+const GridContainer = styled(Grid)({
+  paddingTop: 80,
+});
+
+const GridItem = styled(Grid)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+});
+
+const KeyboardContainer = styled("div")({
+  width: "100%",
+  height: "65vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+});
 
 export const IdentityCard = memo(
   forwardRef((_, ref) => {
@@ -70,16 +88,9 @@ export const IdentityCard = memo(
     };
 
     return (
-      <form style={{ paddingTop: 80 }}>
-        <Grid container>
-          <Grid
-            item
-            container
-            sm={6}
-            direction="column"
-            justifyContent="flex-start"
-            alignItems="center"
-          >
+      <form>
+        <GridContainer container>
+          <GridItem item container sm={6}>
             <CardInfo text={text} />
             <ComponentInput
               type="text"
@@ -99,31 +110,17 @@ export const IdentityCard = memo(
                 },
               }}
             />
-          </Grid>
-          <Grid
-            item
-            container
-            sm={6}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <div
-              style={{
-                width: "100%",
-                height: "65vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+          </GridItem>
+          <GridItem item container sm={6}>
+            <KeyboardContainer>
               {!keyboardComplete ? (
                 <KeyboardNumeric onClick={handleClickKeyboard} />
               ) : (
                 <KeyboardAlphanumeric onClick={handleClickKeyboard} />
               )}
-            </div>
-          </Grid>
-        </Grid>
+            </KeyboardContainer>
+          </GridItem>
+        </GridContainer>
       </form>
     );
   })

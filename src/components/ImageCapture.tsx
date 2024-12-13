@@ -50,7 +50,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           ctx.strokeRect(left, top, width, height); // Dibujando el rectangulo
         });
 
-        const canvasURL = canvas.toDataURL("image/jpeg"); // Obteniendo la URL de la imagen
+        let canvasURL = canvas.toDataURL("image/jpeg"); // Obteniendo la URL de la imagen
 
         (document.getElementById("imgi") as HTMLImageElement).src =
           canvasURL || ""; // Montando la imagen en html
@@ -96,6 +96,10 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         (document.getElementById("imgi") as HTMLImageElement).src =
           results[1].data.imageBinary || "";
 
+        // Limpiando los dibujos de la imagen
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx?.drawImage(img, 0, 0, CAPTURED_IMAGE_WIDTH, CAPTURED_IMAGE_HEIGHT);
+        canvasURL = canvas.toDataURL("image/jpeg");
         changeLoadingGlobal(false);
         onChange(canvasURL, recognized);
       };
