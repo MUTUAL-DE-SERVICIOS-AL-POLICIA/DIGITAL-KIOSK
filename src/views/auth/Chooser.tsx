@@ -29,7 +29,7 @@ export const Chooser = () => {
   const { changeStep, identityCard } = useCredentialStore();
   const { saveSelection, getValidProcedures, procedures } = useChooserStore();
 
-  const [enabledServices, setEnabledServices] = useState<any>();
+  const [enabledServices, setEnabledServices] = useState<any[]>([]);
 
   const action = useCallback(
     (code: string) => {
@@ -39,34 +39,44 @@ export const Chooser = () => {
     [saveSelection, changeStep]
   );
 
-  useEffect(() => {
-    if (identityCard) getValidProcedures(identityCard);
-  }, [identityCard]);
+  const matchServices = async () => {
+    if (identityCard) {
+      const proc = await getValidProcedures(identityCard);
+      if (proc) {
+        const filteredServices = SERVICES.filter(
+          (service) => service.code in proc && proc[service.code]
+        );
+        console.log(filteredServices);
+        setEnabledServices(filteredServices);
+      } else {
+        console.log("Proc no tiene formato esperado");
+      }
+    }
+  };
 
   useEffect(() => {
-    if (procedures !== undefined) {
-      const filteredServices = SERVICES.filter(
-        (service) => service.code in procedures && procedures[service.code]
-      );
-      setEnabledServices(filteredServices);
-    }
-  }, [procedures]);
+    matchServices();
+  }, [identityCard]);
 
   return (
     <StyledBox>
       {JSON.stringify(procedures)}
       <StyledContainer maxWidth="md">
         <StyledGrid container>
-          {SERVICES.map((service: any) => (
-            <CardChooser
-              key={service.code}
-              title={service.title}
-              subTitle={service.subTitle}
-              icon={service.icon}
-              code={service.code}
-              onAction={action}
-            />
-          ))}
+          {enabledServices ? (
+            enabledServices.map((service: any) => (
+              <CardChooser
+                key={service.code}
+                title={service.title}
+                subTitle={service.subTitle}
+                icon={service.icon}
+                code={service.code}
+                onAction={action}
+              />
+            ))
+          ) : (
+            <>Sin servicios</>
+          )}
         </StyledGrid>
       </StyledContainer>
     </StyledBox>

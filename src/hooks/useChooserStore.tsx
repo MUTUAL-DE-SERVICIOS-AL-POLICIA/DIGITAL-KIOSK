@@ -1,4 +1,4 @@
-import { setProcedures, setSelection } from "@/store";
+import { setSelection } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { gatewayApi } from "@/services";
 
@@ -16,9 +16,11 @@ export const useChooserStore = () => {
       const response = await gatewayApi.get(
         `/kiosk/procedures/${identityCard}`
       );
-      console.log("Esto se obtiene: ", response);
-      dispatch(setProcedures({ procedures: response }));
-    } catch (error: any) {}
+      const data = response.data;
+      return data;
+    } catch (error: any) {
+      console.error("Error al obtener procedimientos: ", error);
+    }
   };
 
   return {

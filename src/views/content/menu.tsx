@@ -19,7 +19,7 @@ const SERVICES = [
     view: <LoanView />,
   },
   {
-    code: "con",
+    code: "contributions",
     title: "APORTES",
     subTitle: "Seguimiento de aportes",
     icon: <Money />,
