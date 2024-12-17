@@ -14,6 +14,8 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob, getEnvVariables } from "@/helpers";
 import { usePersonStore } from "@/hooks/usePersonStore";
 import { CardInfo } from "@/components/CardInfo";
+import { useBiometricStore } from "@/hooks/useBiometric";
+import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -44,10 +46,21 @@ const text = (
 
 export const FaceRecognition = memo(
   forwardRef((_, ref) => {
+    useImperativeHandle(ref, () => ({
+      onRemoveCam: () => cleanup(),
+      onPlaying: () => getLocalUserVideo(),
+      action: () => scanPhoto(),
+    }));
+
+    let intervalVideo: NodeJS.Timeout;
+    let img: any;
+
+    const [imageSrc, setImageSrc] = useState("");
+
     const {
       image,
       changeRecognizedByFacialRecognition,
-      ocr,
+      // ocr,
       changeIdentifyUser,
       changeStep,
       changeLoadingGlobal,
@@ -56,44 +69,15 @@ export const FaceRecognition = memo(
     } = useCredentialStore();
     const { ocrState, leftText, rightText } = useStastisticsStore();
     const { authMethodRegistration } = useAuthStore();
-    const { person } = usePersonStore();
+    const { person, getPerson } = usePersonStore();
+    const { fingerprints, getFingerprints } = useBiometricStore();
+    const { showAlert } = useSweetAlert();
 
     const videoRef: any = useRef();
     const canvasVideoRef: any = useRef();
-
-    let intervalVideo: NodeJS.Timeout;
-    let img: any;
-    const [imageSrc, setImageSrc] = useState("");
     const imageRef: any = useRef();
 
-    useImperativeHandle(ref, () => ({
-      onRemoveCam: () => cleanup(),
-      onPlaying: () => getLocalUserVideo(),
-      action: () => scanPhoto(),
-    }));
-
-    const cleanup = useCallback(() => {
-      intervalVideo && clearInterval(intervalVideo);
-
-      if (videoRef.current)
-        videoRef.current.srcObject
-          .getTracks()
-          .forEach((track: MediaStreamTrack) => track.stop());
-    }, [videoRef]);
-
-    useEffect(() => {
-      changeLoadingGlobal(true);
-      loadModels()
-        .then(async () => {
-          await scanFace();
-          await getLocalUserVideo();
-          setTimeout(() => {
-            changeLoadingGlobal(false);
-          }, 2000); // 2 segundos de espera para el enfoque automático
-        })
-        .catch(() => console.error("No se cargaron los modelos"));
-    }, []);
-
+    /* ====== CONFIGURACIÓN DE LOS PESOS DEL MODELO DE FACEAPI ======= */
     const loadModels = async () => {
       const uri = "/models";
       await Promise.all([
@@ -103,21 +87,9 @@ export const FaceRecognition = memo(
         faceapi.nets.faceRecognitionNet.loadFromUri(uri),
       ]);
     };
+    /* =============================================================== */
 
-    const uploadImage = async (e: any) => {
-      cleanup();
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-          if (typeof event.target?.result === "string") {
-            setImageSrc(event.target?.result);
-          }
-        };
-        reader.readAsDataURL(file); // Leer el archivo como una URL base64
-      }
-    };
-
+    /* =========== CONFIGURACIÓN DE LA CÁMARA DE VIDEO  ============== */
     const setAutomaticFocus = async (stream: MediaStream) => {
       const track = stream.getVideoTracks()[0];
       const capabilities: any = track.getCapabilities();
@@ -148,10 +120,9 @@ export const FaceRecognition = memo(
         console.error("Error:", error);
       }
     };
+    /* =============================================================== */
 
-    const isFaceDetectionModelLoad = () =>
-      !!faceapi.nets.tinyFaceDetector.params;
-
+    /* ============= DETECCIÓN DEL ROSTRO EN EL VIDEO ================ */
     const groupDescriptorsByName = (faceDescriptors: any) =>
       faceDescriptors.reduce(
         (
@@ -168,6 +139,9 @@ export const FaceRecognition = memo(
         },
         {}
       );
+
+    const isFaceDetectionModelLoad = () =>
+      !!faceapi.nets.tinyFaceDetector.params;
 
     const scanVideo = async () => {
       const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS);
@@ -239,118 +213,48 @@ export const FaceRecognition = memo(
         scanVideo();
       }, 60);
     };
+    /* =============================================================== */
 
-    const scanPhoto = async () => {
-      // imagen
-      changeLoadingGlobal(true);
-      try {
-        if (!image || !isFaceDetectionModelLoad()) {
-          console.error("No se cargaron los modelos o no existe la imágen");
-          return;
-        }
-        const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS_PHOTO);
-        img = await faceapi.fetchImage(image);
-
-        const canvas = document.createElement("canvas");
-
-        img.onload = () => {
-          const width = img.width;
-          const height = img.height;
-          canvas.width = width;
-          canvas.height = height;
-        };
-
-        const detections = await faceapi
-          .detectAllFaces(img, options)
-          .withFaceLandmarks()
-          .withFaceDescriptors();
-
-        if (detections.length === 0) {
-          changeLoadingGlobal(false);
-          sendStatistics(false);
-          if (ocr) operative({ step: "home", identifyUser: true });
-          console.error("No existe detecciones");
-        }
-
-        if (!canvas && !img) {
-          changeLoadingGlobal(false);
-          sendStatistics(false);
-          if (ocr) operative({ step: "home", identifyUser: true });
-          console.error("No existe el canvas o imagen");
-        }
-
-        faceapi.matchDimensions(canvas, img);
-        const resizeResults = faceapi.resizeResults(detections, img);
-
-        if (resizeResults.length === 0) {
-          changeLoadingGlobal(false);
-          sendStatistics(false);
-          console.error("No existe resizeResults");
-          if (ocr) operative({ step: "home", identifyUser: true });
-          return;
-        }
-
-        resizeResults.some(async ({ detection, descriptor }) => {
-          if (faceMatcher) {
-            let label = faceMatcher.findBestMatch(descriptor).toString();
-            let options = null;
-            if (!label.includes("unknown")) {
-              if (videoRef.current !== null) {
-                const video = videoRef.current;
-                if (!video.paused && video.readyState === 4) {
-                  const cvs = document.createElement("canvas");
-                  cvs.width = video.videoWidth;
-                  cvs.height = video.videoHeight;
-                  const ctx = cvs.getContext("2d");
-                  ctx?.drawImage(video, 0, 0, cvs.width, cvs.height);
-                  const imageDataURL = cvs.toDataURL("image/jpeg");
-                  savePhoto({
-                    personId: person.id as number,
-                    photoFace: base64toBlob(imageDataURL),
-                  });
-                }
-              }
-              label = `Persona encontrada`;
-              options = { label, boxColor: "green" };
-              changeRecognizedByFacialRecognition(true);
-              console.log("================================");
-              console.log("RECONOCE EL ROSTRO");
-              console.log("================================");
-              sendStatistics(true);
-              operative({ step: "home", identifyUser: true });
-              return true;
-            } else {
-              label = `Persona no encontrada`;
-              options = { label };
-              console.log("================================");
-              console.log("NO RECONOCE EL ROSTRO");
-              console.log("================================");
-              if (ocr) operative({ step: "home", identifyUser: true });
-              sendStatistics(false);
-            }
-            new faceapi.draw.DrawBox(detection.box, options).draw(canvas);
-          }
-        });
-        faceapi.draw.drawFaceLandmarks(canvas, resizeResults);
-        changeLoadingGlobal(false);
-      } catch (error: any) {
-        changeLoadingGlobal(false);
-        console.error("Error con la cámara del rostro: ", error);
-      }
-    };
-
+    /* =========== RECONOCIMIENTO DE ROSTRO EN EL WEBCAM ============= */
     const sendStatistics = async (faceState: boolean) => {
       const body = {
         identity_card: identityCard,
         left_text: leftText,
-        // middle_text: middleText,
         right_text: rightText,
         ocr_state: ocrState,
         facial_recognition: faceState,
-        // affiliate_id: user.nup,
         person_id: parseInt(person.id, 10),
+        recognized_text_captured: "",
       };
       authMethodRegistration(body);
+    };
+
+    const handleNoDetections = () => {
+      changeLoadingGlobal(false);
+      sendStatistics(false);
+      showAlert({
+        title: "Vuelve a intentarlo",
+        message:
+          "Por favor, mire de frente a la cámara, sin lentes ni sombrero.",
+        icon: "warning",
+      });
+    };
+
+    const handleUnrecognizedFace = () => {
+      console.log("================================");
+      console.log("NO RECONOCE EL ROSTRO");
+      console.log("================================");
+      showAlert({
+        title: "Persona no identificada",
+        message:
+          "Por favor, mire de frente a la cámara, sin lentes ni sombrero.",
+        icon: "warning",
+      });
+      sendStatistics(false);
+      // savePhoto({
+      //   personId: person.id as number,
+      //   photoFace: base64toBlob(imageDataURL),
+      // });
     };
 
     const operative = ({
@@ -364,6 +268,181 @@ export const FaceRecognition = memo(
       changeIdentifyUser(identifyUser);
       cleanup();
     };
+
+    /**
+     * Manejo de rostro reconocido.
+     */
+    const handleRecognizedFace = async (
+      label: string,
+      canvas: HTMLCanvasElement,
+      detection: any
+    ) => {
+      console.log("================================");
+      console.log("RECONOCE EL ROSTRO");
+      console.log("================================");
+
+      if (videoRef.current) {
+        const video = videoRef.current;
+        if (!video.paused && video.readyState === 4) {
+          const cvs = document.createElement("canvas");
+          cvs.width = video.videoWidth;
+          cvs.height = video.videoHeight;
+          const ctx = cvs.getContext("2d");
+          ctx?.drawImage(video, 0, 0, cvs.width, cvs.height);
+
+          const imageDataURL = cvs.toDataURL("image/jpeg");
+          savePhoto({
+            personId: person.id as number,
+            photoFace: base64toBlob(imageDataURL),
+          });
+        }
+      }
+
+      changeRecognizedByFacialRecognition(true);
+      sendStatistics(true);
+
+      if (fingerprints && fingerprints.length > 0) {
+        operative({ step: "biometricRecognition", identifyUser: false });
+      } else {
+        operative({ step: "home", identifyUser: true });
+      }
+
+      new faceapi.draw.DrawBox(detection.box, {
+        label,
+        boxColor: "green",
+      }).draw(canvas);
+    };
+
+    /**
+     * Procesa las detecciones y realiza las acciones correspondientes
+     */
+    const processDetections = async (
+      resizeResults: any[],
+      canvas: HTMLCanvasElement
+    ) => {
+      for (const { detection, descriptor } of resizeResults) {
+        if (faceMatcher) {
+          const label = faceMatcher.findBestMatch(descriptor).toString();
+          if (!label.includes("unknown")) {
+            handleRecognizedFace(label, canvas, detection);
+            return true; // Rostro reconocido
+          } else {
+            handleUnrecognizedFace();
+            return false; // Rostro no reconocido
+          }
+        } else {
+          console.warn("faceMatcher no está disponible");
+        }
+      }
+      return false;
+    };
+
+    const scanPhoto = async () => {
+      changeLoadingGlobal(true);
+      try {
+        // Validaciones iniciales
+        if (!image || !isFaceDetectionModelLoad()) {
+          console.error("No se cargaron los modelos o no existe la imágen");
+          changeLoadingGlobal(false);
+          return;
+        }
+        // Configuraciones de detecciones
+        const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS_PHOTO);
+        img = await faceapi.fetchImage(image);
+
+        const canvas = document.createElement("canvas");
+
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+        };
+
+        // Detección de rostros
+        const detections = await faceapi
+          .detectAllFaces(img, options)
+          .withFaceLandmarks()
+          .withFaceDescriptors();
+
+        if (detections.length === 0) {
+          console.warn("No se detectaron rostros");
+          handleNoDetections();
+          return;
+        }
+
+        if (!canvas && !img) {
+          console.warn("Canvas o imagen no disponibles");
+          handleNoDetections();
+          return;
+        }
+
+        faceapi.matchDimensions(canvas, img);
+        const resizeResults = faceapi.resizeResults(detections, img);
+
+        if (resizeResults.length === 0) {
+          console.warn("No hay resultados ajustados");
+          handleNoDetections();
+          return;
+        }
+
+        // Procesamiento de detecciones
+        const recognized = await processDetections(resizeResults, canvas);
+        if (!recognized) {
+          console.warn("Rostro no reconocido");
+          handleUnrecognizedFace();
+        }
+        changeLoadingGlobal(false);
+      } catch (error: any) {
+        changeLoadingGlobal(false);
+        console.error("Error con la cámara del rostro: ", error);
+      }
+    };
+    /* =============================================================== */
+
+    /* ========== CARGADO DE IMÁGEN PARA REALIZAR PRUEBAS ============ */
+    const uploadImage = async (e: any) => {
+      cleanup();
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          if (typeof event.target?.result === "string") {
+            setImageSrc(event.target?.result);
+          }
+        };
+        reader.readAsDataURL(file); // Leer el archivo como una URL base64
+      }
+    };
+    /* =============================================================== */
+
+    const cleanup = useCallback(() => {
+      intervalVideo && clearInterval(intervalVideo);
+
+      if (videoRef.current)
+        videoRef.current.srcObject
+          .getTracks()
+          .forEach((track: MediaStreamTrack) => track.stop());
+    }, [videoRef]);
+
+    const totalData = async () => {
+      const personId = await getPerson(identityCard);
+      if (personId !== undefined) {
+        await getFingerprints(personId);
+      }
+    };
+
+    useEffect(() => {
+      changeLoadingGlobal(true);
+      totalData();
+      loadModels()
+        .then(async () => {
+          await scanFace();
+          await getLocalUserVideo();
+          setTimeout(() => {
+            changeLoadingGlobal(false);
+          }, 2000); // 2 segundos de espera para el enfoque automático
+        })
+        .catch(() => console.error("No se cargaron los modelos"));
+    }, []);
 
     return (
       <Grid container alignItems="center">

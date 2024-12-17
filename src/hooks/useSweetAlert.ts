@@ -6,6 +6,7 @@ type SweetAlertOptions = {
   message: string;
   icon?: "success" | "error" | "warning" | "info" | "question";
   confirmText?: string;
+  timer?: number;
   onConfirm?: () => void;
 };
 
@@ -15,6 +16,7 @@ export const useSweetAlert = () => {
     message,
     icon = "success",
     confirmText = "Aceptar",
+    timer = 12000,
     onConfirm,
   }: SweetAlertOptions) => {
     Swal.fire({
@@ -26,6 +28,7 @@ export const useSweetAlert = () => {
         title: "swal-title",
         confirmButton: "swal-button",
       },
+      timer,
     }).then((result) => {
       if (result.isConfirmed && onConfirm) {
         onConfirm();

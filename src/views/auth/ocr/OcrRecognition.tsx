@@ -13,13 +13,13 @@ import {
 import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
-import Swal from "sweetalert2";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { base64toBlob, getEnvVariables } from "@/helpers";
 import { usePersonStore } from "@/hooks/usePersonStore";
 import "src/styles.css";
 import { useBiometricStore } from "@/hooks/useBiometric";
 import { CardInfo } from "@/components/CardInfo";
+import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -78,18 +78,22 @@ export const OcrView = memo(
     const { authMethodRegistration } = useAuthStore();
     const { leftText, rightText } = useStastisticsStore();
     const { person, getPerson } = usePersonStore();
-    const { fingerprints, getFingerprints } = useBiometricStore();
+    const { getFingerprints } = useBiometricStore();
+    const { showAlert } = useSweetAlert();
 
-    const cleanup = useCallback(() => {
-      intervalWebCam && clearInterval(intervalWebCam);
-      // @ts-expect-error type is not known
-      if (webcamRef.current && webcamRef.current.srcObject)
-        // @ts-expect-error type is not known
-        webcamRef.current.srcObject
-          .getTracks()
-          .forEach((track: MediaStreamTrack) => track.stop());
-    }, [webcamRef]);
+    /* ====== CONFIGURACIÓN DE LOS PESOS DEL MODELO DE FACEAPI ====== */
+    const loadModels = async () => {
+      const uri = "/models";
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(uri),
+        faceapi.nets.ssdMobilenetv1.loadFromUri(uri),
+        faceapi.nets.faceLandmark68Net.loadFromUri(uri),
+        faceapi.nets.faceRecognitionNet.loadFromUri(uri),
+      ]);
+    };
+    /* ============================================================== */
 
+    /* =========== CONFIGURACIÓN DE LA CÁMARA DE VIDEO   ============ */
     const setManualFocus = async (
       stream: MediaStream,
       focusDistance: number
@@ -112,7 +116,7 @@ export const OcrView = memo(
       try {
         const environmentStream = await navigator.mediaDevices.getUserMedia({
           audio: false,
-          video: { facingMode: "environment" },
+          video: { facingMode: "environment", width: 1920, height: 1080 },
         });
         setManualFocus(environmentStream, 120);
         // @ts-expect-error type is not known
@@ -122,6 +126,31 @@ export const OcrView = memo(
         // @ts-expect-error type is not known
         if (webcamRef.current) webcamRef.current.srcObject = null;
       }
+    };
+    /* ============================================================== */
+
+    /* =========== PROCESAMIENTO DE LA IMÁGEN CAPTURADA ============= */
+    const cleanup = useCallback(() => {
+      intervalWebCam && clearInterval(intervalWebCam);
+      // @ts-expect-error type is not known
+      if (webcamRef.current && webcamRef.current.srcObject)
+        // @ts-expect-error type is not known
+        webcamRef.current.srcObject
+          .getTracks()
+          .forEach((track: MediaStreamTrack) => track.stop());
+    }, [webcamRef]);
+
+    const sendStatistics = () => {
+      const body = {
+        identity_card: identityCard,
+        left_text: leftText,
+        right_text: rightText,
+        ocr_state: false,
+        facial_recognition: false,
+        person_id: parseInt(person.id, 10),
+        recognized_text_captured: "",
+      };
+      authMethodRegistration(body);
     };
 
     const findSimilarSubstring = (needle: string, haystack: string[]) => {
@@ -207,56 +236,39 @@ export const OcrView = memo(
       (image: string, text: string[]) => {
         setImage(image);
         if (isWithinErrorRange(identityCard, text)) {
-          if (fingerprints !== undefined && fingerprints.length !== 0) {
-            changeStep("authMethodChooser");
-          } else {
-            changeStep("faceRecognition");
-          }
+          changeStep("authMethodChooser");
           changeRecognizedByOcr(true);
           changeImage(image);
           cleanup();
           changeOcrState(true);
-          savePhoto({
-            personId: person.id,
-            photoIdentityCard: base64toBlob(image),
-          });
         } else {
           setImage(null);
           getLocalUserVideo();
           changeOcrState(false);
           sendStatistics();
-          Swal.fire({
-            position: "center",
-            icon: "warning",
+          showAlert({
             title: "Intente de nuevo",
-            showConfirmButton: false,
-            timer: 2000,
+            message: "Por favor, vuelve a colocar tu carnet de identidad",
+            icon: "warning",
           });
         }
+        savePhoto({
+          personId: person.id,
+          photoIdentityCard: base64toBlob(image),
+        });
       },
       [image, changeImage]
     );
+    /* ============================================================== */
 
-    const sendStatistics = () => {
-      const body = {
-        identity_card: identityCard,
-        left_text: leftText,
-        // middle_text: middleText,
-        right_text: rightText,
-        ocr_state: false,
-        facial_recognition: false,
-        // affiliate_id: user.nup,
-        person_id: parseInt(person.id, 10),
-      };
-      authMethodRegistration(body);
-    };
-
+    /* ========== WEBCAM DETECCIÓN DEL ROSTRO EN EL CARNET ========== */
     const isFaceDetectionModelLoad = () =>
       !!faceapi.nets.tinyFaceDetector.params;
 
     const scanWebcam = async () => {
       if (!isFaceDetectionModelLoad) return;
       const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS);
+
       intervalWebCam = setInterval(async () => {
         if (!webcamRef.current) clearInterval(intervalWebCam);
         else {
@@ -293,17 +305,9 @@ export const OcrView = memo(
         }
       }, 60);
     };
+    /* ============================================================== */
 
-    const loadModels = async () => {
-      const uri = "/models";
-      await Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri(uri),
-        faceapi.nets.ssdMobilenetv1.loadFromUri(uri),
-        faceapi.nets.faceLandmark68Net.loadFromUri(uri),
-        faceapi.nets.faceRecognitionNet.loadFromUri(uri),
-      ]);
-    };
-
+    /* ========== CARGADO DE IMAGEN PARA REALIZAR PRUEBAS =========== */
     const uploadImage = async (e: any) => {
       const file = e.target.files[0];
       if (file) {
@@ -317,6 +321,7 @@ export const OcrView = memo(
         reader.readAsDataURL(file);
       }
     };
+    /* ============================================================== */
 
     const totalData = async () => {
       const personId = await getPerson(identityCard);
@@ -349,14 +354,6 @@ export const OcrView = memo(
           <CardInfo text={text} />
         </Grid>
         <Grid item container sm={6} direction="column">
-          {/* <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "70vh",
-            }}
-          > */}
           <StyledBox>
             <Stack>
               {DEV_MODE && (
@@ -374,7 +371,6 @@ export const OcrView = memo(
               )}
             </Stack>
           </StyledBox>
-          {/* </Box> */}
         </Grid>
       </Grid>
     );

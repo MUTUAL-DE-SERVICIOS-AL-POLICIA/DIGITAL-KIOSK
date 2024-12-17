@@ -46,7 +46,6 @@ export const Chooser = () => {
         const filteredServices = SERVICES.filter(
           (service) => service.code in proc && proc[service.code]
         );
-        console.log(filteredServices);
         setEnabledServices(filteredServices);
       } else {
         console.log("Proc no tiene formato esperado");
