@@ -8,17 +8,18 @@ const CAPTURED_IMAGE_WIDTH = 1920; // Ancho predefinido para la imagen capturada
 const CAPTURED_IMAGE_HEIGHT = 1080; // Alto predefinido para la imagen capturada
 
 const RECTANGLES = [
-  { left: 150, top: 600, width: 650, height: 130 },
-  { left: 1350, top: 50, width: 500, height: 150 },
+  { left: 100, top: 740, width: 650, height: 130 },
+  { left: 1400, top: 100, width: 500, height: 150 },
 ];
 interface captureProps {
   onChange: (image: string, text: string[]) => void;
   webcamRef: RefObject<Webcam>;
   canvasWebcamRef: RefObject<HTMLCanvasElement>;
+  uploadImage: string | null;
 }
 
 export const ImageCapture = forwardRef((props: captureProps, ref) => {
-  const { onChange, webcamRef, canvasWebcamRef } = props;
+  const { onChange, webcamRef, canvasWebcamRef, uploadImage } = props;
 
   const { changeLoadingGlobal } = useCredentialStore();
   const { changeLeftText, changeMiddleText, changeRightText } =
@@ -30,9 +31,15 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
 
   const capture = async () => {
     changeLoadingGlobal(true);
+    let imageSrc;
     if (webcamRef.current !== null) {
-      // la webcam esta esta montado en el DOM
-      let imageSrc = webcamRef.current.getScreenshot(); // realiza una captura de una imagen
+      // la webcam esta montado en el DOM
+      imageSrc = webcamRef.current.getScreenshot(); // realiza una captura de una imagen
+    } else {
+      if (uploadImage != null) {
+        imageSrc = uploadImage;
+      }
+    }
       const img = new Image(); // Crea una nueva imagen
       img.onload = async () => {
         const canvas = document.createElement("canvas"); // Referenciando al elemento canvas
@@ -105,12 +112,12 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
       };
       if (imageSrc != null) {
         img.src = imageSrc;
-      }
     }
   };
 
   return (
     <Stack>
+      {uploadImage == null && (
       <Webcam
         audio={false}
         mirrored={false}
@@ -129,6 +136,20 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           width: "30vw",
         }}
       />
+      )}
+      {uploadImage && (
+        <img
+          src={uploadImage}
+          alt="Preview"
+          style={{
+            transform: "scaleX(1)",
+            borderRadius: "30px",
+            backgroundColor: "#fff",
+            padding: "10px",
+            width: "30vw",
+          }}
+        />
+      )}
       <canvas
         ref={canvasWebcamRef}
         style={{
