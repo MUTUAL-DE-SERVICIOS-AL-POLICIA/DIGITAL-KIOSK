@@ -61,6 +61,7 @@ export const OcrView = memo(
     let intervalWebCam: NodeJS.Timeout;
 
     const [image, setImage] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const imageCaptureRef: RefObject<ImageViewRef> = useRef(null);
     const webcamRef: RefObject<Webcam> = useRef(null);
@@ -243,6 +244,9 @@ export const OcrView = memo(
           changeOcrState(true);
         } else {
           setImage(null);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = ""; // Reinicia el valor del input file
+          }
           getLocalUserVideo();
           changeOcrState(false);
           sendStatistics();
@@ -315,7 +319,7 @@ export const OcrView = memo(
         reader.onload = (event) => {
           const imgData = event.target?.result;
           if (typeof imgData === "string") {
-            handleImageCapture(imgData ?? "", ["8448346", ""]);
+            setImage(imgData);
           }
         };
         reader.readAsDataURL(file);
@@ -358,17 +362,16 @@ export const OcrView = memo(
             <Stack>
               {DEV_MODE && (
                 <div>
-                  <input type="file" accept="image/*" onChange={uploadImage} />
+                  <input type="file" accept="image/*" onChange={uploadImage} ref={fileInputRef}/>
                 </div>
               )}
-              {image == null && (
                 <ImageCapture
                   onChange={handleImageCapture}
                   ref={imageCaptureRef}
                   webcamRef={webcamRef}
                   canvasWebcamRef={canvasWebcamRef}
+                  uploadImage={image}
                 />
-              )}
             </Stack>
           </StyledBox>
         </Grid>
