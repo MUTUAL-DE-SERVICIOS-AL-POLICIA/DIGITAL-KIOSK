@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 // @ts-expect-error
 import Hands from "@/assets/images/hands.png";
 import { memo, useEffect } from "react";
@@ -23,7 +23,13 @@ const colors = {
   UNREGISTERED: "rgba(255, 50, 0, 0.5)",
 };
 
-export const Fingerprint = memo(() => {
+interface FingerprintProps {
+  fingerprints: any;
+}
+
+export const Fingerprint = memo((props: FingerprintProps) => {
+  const { fingerprints } = props;
+
   const drawAndPaintFingers = (
     area: Area,
     ctx: CanvasRenderingContext2D,
@@ -44,7 +50,10 @@ export const Fingerprint = memo(() => {
   };
 
   const draw = (areas: any, ctx: CanvasRenderingContext2D, color: string) => {
-    areas.forEach((area: Area) => {
+    const intersection = areas.filter((area1: any) =>
+      fingerprints.some((area2: any) => area1.id === area2.fingerprintType.id)
+    );
+    intersection.forEach((area: Area) => {
       drawAndPaintFingers(area, ctx, color);
     });
   };
@@ -72,37 +81,48 @@ export const Fingerprint = memo(() => {
   }, []);
 
   return (
-    <Box
-      sx={{
-        position: "relative",
-        width: "100%",
-        height: "auto",
-      }}
-    >
-      <img
-        src={Hands}
-        alt="image de manos"
-        style={{
+    <>
+      <Typography
+        sx={{ fontSize: "1.6vw", fontWeight: 500, textAlign: "center" }}
+      >
+        Usted tiene registrado las siguentes huellas:
+      </Typography>
+      <Box
+        sx={{
+          paddingTop: 0,
+          marginTop: 0,
+          paddingBottom: 0,
+          marginBottom: 0,
+          position: "relative",
           width: "100%",
           height: "auto",
-          display: "block",
         }}
-        id="imageHands"
-      />
-      <Box
-        component="canvas"
-        id="canvas"
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          borderRadius: "10px",
-          pointerEvents: "none",
-        }}
-      />
-    </Box>
+      >
+        <img
+          src={Hands}
+          alt="image de manos"
+          style={{
+            width: "100%",
+            height: "auto",
+            display: "block",
+          }}
+          id="imageHands"
+        />
+        <Box
+          component="canvas"
+          id="canvas"
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            borderRadius: "10px",
+            pointerEvents: "none",
+          }}
+        />
+      </Box>
+    </>
   );
 });
 
