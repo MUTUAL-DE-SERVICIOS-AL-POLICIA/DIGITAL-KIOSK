@@ -42,7 +42,7 @@ export const HomeScreen = memo(() => {
   return (
     <div onClick={handleClick} style={{ height: `${screenHeight}px` }}>
       <Grid container>
-        <Grid item sm={5}>
+        {/* <Grid item sm={5}>
           <Box
             component="img"
             sx={{
@@ -55,9 +55,9 @@ export const HomeScreen = memo(() => {
             alt="The house from the offer."
             src={logo}
           />
-        </Grid>
-        <Grid item container sm={7} direction="column" justifyContent="center">
-          <Grid>
+        </Grid> */}
+        <Grid item container sm={12} direction="column" justifyContent="center">
+          {/* <Grid>
             <Box display="flex" justifyContent="center" sx={{ mb: 15 }}>
               <img
                 src={imageLogo}
@@ -65,7 +65,7 @@ export const HomeScreen = memo(() => {
                 style={{ width: "30vw" }}
               />
             </Box>
-          </Grid>
+          </Grid> */}
           {/* <Grid sx={{ marginBottom: 7 }}>
             <Typography
               sx={{ p: 2, paddingLeft: 10 }}
