@@ -1,7 +1,8 @@
 import { coffeApi, externalApi } from "@/services";
 import { setLoans } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
+import { useSweetAlert } from "./useSweetAlert";
 
 const api = coffeApi;
 const apiExternal = externalApi;
@@ -9,6 +10,7 @@ const apiExternal = externalApi;
 export const useLoanStore = () => {
   const { loans } = useSelector((state: any) => state.loans);
   const dispatch = useDispatch();
+  const { showAlert } = useSweetAlert();
 
   const getLoans = async (loanId: number) => {
     const { data } = await api.get(`/kiosk/get_affiliate_loans/${loanId}`);
@@ -19,8 +21,12 @@ export const useLoanStore = () => {
     try {
       // @ts-expect-error no necesary
       const { data } = await Promise.race([
-        api.get(`/kiosk/loan/${loanId}/print/kardex`, { responseType: "arraybuffer" }),
-        new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 15000)),
+        api.get(`/kiosk/loan/${loanId}/print/kardex`, {
+          responseType: "arraybuffer",
+        }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), 15000)
+        ),
       ]);
       if (data) {
         const file = new Blob([data], { type: "application/pdf" });
@@ -28,7 +34,9 @@ export const useLoanStore = () => {
         formData.append("pdfFile", file, "kardex.pdf");
         const res: any = await Promise.race([
           await apiExternal.post("/printer/print/", formData),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 15000)),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Timeout")), 15000)
+          ),
         ]);
         if (res) {
           if (res.status == 200) {
@@ -43,12 +51,17 @@ export const useLoanStore = () => {
         }
       } else if (error.response) {
         const message = error.response?.data?.error || "Error de conexión";
-        Swal.fire({
+        showAlert({
           title: "Hubo un error",
-          text: message,
+          message: message,
           icon: "error",
-          confirmButtonText: "Aceptar",
         });
+        // Swal.fire({
+        //   title: "Hubo un error",
+        //   text: message,
+        //   icon: "error",
+        //   confirmButtonText: "Aceptar",
+        // });
         return 501;
       }
     }

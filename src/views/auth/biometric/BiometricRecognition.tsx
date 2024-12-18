@@ -6,9 +6,9 @@ import { forwardRef, memo, useImperativeHandle } from "react";
 import { useLoading } from "@/hooks/useLoading";
 import { useBiometricStore } from "@/hooks/useBiometric";
 import { useCredentialStore } from "@/hooks";
-import Swal from "sweetalert2";
 import { usePersonStore } from "@/hooks/usePersonStore";
 import { CardInfo } from "@/components/CardInfo";
+import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 const text = (
   <>
@@ -58,6 +58,7 @@ export const BiometricRecognition = memo(
       useBiometricStore();
     const { changeStep, changeIdentifyUser } = useCredentialStore();
     const { person } = usePersonStore();
+    const { showAlert } = useSweetAlert();
 
     const assembleAnswer = (fingers: any[]) => {
       if (fingers !== undefined) {
@@ -82,10 +83,10 @@ export const BiometricRecognition = memo(
           changeStep("home");
           changeIdentifyUser(true);
         } else {
-          Swal.fire({
-            title: "Hubo un error",
-            text: "No se pudo realizar la comparación",
-            icon: "error",
+          showAlert({
+            title: "Vuelve a intentarlo",
+            message: "Por favor, intente con otro dedo registrado",
+            icon: "warning",
           });
         }
       } catch (e: any) {

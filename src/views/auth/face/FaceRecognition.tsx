@@ -44,6 +44,25 @@ const text = (
   </>
 );
 
+const html = (attempts: number) => {
+  return `
+    <div style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80px;
+      height: 80px;
+      background-color: #008698;
+      color: white;
+      border-radius: 50%;
+      font-size: 2.5rem;
+      margin: 0 auto;">
+      ${attempts + 1}
+    </div>
+    <p style="margin-top: 1rem;">Por favor, inténtalo de nuevo.</p>
+  `;
+};
+
 export const FaceRecognition = memo(
   forwardRef((_, ref) => {
     useImperativeHandle(ref, () => ({
@@ -56,11 +75,16 @@ export const FaceRecognition = memo(
     let img: any;
 
     const [imageSrc, setImageSrc] = useState("");
+    const [attempts, setAttempts] = useState(0);
+    const [fetchedImage, setFetchedImage] = useState<HTMLIFrameElement | null>(
+      null
+    );
+    const MAX_ATTEMPTS = 3;
 
     const {
       image,
       changeRecognizedByFacialRecognition,
-      // ocr,
+      ocr,
       changeIdentifyUser,
       changeStep,
       changeLoadingGlobal,
@@ -241,15 +265,54 @@ export const FaceRecognition = memo(
     };
 
     const handleUnrecognizedFace = () => {
+      const currentAttempts = attempts + 1;
+      setAttempts(currentAttempts);
+      console.log("OCR: ", ocr);
       console.log("================================");
       console.log("NO RECONOCE EL ROSTRO");
       console.log("================================");
-      showAlert({
-        title: "Persona no identificada",
-        message:
-          "Por favor, mire de frente a la cámara, sin lentes ni sombrero.",
-        icon: "warning",
-      });
+
+      if (currentAttempts > MAX_ATTEMPTS) {
+        if (fingerprints && fingerprints.length > 0) {
+          showAlert({
+            title: "Persona no identificada",
+            message: "¿Quiere intentarlo con su huella?",
+            icon: "warning",
+            cancelText: "Atras",
+            onConfirm: () => {
+              operative({
+                step: "biometricRecognition",
+                identifyUser: false,
+              });
+              cleanup();
+            },
+            onCancel: () => {
+              console.log("cancelado");
+            },
+            allowOutsideClick: true,
+          });
+        } else {
+          showAlert({
+            title: "Persona no identiticada",
+            icon: "warning",
+            allowOutsideClick: true,
+            onConfirm: () => {
+              operative({
+                step: "home",
+                identifyUser: false,
+              });
+              cleanup();
+            },
+          });
+        }
+      } else {
+        showAlert({
+          title: "Intento",
+          html: html(attempts),
+          icon: undefined,
+        });
+      }
+
       sendStatistics(false);
       // savePhoto({
       //   personId: person.id as number,
@@ -282,6 +345,7 @@ export const FaceRecognition = memo(
       console.log("================================");
 
       if (videoRef.current) {
+        // Generamos la imagen para guardarla
         const video = videoRef.current;
         if (!video.paused && video.readyState === 4) {
           const cvs = document.createElement("canvas");
@@ -300,12 +364,7 @@ export const FaceRecognition = memo(
 
       changeRecognizedByFacialRecognition(true);
       sendStatistics(true);
-
-      if (fingerprints && fingerprints.length > 0) {
-        operative({ step: "biometricRecognition", identifyUser: false });
-      } else {
-        operative({ step: "home", identifyUser: true });
-      }
+      operative({ step: "home", identifyUser: true });
 
       new faceapi.draw.DrawBox(detection.box, {
         label,
@@ -349,6 +408,8 @@ export const FaceRecognition = memo(
         // Configuraciones de detecciones
         const options = new faceapi.TinyFaceDetectorOptions(TINY_OPTIONS_PHOTO);
         img = await faceapi.fetchImage(image);
+        console.log(`Dimensiones de la img: ${img.width} x ${img.height}`);
+        setFetchedImage(img);
 
         const canvas = document.createElement("canvas");
 
@@ -514,6 +575,19 @@ export const FaceRecognition = memo(
                     zIndex: "10",
                   }}
                 />
+                {fetchedImage && (
+                  <img
+                    src={fetchedImage.src} // Usamos la propiedad src de la imagen cargada
+                    alt="Imagen de comparación"
+                    style={{
+                      width: "40vw",
+                      height: "30vw",
+                      borderRadius: "30px",
+                      backgroundColor: "#fff",
+                      padding: "10px",
+                    }}
+                  />
+                )}
               </Stack>
             </Stack>
           </Box>

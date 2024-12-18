@@ -362,16 +362,21 @@ export const OcrView = memo(
             <Stack>
               {DEV_MODE && (
                 <div>
-                  <input type="file" accept="image/*" onChange={uploadImage} ref={fileInputRef}/>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={uploadImage}
+                    ref={fileInputRef}
+                  />
                 </div>
               )}
-                <ImageCapture
-                  onChange={handleImageCapture}
-                  ref={imageCaptureRef}
-                  webcamRef={webcamRef}
-                  canvasWebcamRef={canvasWebcamRef}
-                  uploadImage={image}
-                />
+              <ImageCapture
+                onChange={handleImageCapture}
+                ref={imageCaptureRef}
+                webcamRef={webcamRef}
+                canvasWebcamRef={canvasWebcamRef}
+                uploadImage={image}
+              />
             </Stack>
           </StyledBox>
         </Grid>

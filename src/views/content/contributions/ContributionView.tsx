@@ -5,9 +5,10 @@ import logo from "@/assets/images/aportes.png";
 import { useContext, useEffect } from "react";
 import { useContributionStore } from "@/hooks/useContributionStore";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { TimerContext } from "@/context/TimerContext";
 import { useLoading } from "@/hooks/useLoading";
+import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 export const ContributionView = () => {
   const {
@@ -20,6 +21,7 @@ export const ContributionView = () => {
 
   const { user } = useAuthStore();
   const { setLoading } = useLoading();
+  const { showAlert } = useSweetAlert();
 
   const { resetTimer } = useContext(TimerContext);
 
@@ -32,33 +34,51 @@ export const ContributionView = () => {
     const response: any = await printContributionActive(user.nup);
     switch (response) {
       case 200:
-        Swal.fire({
+        showAlert({
           title: "Impresión exitosa",
-          text: "Recoja su hoja impresa",
+          message: "Recoja su hoja impresa",
           icon: "success",
-          confirmButtonText: "Aceptar",
           timer: 3000,
         });
+        // Swal.fire({
+        //   title: "Impresión exitosa",
+        //   text: "Recoja su hoja impresa",
+        //   icon: "success",
+        //   confirmButtonText: "Aceptar",
+        //   timer: 3000,
+        // });
         break;
       case 400:
-        Swal.fire({
+        showAlert({
           title: "No hay impresora conectada",
-          text: "Contactese con soporte",
+          message: "Contactese con soporte",
           icon: "warning",
-          confirmButtonText: "Aceptar",
           timer: 1500,
         });
+        // Swal.fire({
+        //   title: "No hay impresora conectada",
+        //   text: "Contactese con soporte",
+        //   icon: "warning",
+        //   confirmButtonText: "Aceptar",
+        //   timer: 1500,
+        // });
         break;
       case 501:
         break;
       default:
-        Swal.fire({
+        showAlert({
           title: "Hubo un error",
-          text: "El servicio de impresión no se encuentra disponible",
+          message: "El servicio de impresión no se encuentra disponible",
           icon: "error",
-          confirmButtonText: "Aceptar",
           timer: 1500,
         });
+        // Swal.fire({
+        //   title: "Hubo un error",
+        //   text: "El servicio de impresión no se encuentra disponible",
+        //   icon: "error",
+        //   confirmButtonText: "Aceptar",
+        //   timer: 1500,
+        // });
         break;
     }
     setLoading(false);
@@ -70,33 +90,51 @@ export const ContributionView = () => {
     const response: any = await printContributionPassive(user.nup);
     switch (response) {
       case 200:
-        Swal.fire({
+        showAlert({
           title: "Impresión exitosa",
-          text: "Recoja su hoja impresa",
+          message: "Recoja su hoja impresa",
           icon: "success",
-          confirmButtonText: "Aceptar",
           timer: 5000,
         });
+        // Swal.fire({
+        //   title: "Impresión exitosa",
+        //   text: "Recoja su hoja impresa",
+        //   icon: "success",
+        //   confirmButtonText: "Aceptar",
+        //   timer: 5000,
+        // });
         break;
       case 400:
-        Swal.fire({
+        showAlert({
           title: "No hay impresora conectada",
-          text: "Contactese con soporte",
+          message: "Contactese con soporte",
           icon: "warning",
-          confirmButtonText: "Aceptar",
           timer: 1500,
         });
+        // Swal.fire({
+        //   title: "No hay impresora conectada",
+        //   text: "Contactese con soporte",
+        //   icon: "warning",
+        //   confirmButtonText: "Aceptar",
+        //   timer: 1500,
+        // });
         break;
       case 501:
         break;
       default:
-        Swal.fire({
+        showAlert({
           title: "Hubo un error",
-          text: "El servicio de impresión no se encuentra disponible",
+          message: "El servicio de impresión no se encuentra disponible",
           icon: "error",
-          confirmButtonText: "Aceptar",
           timer: 1500,
         });
+        // Swal.fire({
+        //   title: "Hubo un error",
+        //   text: "El servicio de impresión no se encuentra disponible",
+        //   icon: "error",
+        //   confirmButtonText: "Aceptar",
+        //   timer: 1500,
+        // });
         break;
     }
     setLoading(false);
