@@ -9,6 +9,8 @@ import { useCredentialStore } from "@/hooks";
 import { usePersonStore } from "@/hooks/usePersonStore";
 import { CardInfo } from "@/components/CardInfo";
 import { useSweetAlert } from "@/hooks/useSweetAlert";
+// @ts-expect-error
+import FingerprintGif from "@/assets/images/fingerprint.gif";
 
 const text = (
   <>
@@ -41,7 +43,7 @@ const StyledOverlay = styled("div")(() => ({
   left: 0,
   width: "100%",
   height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.7)",
+  backgroundColor: "rgba(0, 0, 0, 0.85)",
   zIndex: 1000,
 }));
 
@@ -116,9 +118,11 @@ export const BiometricRecognition = memo(
           <StyledOverlay>
             <div>
               <span>Comparando huellas</span>
+              <br />
+              <img src={FingerprintGif} alt="Cargando ... " />
+              {/* <span className="dot">.</span>
               <span className="dot">.</span>
-              <span className="dot">.</span>
-              <span className="dot">.</span>
+              <span className="dot">.</span> */}
             </div>
           </StyledOverlay>
         )}
