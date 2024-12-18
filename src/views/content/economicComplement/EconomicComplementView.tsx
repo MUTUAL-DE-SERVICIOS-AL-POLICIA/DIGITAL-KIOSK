@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCredentialStore } from "@/hooks";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
+import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 interface Display {
   key: string;
@@ -44,6 +45,7 @@ export const EconomicComplementView = () => {
     getInformationEconomicComplement,
   } = useEconomicComplementStore();
   const { identityCard } = useCredentialStore();
+  const { showAlert } = useSweetAlert();
 
   const createProcedureHolder = async () => {
     if (ecoCom && !ecoCom.error) {
@@ -68,19 +70,29 @@ export const EconomicComplementView = () => {
               console.log("info:", info);
               setInfoEcoCom(info);
               setExpandedHolder(true);
-              Swal.fire({
+              showAlert({
                 title: "Trámite creado correctamente",
-                text: message,
+                message: message,
                 icon: "success",
-                confirmButtonText: "Aceptar",
               });
+              // Swal.fire({
+              //   title: "Trámite creado correctamente",
+              //   text: message,
+              //   icon: "success",
+              //   confirmButtonText: "Aceptar",
+              // });
             } else {
-              Swal.fire({
+              showAlert({
                 title: "Trámite no creado",
-                text: message,
+                message: message,
                 icon: "warning",
-                confirmButtonText: "Aceptar",
               });
+              // Swal.fire({
+              //   title: "Trámite no creado",
+              //   text: message,
+              //   icon: "warning",
+              //   confirmButtonText: "Aceptar",
+              // });
             }
           }
         }

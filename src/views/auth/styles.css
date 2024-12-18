@@ -38,3 +38,10 @@
 .swal-trigger:hover {
   background-color: #218838;
 }
+.swal-cancel-button {
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: #f79009;
+  color: white;
+  border-radius: 5px;
+}
