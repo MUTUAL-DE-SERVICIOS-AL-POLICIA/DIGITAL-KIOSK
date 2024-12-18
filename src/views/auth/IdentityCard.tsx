@@ -5,13 +5,7 @@ import KeyboardNumeric from "@/components/keyboardNumeric";
 import { useCredentialStore, useForm } from "@/hooks";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { Grid, styled } from "@mui/material";
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-  memo,
-} from "react";
+import { forwardRef, useImperativeHandle, useState, memo } from "react";
 
 const loginFormFields = {
   identityCard: "",
@@ -74,8 +68,6 @@ export const IdentityCard = memo(
       },
       onRemoveCam: () => {},
     }));
-
-    useEffect(() => {}, [identityCard]);
 
     const handleClickKeyboard = (number: any) => {
       let aux: string = "";
