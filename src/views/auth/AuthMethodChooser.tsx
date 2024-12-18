@@ -5,7 +5,9 @@ import Face from "@/assets/images/face.png";
 // @ts-expect-error no proceded
 import Fingerprint from "@/assets/images/fingerprint.jpg";
 import CardMethodChooser from "@/components/CardMethodChooser";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { usePersonStore } from "@/hooks/usePersonStore";
+import { useBiometricStore } from "@/hooks/useBiometric";
 
 const METHODS_AUTH = [
   {
@@ -35,7 +37,9 @@ const MethodGrid = styled(Grid)({
 });
 
 export const AuthMethodChooser = () => {
-  const { changeStep } = useCredentialStore();
+  const { changeStep, identityCard } = useCredentialStore();
+  const { getPerson } = usePersonStore();
+  const { fingerprints, getFingerprints } = useBiometricStore();
 
   const handleAction = useCallback(
     (step: string) => {
@@ -43,6 +47,17 @@ export const AuthMethodChooser = () => {
     },
     [changeStep]
   );
+
+  const totalData = async () => {
+    const personId = await getPerson(identityCard);
+    if (personId !== undefined) {
+      await getFingerprints(personId);
+    }
+  };
+
+  useEffect(() => {
+    totalData();
+  }, []);
 
   return (
     <Container container>
@@ -53,6 +68,12 @@ export const AuthMethodChooser = () => {
             image={method.image}
             step={method.action}
             onAction={handleAction}
+            disabled={
+              method.title == "Reconocimiento Dactilar" &&
+              fingerprints.length === 0
+                ? true
+                : false
+            }
           />
         </MethodGrid>
       ))}

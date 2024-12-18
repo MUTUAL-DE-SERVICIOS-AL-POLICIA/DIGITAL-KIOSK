@@ -12,14 +12,23 @@ interface CardMethodChooserProp {
   image: any;
   step: string;
   onAction: (step: string) => void;
+  disabled: boolean;
 }
 
 const CardMethodChooser = memo((props: CardMethodChooserProp) => {
-  const { title, image, step, onAction } = props;
+  const { title, image, step, onAction, disabled } = props;
 
   return (
-    <Card sx={{ minWidth: 450, borderRadius: "40px" }} variant="elevation">
-      <CardActionArea onClick={() => onAction(step)}>
+    <Card
+      sx={{
+        minWidth: 450,
+        borderRadius: "40px",
+        opacity: disabled ? 0.5 : 1,
+        pointerEvents: disabled ? "none" : "auto",
+      }}
+      variant="elevation"
+    >
+      <CardActionArea onClick={() => !disabled && onAction(step)}>
         <CardHeader
           title={
             <Typography
