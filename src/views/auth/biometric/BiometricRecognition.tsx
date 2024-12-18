@@ -54,7 +54,8 @@ export const BiometricRecognition = memo(
     }));
 
     const { isLoading, setLoading } = useLoading();
-    const { compareFingerprints, getFingerprints } = useBiometricStore();
+    const { compareFingerprints, getFingerprints, fingerprints } =
+      useBiometricStore();
     const { changeStep, changeIdentifyUser } = useCredentialStore();
     const { person } = usePersonStore();
 
@@ -95,7 +96,6 @@ export const BiometricRecognition = memo(
     };
 
     return (
-      // <Grid container alignItems="center" sx={{ my: 5 }}>
       <StyledGridContainer container>
         <Grid
           item
@@ -108,35 +108,18 @@ export const BiometricRecognition = memo(
         </Grid>
         <Grid item container sm={5} direction="column">
           <StyledFingerprintCard variant="outlined">
-            <Fingerprint />
+            <Fingerprint fingerprints={fingerprints} />
           </StyledFingerprintCard>
-          {/* <Card sx={{ mx: 10, borderRadius: "30px", p: 2 }} variant="outlined"> */}
-          {/* </Card> */}
         </Grid>
         {isLoading && (
           <StyledOverlay>
             <div>
-              <span>
-                Comparando huellas
-                {/* <br /> */}
-              </span>
+              <span>Comparando huellas</span>
               <span className="dot">.</span>
               <span className="dot">.</span>
               <span className="dot">.</span>
             </div>
           </StyledOverlay>
-          // <div className="overlay" style={{ display: "flex" }}>
-          // <div
-          //   style={{
-          //     fontSize: "84px",
-          //     color: "#E0E0E0",
-          //     display: "flex",
-          //     textAlign: "center",
-          //     justifyContent: "center",
-          //   }}
-          // >
-          //  </div>
-          // </div>
         )}
       </StyledGridContainer>
     );

@@ -9,7 +9,7 @@ export const useBiometricStore = () => {
   const getFingerprints = async (personId: number) => {
     try {
       const { data } = await gatewayApi.get(
-        `/persons/getFingerprintComparison/${personId}`
+        `/kiosk/getFingerprintComparison/${personId}`
       );
       dispatch(setFingerprints({ fingerprints: data }));
       return data;
