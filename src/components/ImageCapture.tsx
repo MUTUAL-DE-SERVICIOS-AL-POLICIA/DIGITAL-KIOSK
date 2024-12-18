@@ -57,8 +57,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           ctx.strokeRect(left, top, width, height); // Dibujando el rectangulo
         });
 
-        let canvasURL = canvas.toDataURL("image/jpeg"); // Obteniendo la URL de la imagen
-
+        let canvasURL = canvas.toDataURL("image/jpeg", 1.0); // Obteniendo la URL de la imagen
         (document.getElementById("imgi") as HTMLImageElement).src =
           canvasURL || ""; // Montando la imagen en html
 
@@ -72,6 +71,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         const options = {
           rotateAuto: true, // Auto rotación del texto si no esta alineado
           tessedit_char_whitelist: "0123456789", // reconocimiento de solo números
+          tessedit_pageseg_mode: 7,
         };
 
         const outputs = {
@@ -100,13 +100,13 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           (result) => result.data.text
         ) as string[];
 
-        (document.getElementById("imgi") as HTMLImageElement).src =
-          results[1].data.imageBinary || "";
+        // (document.getElementById("imgi") as HTMLImageElement).src =
+        //   results[1].data.imageBinary || "";
 
         // Limpiando los dibujos de la imagen
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx?.drawImage(img, 0, 0, CAPTURED_IMAGE_WIDTH, CAPTURED_IMAGE_HEIGHT);
-        canvasURL = canvas.toDataURL("image/jpeg");
+        canvasURL = canvas.toDataURL("image/jpeg", 1.0);
         changeLoadingGlobal(false);
         onChange(canvasURL, recognized);
       };
@@ -125,8 +125,8 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
         screenshotFormat="image/jpeg"
         videoConstraints={{
           facingMode: "environment",
-          width: CAPTURED_IMAGE_WIDTH,
-          height: CAPTURED_IMAGE_HEIGHT,
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
         }}
         style={{
           transform: "scaleX(1)",
@@ -134,6 +134,7 @@ export const ImageCapture = forwardRef((props: captureProps, ref) => {
           backgroundColor: "#fff",
           padding: "10px",
           width: "30vw",
+          height: "auto",
         }}
       />
       )}

@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid /*Typography*/ } from "@mui/material";
 //@ts-expect-error do not proceed
 import logo from "@/assets/images/muserpol.jpg";
 //@ts-expect-error do not proceed

@@ -6,15 +6,16 @@ import { InstructionCard } from "./InstructionCard";
 //@ts-expect-error do not proceed
 import imageLogoBlanco from "@/assets/images/muserpol-logo-blanco.png";
 import { HomeScreen } from "./HomeScreen";
-import { FaceRecognition, OcrView } from ".";
-import Footer from "@/components/Footer";
+import { OcrView } from "@/views/auth/ocr/OcrRecognition";
 
 import { TimerContext } from "@/context/TimerContext";
 import { AuthMethodChooser } from "./AuthMethodChooser";
 import { BiometricRecognition } from "./biometric/BiometricRecognition";
 import { Chooser } from "./Chooser";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import styled from "@emotion/styled";
+import { FaceRecognition } from "./face/FaceRecognition";
 
 interface ChildRefType {
   action: (prop?: boolean) => void;
