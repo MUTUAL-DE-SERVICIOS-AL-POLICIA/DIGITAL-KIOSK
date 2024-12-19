@@ -34,8 +34,8 @@ const DEV_MODE = getEnvVariables().DEV_MODE === "true";
 
 const text = (
   <>
-    Deposite su <b>carnet de identidad</b> en el
-    <b>soporte inferior</b> y presione en <b>continuar</b>.<br />
+    Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y
+    presione en <b>continuar</b>.<br />
   </>
 );
 
@@ -62,6 +62,7 @@ export const OcrView = memo(
 
     const [image, setImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const foundRef = useRef<any>(undefined);
 
     const imageCaptureRef: RefObject<ImageViewRef> = useRef(null);
     const webcamRef: RefObject<Webcam> = useRef(null);
@@ -141,15 +142,18 @@ export const OcrView = memo(
           .forEach((track: MediaStreamTrack) => track.stop());
     }, [webcamRef]);
 
-    const sendStatistics = () => {
+    const sendStatistics = (
+      ocrState: boolean,
+      recognizedTextCaptured: string = ""
+    ) => {
       const body = {
         identity_card: identityCard,
         left_text: leftText,
         right_text: rightText,
-        ocr_state: false,
+        ocr_state: ocrState,
         facial_recognition: false,
         person_id: parseInt(person.id, 10),
-        recognized_text_captured: "",
+        recognized_text_captured: recognizedTextCaptured,
       };
       authMethodRegistration(body);
     };
@@ -223,8 +227,9 @@ export const OcrView = memo(
       console.log("***************************************************");
       const result = findSimilarSubstring(enteredText, recognizedText);
       if (result.found) {
+        foundRef.current = result;
         console.log(
-          `Cadena encontrada en el cuadro N° ${result.chart}\ncon la variante: ${result.modified || enteredText}`
+          `Cadena encontrada en el cuadro N° ${result.chart}\ncon la variante: ${result.modified}`
         );
         console.log("***************************************************");
         return true;
@@ -241,15 +246,16 @@ export const OcrView = memo(
           changeRecognizedByOcr(true);
           changeImage(image);
           cleanup();
+          sendStatistics(true, foundRef.current.modified);
           changeOcrState(true);
         } else {
           setImage(null);
           if (fileInputRef.current) {
-            fileInputRef.current.value = ""; // Reinicia el valor del input file
+            fileInputRef.current.value = "";
           }
           getLocalUserVideo();
           changeOcrState(false);
-          sendStatistics();
+          sendStatistics(false);
           showAlert({
             title: "Intente de nuevo",
             message: "Por favor, vuelve a colocar tu carnet de identidad",

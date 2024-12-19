@@ -46,11 +46,13 @@ const CardChooser = memo((props: CardChooserProps) => {
                 sx: sxIcon,
                 variant: "outlined",
               })}
-            <Box sx={{ mr: 2 }}>
-              <Typography sx={{ fontWeight: 600 }} variant="h4">
+            <Box sx={{ mr: 2, my: 6 }}>
+              <Typography sx={{ fontWeight: 700, fontSize: 40 }} variant="h4">
                 {title}
               </Typography>
-              <Typography variant="h5">{subTitle}</Typography>
+              <Typography variant="h5" sx={{ fontSize: 40 }}>
+                {subTitle}
+              </Typography>
             </Box>
           </CardContent>
         </CardActionArea>

@@ -575,9 +575,9 @@ export const FaceRecognition = memo(
                     zIndex: "10",
                   }}
                 />
-                {fetchedImage && (
+                {DEV_MODE && fetchedImage && (
                   <img
-                    src={fetchedImage.src} // Usamos la propiedad src de la imagen cargada
+                    src={fetchedImage.src}
                     alt="Imagen de comparación"
                     style={{
                       width: "40vw",

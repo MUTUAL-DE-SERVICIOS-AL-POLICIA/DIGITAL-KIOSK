@@ -60,7 +60,7 @@ export const Chooser = () => {
   return (
     <StyledBox>
       {JSON.stringify(procedures)}
-      <StyledContainer maxWidth="md">
+      <StyledContainer maxWidth="lg">
         <StyledGrid container>
           {enabledServices ? (
             enabledServices.map((service: any) => (
