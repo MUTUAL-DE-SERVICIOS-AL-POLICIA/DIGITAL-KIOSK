@@ -7,8 +7,8 @@ import { CardInfo } from "@/components/CardInfo";
 
 const text = (
   <>
-    Introduzca su carnet de identidad en la bandeja de abajo y luego presione en{" "}
-    <b>continuar</b>.<br />
+    Introduzca su <b>carnet de identidad</b> en la bandeja de abajo y luego
+    presione en <b>continuar</b>.<br />
   </>
 );
 

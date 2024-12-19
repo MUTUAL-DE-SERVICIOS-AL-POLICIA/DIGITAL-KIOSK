@@ -23,8 +23,14 @@ const CardMethodChooser = memo((props: CardMethodChooserProp) => {
       sx={{
         minWidth: 450,
         borderRadius: "40px",
-        opacity: disabled ? 0.5 : 1,
+        backgroundColor: disabled ? "#d6dadb " : "#c9cdcf",
+        color: disabled ? "text.disabled" : "text.primary",
+        opacity: disabled ? 0.7 : 1,
         pointerEvents: disabled ? "none" : "auto",
+        transition: "background-color 0.3s ease",
+        "&:hover": {
+          backgroundColor: disabled ? "#bbc1c3" : "#bbc1c3", // Color en hover
+        },
       }}
       variant="elevation"
     >
@@ -44,6 +50,10 @@ const CardMethodChooser = memo((props: CardMethodChooserProp) => {
           height="400"
           image={image}
           alt="Imagen de rostro"
+          sx={{
+            filter: disabled ? "grayscale(100%)" : "none",
+            opacity: disabled ? 0.8 : 1,
+          }}
         />
       </CardActionArea>
     </Card>
