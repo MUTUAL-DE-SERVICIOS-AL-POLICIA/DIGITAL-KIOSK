@@ -5,7 +5,6 @@ import {
   setHasContributionPassive,
 } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
-// import Swal from "sweetalert2";
 import { useSweetAlert } from "./useSweetAlert";
 
 const api = coffeApi;
@@ -37,12 +36,6 @@ export const useContributionStore = () => {
         message: "No se puedo obtener las contribuciones",
         icon: "error",
       });
-      // Swal.fire({
-      //   title: "Hubo un error",
-      //   text: "No se pudo obtener las contribuciones",
-      //   icon: "error",
-      //   confirmButtonText: "Aceptar",
-      // });
       console.error("No se pudo obtener las contribuciones");
     }
   };
@@ -86,12 +79,6 @@ export const useContributionStore = () => {
           message: message,
           icon: "error",
         });
-        // Swal.fire({
-        //   title: "Hubo un error",
-        //   text: message,
-        //   icon: "error",
-        //   confirmButtonText: "Aceptar",
-        // });
         return 501;
       }
     }
@@ -135,12 +122,6 @@ export const useContributionStore = () => {
           message: message,
           icon: "error",
         });
-        // Swal.fire({
-        //   title: "Hubo un error",
-        //   text: message,
-        //   icon: "error",
-        //   confirmButtonText: "Aceptar",
-        // });
         return 501;
       }
     }

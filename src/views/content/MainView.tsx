@@ -53,10 +53,18 @@ export const MainView = () => {
         spacing={3}
         justifyContent="center"
         alignItems="center"
-        style={{ display: "flex", height: "100vh", marginTop: 4 }}
+        style={{ display: "flex", height: "100vh" }}
       >
-        <Grid xs={6} item style={{ display: "flex", flexDirection: "column" }}>
-          <Paper elevation={0} sx={{ height: "73vh", borderRadius: "20px" }}>
+        <Grid xs={10} item style={{ display: "flex", flexDirection: "column" }}>
+          <Paper
+            elevation={0}
+            sx={{
+              height: "73vh",
+              borderRadius: "20px",
+              overflow: "auto",
+              padding: 2,
+            }}
+          >
             {selectedService?.view ? selectedService.view : <></>}
           </Paper>
         </Grid>

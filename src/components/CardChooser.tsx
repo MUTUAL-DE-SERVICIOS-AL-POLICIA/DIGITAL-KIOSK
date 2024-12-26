@@ -9,13 +9,14 @@ import {
 } from "@mui/material";
 import React, { cloneElement, memo } from "react";
 
-const StyledCard = styled(Card)(() => ({
+const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: "white",
   "&:hover": {
     transform: "scale(0.95)",
     transition: "transform 0.2s ease",
   },
   borderRadius: "20px",
+  boxShadow: theme.shadows[1],
 }));
 
 interface CardChooserProps {
