@@ -1,9 +1,9 @@
 import { pvtbeApi } from "@/services";
-import { setEcoCom } from "@/store";
+import { setCheckSemesters } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useEconomicComplementStore = () => {
-  const { ecoCom } = useSelector((state: any) => state.ecoCom);
+  const { checkSemesters } = useSelector((state: any) => state.checkSemesters);
   const dispatch = useDispatch();
 
   const checkSemesterEnabled = async (identityCard: string) => {
@@ -11,7 +11,7 @@ export const useEconomicComplementStore = () => {
       const { data } = await pvtbeApi.get(
         `/kiosk/person/${identityCard}/ecoCom`
       );
-      dispatch(setEcoCom({ ecoCom: data }));
+      dispatch(setCheckSemesters({ checkSemesters: data }));
       console.log("checkSemesterEnabled: ", data);
       return data;
     } catch (e: any) {
@@ -41,7 +41,7 @@ export const useEconomicComplementStore = () => {
   };
 
   return {
-    ecoCom,
+    checkSemesters,
     checkSemesterEnabled,
     createEconomicComplementProcess,
     getInformationEconomicComplement,
