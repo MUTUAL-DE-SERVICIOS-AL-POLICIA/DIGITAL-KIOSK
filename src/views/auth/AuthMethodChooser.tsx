@@ -7,6 +7,7 @@ import Fingerprint from "@/assets/images/finger.png";
 import CardMethodChooser from "@/components/CardMethodChooser";
 import { useCallback } from "react";
 import { useBiometricStore } from "@/hooks/useBiometric";
+import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 const METHODS_AUTH = [
   {
@@ -38,10 +39,23 @@ const MethodGrid = styled(Grid)({
 export const AuthMethodChooser = () => {
   const { changeStep } = useCredentialStore();
   const { fingerprints } = useBiometricStore();
+  const { showAlert } = useSweetAlert();
 
   const handleAction = useCallback(
-    (step: string) => {
-      changeStep(step);
+    (step: string, disabled: boolean, action: string) => {
+      if (!disabled) {
+        changeStep(step);
+      } else if (action == "Reconocimiento Dactilar") {
+        showAlert({
+          title: "Sin huellas registradas",
+          message: "Usted no cuenta con huellas registradas",
+        });
+      } else {
+        showAlert({
+          title: "Sin fotografias registradas",
+          message: "Usted no cuenta con fotografias registradas",
+        });
+      }
     },
     [changeStep]
   );
