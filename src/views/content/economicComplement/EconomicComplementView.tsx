@@ -5,129 +5,73 @@ import {
   CardActionArea,
   CardContent,
   CardHeader,
-  Collapse,
-  Divider,
+  CircularProgress,
   Grid,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCredentialStore } from "@/hooks";
-// import Swal from "sweetalert2";
 import { useSweetAlert } from "@/hooks/useSweetAlert";
-
-interface Display {
-  key: string;
-  value: string;
-}
+import { useLoading } from "@/hooks/useLoading";
 
 interface InfoObject {
   id: number;
   title: string;
   subtitle: string;
   printable: boolean;
-  display: Display[];
-}
-
-interface Info {
-  error: boolean;
-  message: string;
-  data: InfoObject;
+  display: { key: string; value: string }[];
 }
 
 export const EconomicComplementView = () => {
-  const [expandedHolder, setExpandedHolder] = useState(false);
-  const [infoEcoCom, setInfoEcoCom] = useState<Info | undefined>(undefined);
+  const [procesduresCreated, setProceduresCreated] = useState<InfoObject[]>([]);
 
   const {
-    ecoCom,
+    checkSemesters,
     checkSemesterEnabled,
     createEconomicComplementProcess,
     getInformationEconomicComplement,
   } = useEconomicComplementStore();
   const { identityCard } = useCredentialStore();
   const { showAlert } = useSweetAlert();
+  const { isLoading, setLoading } = useLoading();
 
-  const createProcedureHolder = async () => {
-    if (ecoCom && !ecoCom.error) {
-      const eco_com_procedure_id =
-        ecoCom.data[ecoCom.data.length - 1].procedure_id;
-      const userAux: any = localStorage.getItem("user");
-      const user = JSON.parse(userAux);
-      if (user && user.nup) {
+  const createProcedures = async () => {
+    try {
+      setLoading(true);
+      const availableProcedures = checkSemesters.available_procedures;
+      const affiliateId = checkSemesters.affiliate_id;
+      const createdProcedures: InfoObject[] = [];
+
+      for (const procedure of availableProcedures) {
         const response = await createEconomicComplementProcess({
-          eco_com_procedure_id,
-          affiliate_id: user.nup,
+          eco_com_procedure_id: procedure,
+          affiliate_id: affiliateId,
         });
-        if (response && response.status == 201) {
-          if (response.data) {
-            const res = response.data;
-            const message = res.message;
-            console.log("respuesta de creación", res);
-            if (!res.error) {
-              const eco_com_id = res.eco_com_id;
-              const info: any =
-                await getInformationEconomicComplement(eco_com_id);
-              console.log("info:", info);
-              setInfoEcoCom(info);
-              setExpandedHolder(true);
-              showAlert({
-                title: "Trámite creado correctamente",
-                message: message,
-                icon: "success",
-              });
-              // Swal.fire({
-              //   title: "Trámite creado correctamente",
-              //   text: message,
-              //   icon: "success",
-              //   confirmButtonText: "Aceptar",
-              // });
-            } else {
-              showAlert({
-                title: "Trámite no creado",
-                message: message,
-                icon: "warning",
-              });
-              // Swal.fire({
-              //   title: "Trámite no creado",
-              //   text: message,
-              //   icon: "warning",
-              //   confirmButtonText: "Aceptar",
-              // });
+        if (
+          response?.status === 201 &&
+          response.data &&
+          response.data.eco_com_id
+        ) {
+          const informationProcedures = response.data.eco_com_id;
+          for (const information of informationProcedures) {
+            const info = await getInformationEconomicComplement(information);
+            if (info && !info.error) {
+              createdProcedures.push(info.data);
             }
           }
         }
       }
-    }
-  };
+      setProceduresCreated(createdProcedures);
 
-  const InfoProcedure = () => {
-    console.log("infoEcoCom: ", infoEcoCom);
-    if (infoEcoCom !== undefined && !infoEcoCom.error) {
-      return (
-        <>
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: 900, fontSize: "15px", pb: 1 }}
-          >
-            {infoEcoCom.data.title}
-          </Typography>
-          <Divider
-            variant="fullWidth"
-            sx={{ backgroundColor: "#008698", height: "2px", mb: 1 }}
-          />
-          {infoEcoCom.data &&
-            infoEcoCom.data.display.map((info: any) => (
-              <>
-                <Typography sx={{ fontWeight: 900, fontSize: "15px", pb: 1 }}>
-                  {info.key}
-                </Typography>
-                <span style={{ fontWeight: 400 }}>{info.value}</span>
-              </>
-            ))}
-        </>
-      );
-    } else {
-      console.log("sin datos");
+      showAlert({
+        title: `${createdProcedures.length} Trámite${createdProcedures.length > 1 ? "s" : ""} creado${createdProcedures.length > 1 ? "s" : ""} exitosamente`,
+        message: "",
+        icon: "success",
+      });
+    } catch (e: any) {
+      console.error("Error en la creación del trámite");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -136,55 +80,138 @@ export const EconomicComplementView = () => {
   }, []);
 
   return (
-    <Box sx={{ padding: 5 }}>
+    <Box sx={{ padding: 1 }}>
       <Typography
-        variant="h4"
-        sx={{ textAlign: "center", fontWeight: 700, mb: 3 }}
+        variant="h5"
+        sx={{ textAlign: "center", fontWeight: 800, mb: 1 }}
+        textTransform="uppercase"
       >
-        Trámite de Complemento Económico
+        Complemento Económico
       </Typography>
-      <Grid container spacing={3} sx={{ mt: 2 }} justifyContent="center">
-        <Grid item xs={6}>
-          <Card sx={{ width: "100%" }}>
-            <CardActionArea
-              onClick={() => {
-                if (ecoCom && !ecoCom.error) {
-                  createProcedureHolder();
-                }
-              }}
-              sx={{
-                pointerEvents: ecoCom && ecoCom.error ? "none" : "auto",
-                opacity: ecoCom && ecoCom.error ? 0.5 : 1,
-              }}
-            >
-              <CardHeader
-                titleTypographyProps={{
-                  sx: {
-                    fontSize: "1.5rem",
-                    fontWeight: 700,
-                    color: "white",
-                  },
+      <Grid container spacing={3} justifyContent="center">
+        {!procesduresCreated.length ? (
+          <Grid item xs={6}>
+            <Card sx={{ width: "100%" }}>
+              <CardActionArea
+                onClick={() => {
+                  if (
+                    checkSemesters &&
+                    !checkSemesters.error &&
+                    checkSemesters.canCreate
+                  ) {
+                    createProcedures();
+                  }
                 }}
                 sx={{
-                  backgroundColor:
-                    ecoCom && ecoCom.error ? "#B0BEC5" : "#008698",
-                  textAlign: "center",
-                  borderRadius: "7px",
+                  pointerEvents:
+                    checkSemesters &&
+                    !checkSemesters.error &&
+                    !checkSemesters.canCreate
+                      ? "none"
+                      : "auto",
+                  opacity:
+                    checkSemesters &&
+                    !checkSemesters.error &&
+                    !checkSemesters.canCreate
+                      ? 0.4
+                      : 1,
                 }}
-                title="CREAR TRÁMITE"
-              />
-            </CardActionArea>
-            <Collapse in={expandedHolder} timeout="auto" unmountOnExit>
-              <CardContent sx={{ backgroundColor: "#e2e2e2", pb: 3 }}>
-                {/* {infoEcoCom &&
-                infoEcoCom.data.map(() => ( */}
-                <InfoProcedure />
-                {/* ))} */}
-              </CardContent>
-            </Collapse>
-          </Card>
-        </Grid>
+              >
+                <CardHeader
+                  titleTypographyProps={{
+                    sx: {
+                      fontSize: "1.5rem",
+                      fontWeight: 700,
+                      color: "white",
+                    },
+                  }}
+                  sx={{
+                    backgroundColor:
+                      checkSemesters && checkSemesters.error
+                        ? "#B0BEC5"
+                        : "#008698",
+                    textAlign: "center",
+                    borderRadius: "7px",
+                  }}
+                  title="CREAR TRÁMITE"
+                />
+              </CardActionArea>
+            </Card>
+          </Grid>
+        ) : (
+          procesduresCreated.map((procedure, index) => (
+            <Grid item xs={4} sm={4} md={4} key={index}>
+              <Card>
+                <CardHeader
+                  title="Trámite Creado"
+                  subheader={procedure.title}
+                  sx={{
+                    backgroundColor: "#008698",
+                    textAlign: "center",
+                  }}
+                  titleTypographyProps={{
+                    sx: {
+                      color: "white",
+                      fontWeight: 800,
+                    },
+                  }}
+                  subheaderTypographyProps={{
+                    sx: {
+                      color: "white",
+                      fontSize: "20px",
+                      fontWeight: 600,
+                    },
+                  }}
+                />
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {procedure.display.map((info, idx) => (
+                      <>
+                        <Grid item xs={12} sm={6} key={idx}>
+                          <Typography
+                            variant="body1"
+                            sx={{ fontWeight: "bold", fontSize: "20px" }}
+                            align="right"
+                          >
+                            {info.key}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "semibold",
+                              fontSize: "20px",
+                            }}
+                            style={{
+                              overflowWrap: "break-word",
+                            }}
+                          >
+                            {info.value}
+                          </Typography>
+                        </Grid>
+                      </>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        )}
       </Grid>
+      {isLoading && (
+        <div>
+          <CircularProgress
+            size={50}
+            sx={{
+              color: "#42c9b7",
+              positio: "absolute",
+              top: "50%",
+              left: "50%",
+            }}
+          />
+        </div>
+      )}
     </Box>
   );
 };
