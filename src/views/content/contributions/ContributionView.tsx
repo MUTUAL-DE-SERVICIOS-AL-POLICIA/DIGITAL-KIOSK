@@ -143,7 +143,12 @@ export const ContributionView = () => {
 
   return (
     <Box sx={{ padding: 5 }}>
-      <Grid container justifyContent="center" alignItems="center">
+      <Grid
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Typography variant="h4">Certificación de Aportes</Typography>
         <Stack direction="column" spacing={3}>
           <Grid item>
@@ -152,6 +157,7 @@ export const ContributionView = () => {
                 procedureTitle="Certificación de Activo"
                 onPressed={() => handlePrintContributionActive()}
                 logo={logo}
+                key="active"
               />
             )}
           </Grid>
@@ -161,6 +167,7 @@ export const ContributionView = () => {
                 procedureTitle="Certificación de Pasivo"
                 onPressed={() => handlePrintContributionPassive()}
                 logo={logo}
+                key="pasive"
               />
             )}
           </Grid>
