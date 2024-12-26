@@ -3,13 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 export const ecoComSlice = createSlice({
   name: "ecoCom",
   initialState: {
-    ecoCom: <any>undefined,
+    checkSemesters: <any>undefined,
   },
   reducers: {
-    setEcoCom: (state, action) => {
-      state.ecoCom = action.payload.ecoCom;
+    setCheckSemesters: (state, action) => {
+      state.checkSemesters = action.payload.checkSemesters;
     },
   },
 });
 
-export const { setEcoCom } = ecoComSlice.actions;
+export const { setCheckSemesters } = ecoComSlice.actions;

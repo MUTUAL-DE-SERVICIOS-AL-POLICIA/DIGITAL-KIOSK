@@ -11,7 +11,7 @@ interface CardMethodChooserProp {
   title: string;
   image: any;
   step: string;
-  onAction: (step: string) => void;
+  onAction: (step: string, disabled: boolean, title: string) => void;
   disabled: boolean;
 }
 
@@ -26,15 +26,17 @@ const CardMethodChooser = memo((props: CardMethodChooserProp) => {
         backgroundColor: disabled ? "#d6dadb " : "#c9cdcf",
         color: disabled ? "text.disabled" : "text.primary",
         opacity: disabled ? 0.7 : 1,
-        pointerEvents: disabled ? "none" : "auto",
+        // pointerEvents: disabled ? "none" : "auto",
         transition: "background-color 0.3s ease",
+        boxShadow: disabled ? "none" : "0px 4px 20px rgba(0, 0, 0, 0.1)",
         "&:hover": {
-          backgroundColor: disabled ? "#bbc1c3" : "#bbc1c3", // Color en hover
+          backgroundColor: disabled ? "#bbc1c3" : "#bbc1c3",
+          boxShadow: disabled ? "none" : "0px 8px 30px rgba(0, 0, 0, 0.2)",
         },
       }}
       variant="elevation"
     >
-      <CardActionArea onClick={() => !disabled && onAction(step)}>
+      <CardActionArea onClick={() => onAction(step, disabled, title)}>
         <CardHeader
           title={
             <Typography
