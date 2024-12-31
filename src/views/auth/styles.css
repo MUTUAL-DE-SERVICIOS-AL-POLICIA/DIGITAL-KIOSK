@@ -1,0 +1,47 @@
+.swal2-title {
+  font-size: 50px !important;
+}
+.swal2-html-container {
+  font-size: 40px !important ;
+}
+.swal2-styled {
+  font-size: 40px !important;
+}
+.swal2-popup {
+  width: 35%;
+}
+.swal-title {
+  font-size: 24px; /* Tamaño del título */
+  font-weight: bold; /* Negrita */
+}
+
+.swal-text {
+  font-size: 18px; /* Tamaño del texto */
+}
+
+.swal-button {
+  font-size: 16px; /* Tamaño del texto del botón */
+  padding: 10px 20px; /* Ajustar el padding */
+  background-color: #008698; /* Color de fondo */
+  color: white; /* Color del texto */
+  border-radius: 5px; /* Bordes redondeados */
+}
+.swal-trigger {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.swal-trigger:hover {
+  background-color: #218838;
+}
+.swal-cancel-button {
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: #f79009;
+  color: white;
+  border-radius: 5px;
+}

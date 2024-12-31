@@ -1,6 +1,10 @@
-export * from './auth/authSlice';
-export * from './loan/loanSlice';
-export * from './statistics/statisticsSlice'
-export * from './contribution/contributionSlice'
+export * from "./auth/authSlice";
+export * from "./loan/loanSlice";
+export * from "./statistics/statisticsSlice";
+export * from "./contribution/contributionSlice";
+export * from "./biometric/fingerprintSlice";
+export * from "./chooser/chooserSlice";
+export * from "./person/personSlice";
+export * from "./ecoCom/ecoComSlice";
 
-export * from './store';
+export * from "./store";
