@@ -19,7 +19,7 @@ export const store = configureStore({
     fingerprints: fingerprintSlice.reducer,
     chooser: chooserSlice.reducer,
     person: personSlice.reducer,
-    checkSemesters: ecoComSlice.reducer,
+    economicComplement: ecoComSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
