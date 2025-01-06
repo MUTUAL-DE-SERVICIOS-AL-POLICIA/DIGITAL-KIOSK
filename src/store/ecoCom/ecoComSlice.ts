@@ -1,15 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const ecoComSlice = createSlice({
-  name: "ecoCom",
+  name: "economicComplement",
   initialState: {
     checkSemesters: <any>undefined,
+    proceduresAlreadyCreated: <any>undefined,
   },
   reducers: {
     setCheckSemesters: (state, action) => {
       state.checkSemesters = action.payload.checkSemesters;
     },
+    setProceduresAlreadyCreated: (state, action) => {
+      state.proceduresAlreadyCreated = action.payload.proceduresAlreadyCreated;
+    },
   },
 });
 
-export const { setCheckSemesters } = ecoComSlice.actions;
+export const { setCheckSemesters, setProceduresAlreadyCreated } =
+  ecoComSlice.actions;
