@@ -41,7 +41,6 @@ export const useEconomicComplementStore = () => {
   const getInformationEconomicComplement = async (ecoComId: string) => {
     try {
       const { data } = await pvtbeApi.get(`/kiosk/ecoCom/${ecoComId}`);
-      console.log(data);
       return data;
     } catch (e: any) {
       console.error(

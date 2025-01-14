@@ -25,10 +25,11 @@ interface InfoObject {
 
 export const EconomicComplementView = () => {
   const [procesduresCreated, setProceduresCreated] = useState<InfoObject[]>([]);
+  const [hiddenButton, setHiddenButton] = useState(false);
 
   const {
     checkSemesters,
-    proceduresAlreadyCreated,
+    proceduresAlreadyCreated = [],
     checkSemesterEnabled,
     createEconomicComplementProcess,
     getInformationEconomicComplement,
@@ -73,7 +74,11 @@ export const EconomicComplementView = () => {
       setProceduresCreated((prev) => [
         ...new Set([...prev, ...createdProcedures]),
       ]);
-      checkSemesterEnabled(identityCard);
+      setHiddenButton(true);
+      // checkSemesterEnabled(identityCard);
+      // if (createdProcedures.length > 0) {
+      //   await checkSemesterEnabled(identityCard);
+      // }
       showAlert({
         title: `${createdProcedures.length} Trámite${createdProcedures.length > 1 ? "s" : ""} creado${createdProcedures.length > 1 ? "s" : ""} exitosamente`,
         message: "",
@@ -87,6 +92,15 @@ export const EconomicComplementView = () => {
   };
 
   useEffect(() => {
+    setProceduresCreated([]);
+    checkSemesterEnabled(identityCard);
+  }, []);
+
+  useEffect(() => {
+    if (!identityCard) {
+      setProceduresCreated([]);
+      return;
+    }
     if (proceduresAlreadyCreated?.length) {
       const fetchExistingProcedures = async () => {
         const exitingIds = proceduresAlreadyCreated.map(
@@ -98,10 +112,6 @@ export const EconomicComplementView = () => {
       fetchExistingProcedures();
     }
   }, [proceduresAlreadyCreated]);
-
-  useEffect(() => {
-    checkSemesterEnabled(identityCard);
-  }, []);
 
   return (
     <Box sx={{ padding: 1 }}>
@@ -115,7 +125,8 @@ export const EconomicComplementView = () => {
       <Grid container spacing={3} justifyContent="center">
         {checkSemesters &&
           !checkSemesters.error &&
-          checkSemesters.canCreate && (
+          checkSemesters.canCreate &&
+          !hiddenButton && (
             <Grid
               item
               xs={12}
