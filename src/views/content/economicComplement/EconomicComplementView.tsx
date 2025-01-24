@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useCredentialStore } from "@/hooks";
 import { useSweetAlert } from "@/hooks/useSweetAlert";
 import { useLoading } from "@/hooks/useLoading";
+import React from "react";
 
 interface InfoObject {
   id: number;
@@ -24,9 +25,11 @@ interface InfoObject {
 
 export const EconomicComplementView = () => {
   const [procesduresCreated, setProceduresCreated] = useState<InfoObject[]>([]);
+  const [hiddenButton, setHiddenButton] = useState(false);
 
   const {
     checkSemesters,
+    proceduresAlreadyCreated = [],
     checkSemesterEnabled,
     createEconomicComplementProcess,
     getInformationEconomicComplement,
@@ -34,6 +37,22 @@ export const EconomicComplementView = () => {
   const { identityCard } = useCredentialStore();
   const { showAlert } = useSweetAlert();
   const { isLoading, setLoading } = useLoading();
+
+  const fetchProcedureDetails = async (procedureIds: number[]) => {
+    try {
+      const details: InfoObject[] = [];
+      for (const id of procedureIds) {
+        const response = await getInformationEconomicComplement(id.toString());
+        if (response && !response.error) {
+          details.push(response.data);
+        }
+      }
+      return details;
+    } catch (error) {
+      console.error("Error al obtener la información de los trámites", error);
+      return [];
+    }
+  };
 
   const createProcedures = async () => {
     try {
@@ -47,37 +66,52 @@ export const EconomicComplementView = () => {
           eco_com_procedure_id: procedure,
           affiliate_id: affiliateId,
         });
-        if (
-          response?.status === 201 &&
-          response.data &&
-          response.data.eco_com_id
-        ) {
-          const informationProcedures = response.data.eco_com_id;
-          for (const information of informationProcedures) {
-            const info = await getInformationEconomicComplement(information);
-            if (info && !info.error) {
-              createdProcedures.push(info.data);
-            }
-          }
+        if (response?.status === 201 && response.data?.eco_com_id) {
+          const details = await fetchProcedureDetails(response.data.eco_com_id);
+          createdProcedures.push(...details);
         }
       }
-      setProceduresCreated(createdProcedures);
-
+      setProceduresCreated((prev) => [
+        ...new Set([...prev, ...createdProcedures]),
+      ]);
+      setHiddenButton(true);
+      // checkSemesterEnabled(identityCard);
+      // if (createdProcedures.length > 0) {
+      //   await checkSemesterEnabled(identityCard);
+      // }
       showAlert({
         title: `${createdProcedures.length} Trámite${createdProcedures.length > 1 ? "s" : ""} creado${createdProcedures.length > 1 ? "s" : ""} exitosamente`,
         message: "",
         icon: "success",
       });
     } catch (e: any) {
-      console.error("Error en la creación del trámite");
+      console.error("Error en la creación del trámite", e);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    setProceduresCreated([]);
     checkSemesterEnabled(identityCard);
   }, []);
+
+  useEffect(() => {
+    if (!identityCard) {
+      setProceduresCreated([]);
+      return;
+    }
+    if (proceduresAlreadyCreated?.length) {
+      const fetchExistingProcedures = async () => {
+        const exitingIds = proceduresAlreadyCreated.map(
+          (proc: any) => proc.eco_com_id
+        );
+        const details = await fetchProcedureDetails(exitingIds);
+        setProceduresCreated(details);
+      };
+      fetchExistingProcedures();
+    }
+  }, [proceduresAlreadyCreated]);
 
   return (
     <Box sx={{ padding: 1 }}>
@@ -89,56 +123,53 @@ export const EconomicComplementView = () => {
         Complemento Económico
       </Typography>
       <Grid container spacing={3} justifyContent="center">
-        {!procesduresCreated.length ? (
-          <Grid item xs={6}>
-            <Card sx={{ width: "100%" }}>
-              <CardActionArea
-                onClick={() => {
-                  if (
-                    checkSemesters &&
-                    !checkSemesters.error &&
-                    checkSemesters.canCreate
-                  ) {
-                    createProcedures();
-                  }
-                }}
-                sx={{
-                  pointerEvents:
-                    checkSemesters &&
-                    !checkSemesters.error &&
-                    !checkSemesters.canCreate
-                      ? "none"
-                      : "auto",
-                  opacity:
-                    checkSemesters &&
-                    !checkSemesters.error &&
-                    !checkSemesters.canCreate
-                      ? 0.4
-                      : 1,
-                }}
-              >
-                <CardHeader
-                  titleTypographyProps={{
-                    sx: {
-                      fontSize: "1.5rem",
-                      fontWeight: 700,
-                      color: "white",
-                    },
+        {checkSemesters &&
+          !checkSemesters.error &&
+          checkSemesters.canCreate &&
+          !hiddenButton && (
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Card sx={{ width: "30%" }}>
+                <CardActionArea
+                  onClick={() => {
+                    if (checkSemesters.canCreate) {
+                      createProcedures();
+                    }
                   }}
                   sx={{
-                    backgroundColor:
-                      checkSemesters && checkSemesters.error
+                    pointerEvents: checkSemesters.canCreate ? "auto" : "none",
+                    opacity: checkSemesters.canCreate ? 1 : 0.4,
+                  }}
+                >
+                  <CardHeader
+                    titleTypographyProps={{
+                      sx: {
+                        fontSize: "1.5rem",
+                        fontWeight: 700,
+                        color: "white",
+                      },
+                    }}
+                    sx={{
+                      backgroundColor: checkSemesters.error
                         ? "#B0BEC5"
                         : "#008698",
-                    textAlign: "center",
-                    borderRadius: "7px",
-                  }}
-                  title="CREAR TRÁMITE"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-        ) : (
+                      textAlign: "center",
+                      borderRadius: "7px",
+                    }}
+                    title="CREAR TRÁMITE"
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
+          )}
+        {procesduresCreated.length > 0 &&
           procesduresCreated.map((procedure, index) => (
             <Grid item xs={4} sm={4} md={4} key={index}>
               <Card>
@@ -166,8 +197,8 @@ export const EconomicComplementView = () => {
                 <CardContent>
                   <Grid container spacing={2}>
                     {procedure.display.map((info, idx) => (
-                      <>
-                        <Grid item xs={12} sm={6} key={idx}>
+                      <React.Fragment key={idx}>
+                        <Grid item xs={12} sm={6}>
                           <Typography
                             variant="body1"
                             sx={{ fontWeight: "bold", fontSize: "20px" }}
@@ -190,14 +221,13 @@ export const EconomicComplementView = () => {
                             {info.value}
                           </Typography>
                         </Grid>
-                      </>
+                      </React.Fragment>
                     ))}
                   </Grid>
                 </CardContent>
               </Card>
             </Grid>
-          ))
-        )}
+          ))}
       </Grid>
       {isLoading && (
         <div>

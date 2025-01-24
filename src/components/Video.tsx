@@ -20,7 +20,7 @@ const VideoComponent = () => {
           objectFit: "cover",
         }}
       >
-        <source src="/src/assets/video/VIDEO PCT.mp4" type="video/mp4" />
+        <source src="/assets/video/VIDEO PCT.mp4" type="video/mp4" />
         El navegador no soporta el elemento <code>video</code>
       </video>
     </div>

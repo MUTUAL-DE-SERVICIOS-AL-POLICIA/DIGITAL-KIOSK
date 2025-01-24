@@ -1,9 +1,11 @@
 import { pvtbeApi } from "@/services";
-import { setCheckSemesters } from "@/store";
+import { setCheckSemesters, setProceduresAlreadyCreated } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useEconomicComplementStore = () => {
-  const { checkSemesters } = useSelector((state: any) => state.checkSemesters);
+  const { checkSemesters, proceduresAlreadyCreated } = useSelector(
+    (state: any) => state.economicComplement
+  );
   const dispatch = useDispatch();
 
   const checkSemesterEnabled = async (identityCard: string) => {
@@ -11,8 +13,16 @@ export const useEconomicComplementStore = () => {
       const { data } = await pvtbeApi.get(
         `/kiosk/person/${identityCard}/ecoCom`
       );
+      const res = data.data;
+      const proceduresAlreadyCreated = res.filter(
+        (procedure: any) => procedure.eco_com_id !== null
+      );
+      dispatch(
+        setProceduresAlreadyCreated({
+          proceduresAlreadyCreated: proceduresAlreadyCreated,
+        })
+      );
       dispatch(setCheckSemesters({ checkSemesters: data }));
-      console.log("checkSemesterEnabled: ", data);
       return data;
     } catch (e: any) {
       console.error("Hubo un error con el backend PVT-BE");
@@ -31,7 +41,6 @@ export const useEconomicComplementStore = () => {
   const getInformationEconomicComplement = async (ecoComId: string) => {
     try {
       const { data } = await pvtbeApi.get(`/kiosk/ecoCom/${ecoComId}`);
-      console.log(data);
       return data;
     } catch (e: any) {
       console.error(
@@ -42,6 +51,7 @@ export const useEconomicComplementStore = () => {
 
   return {
     checkSemesters,
+    proceduresAlreadyCreated,
     checkSemesterEnabled,
     createEconomicComplementProcess,
     getInformationEconomicComplement,
