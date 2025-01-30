@@ -31,3 +31,9 @@ PASO 3: ejecutar el contenedor con:
 ```
 docker run -d -p 4001:4001 -v <ruta del proyecto>:<ruta en el contendor> <nombre de la imagen>
 ```
+
+## Despliegue con docker compose
+```
+docker compose up -d --build
+```
+Ejecutar el comando siempre que existan cambios
