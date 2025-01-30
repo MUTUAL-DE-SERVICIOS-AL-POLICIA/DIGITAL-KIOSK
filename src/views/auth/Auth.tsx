@@ -43,6 +43,7 @@ export const AuthView = () => {
     changeIdentifyUser,
     changeIdentityCard,
     changeStateInstruction,
+    changeName,
   } = useCredentialStore();
 
   const { seconds, resetTimer } = useContext(TimerContext);
@@ -54,6 +55,7 @@ export const AuthView = () => {
       childRef.current?.onRemoveCam();
       changeStep("home");
       changeIdentityCard("");
+      changeName("");
       changeIdentifyUser(false);
       changeStateInstruction(true);
       resetTimer();
@@ -72,6 +74,7 @@ export const AuthView = () => {
   const resetStep = useCallback(() => {
     changeStep("home");
     changeIdentityCard("");
+    changeName("");
     handleClean();
   }, []);
 
