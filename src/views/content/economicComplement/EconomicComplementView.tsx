@@ -26,10 +26,8 @@ interface InfoObject {
 export const EconomicComplementView = () => {
   const [procesduresCreated, setProceduresCreated] = useState<InfoObject[]>([]);
   const [hiddenButton, setHiddenButton] = useState(false);
-
+  const [checkSemesters, setCheckSemesters] = useState<any>();
   const {
-    checkSemesters,
-    proceduresAlreadyCreated = [],
     checkSemesterEnabled,
     createEconomicComplementProcess,
     getInformationEconomicComplement,
@@ -75,10 +73,6 @@ export const EconomicComplementView = () => {
         ...new Set([...prev, ...createdProcedures]),
       ]);
       setHiddenButton(true);
-      // checkSemesterEnabled(identityCard);
-      // if (createdProcedures.length > 0) {
-      //   await checkSemesterEnabled(identityCard);
-      // }
       showAlert({
         title: `${createdProcedures.length} Trámite${createdProcedures.length > 1 ? "s" : ""} creado${createdProcedures.length > 1 ? "s" : ""} exitosamente`,
         message: "",
@@ -92,26 +86,22 @@ export const EconomicComplementView = () => {
   };
 
   useEffect(() => {
-    setProceduresCreated([]);
-    checkSemesterEnabled(identityCard);
-  }, []);
-
-  useEffect(() => {
-    if (!identityCard) {
+    const fetchCreatedEcoComs = async () => {
       setProceduresCreated([]);
-      return;
-    }
-    if (proceduresAlreadyCreated?.length) {
-      const fetchExistingProcedures = async () => {
-        const exitingIds = proceduresAlreadyCreated.map(
-          (proc: any) => proc.eco_com_id
-        );
-        const details = await fetchProcedureDetails(exitingIds);
-        setProceduresCreated(details);
-      };
-      fetchExistingProcedures();
-    }
-  }, [proceduresAlreadyCreated]);
+      const data = await checkSemesterEnabled(identityCard);
+      setCheckSemesters(data);
+      const res = data.data;
+      const proceduresAlreadyCreated = res.filter(
+        (procedure: any) => procedure.eco_com_id !== null
+      );
+      const exitingIds = proceduresAlreadyCreated.map(
+        (proc: any) => proc.eco_com_id
+      );
+      const details = await fetchProcedureDetails(exitingIds);
+      setProceduresCreated(details);
+    };
+    fetchCreatedEcoComs();
+  }, []);
 
   return (
     <Box sx={{ padding: 1 }}>

@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import {
   authSlice,
   chooserSlice,
-  ecoComSlice,
   loanSlice,
   personSlice,
   statisticsSlice,
@@ -19,7 +18,6 @@ export const store = configureStore({
     fingerprints: fingerprintSlice.reducer,
     chooser: chooserSlice.reducer,
     person: personSlice.reducer,
-    economicComplement: ecoComSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
