@@ -1,8 +1,11 @@
-version: "3.7"
 services:
-  frontend-digital-kiosk:
+  frontend:
     restart: always
     build: .
+    volumes:
+      - .:/app  # Monta el código local en el contenedor
+      - /app/node_modules  # Evita conflictos con las dependencias
+      - /app/dist  # Mantiene la carpeta de compilación
     env_file:
       - .env
     ports:
