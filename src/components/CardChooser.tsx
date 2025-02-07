@@ -19,9 +19,18 @@ const StyledCard = styled(Card)(({ theme }) => ({
   boxShadow: theme.shadows[1],
 }));
 
+const DisabledCard = styled(Card)(({ theme }) => ({
+  backgroundColor: "#D5DAD0",
+  color: "#616161",
+  borderRadius: "20px",
+  boxShadow: theme.shadows[1],
+}));
+
 interface CardChooserProps {
   title: string;
   subTitle: string;
+  message: string;
+  canCreate: boolean;
   icon: React.ReactElement;
   code: string;
   onAction: (code: string) => void;
@@ -36,11 +45,12 @@ const sxIcon = {
 };
 
 const CardChooser = memo((props: CardChooserProps) => {
-  const { title, subTitle, icon, code, onAction } = props;
+  const { title, subTitle, message, canCreate, icon, code, onAction } = props;
+  const CardComponent = canCreate ? StyledCard : DisabledCard;
   return (
     <Grid item xs={12}>
-      <StyledCard variant="outlined">
-        <CardActionArea onClick={() => onAction(code)}>
+      <CardComponent variant="outlined">
+        <CardActionArea onClick={() => canCreate && onAction(code)} disabled={!canCreate}>
           <CardContent sx={{ display: "flex", alignItems: "center" }}>
             {icon &&
               cloneElement(icon as React.ReactElement, {
@@ -54,10 +64,13 @@ const CardChooser = memo((props: CardChooserProps) => {
               <Typography variant="h5" sx={{ fontSize: 40 }}>
                 {subTitle}
               </Typography>
+              <Typography variant="h6" sx={{ fontSize: 25 }}>
+                {message}
+              </Typography>
             </Box>
           </CardContent>
         </CardActionArea>
-      </StyledCard>
+      </CardComponent>
     </Grid>
   );
 });

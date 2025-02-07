@@ -41,11 +41,15 @@ export const Chooser = () => {
 
   const matchServices = async () => {
     if (identityCard) {
-      const proc = await getValidProcedures(identityCard);
+      const proc = await getValidProcedures(identityCard);      
       if (proc) {
         const filteredServices = SERVICES.filter(
-          (service) => service.code in proc && proc[service.code]
-        );
+          (service) => service.code in proc && proc[service.code].canShow
+        ).map((service)=>{
+          service.message = proc[service.code].message;
+          service.canCreate = proc[service.code].canCreate ?? true;
+          return service;
+        });
         setEnabledServices(filteredServices);
       } else {
         console.log("Proc no tiene formato esperado");
@@ -68,6 +72,8 @@ export const Chooser = () => {
                 key={service.code}
                 title={service.title}
                 subTitle={service.subTitle}
+                message={service.message}
+                canCreate={service.canCreate}
                 icon={service.icon}
                 code={service.code}
                 onAction={action}
