@@ -48,7 +48,7 @@ export const useContributionStore = () => {
           responseType: "arraybuffer",
         }),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout")), 15000)
+          setTimeout(() => reject(new Error("Timeout")), 60000)
         ),
       ]);
       if (data) {
@@ -58,7 +58,7 @@ export const useContributionStore = () => {
         const res: any = await Promise.race([
           await apiExternal.post("/printer/print/", formData),
           new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Timeout")), 15000)
+            setTimeout(() => reject(new Error("Timeout")), 60000)
           ),
         ]);
         if (res) {
