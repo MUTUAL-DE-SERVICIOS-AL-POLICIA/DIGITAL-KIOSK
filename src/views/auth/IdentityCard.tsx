@@ -21,7 +21,7 @@ const formValidations = {
 const text = (
   <>
     Por favor ingrese su <b>número de carnet de identidad</b> y luego presione
-    en <b>continuar.</b>
+    en <b>CONTINUAR</b>
   </>
 );
 
