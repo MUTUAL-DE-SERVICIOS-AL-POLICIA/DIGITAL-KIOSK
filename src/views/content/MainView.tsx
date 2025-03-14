@@ -55,11 +55,11 @@ export const MainView = () => {
         alignItems="center"
         style={{ display: "flex", height: "100vh" }}
       >
-        <Grid xs={10} item style={{ display: "flex", flexDirection: "column" }}>
+        <Grid xs={11} item style={{ display: "flex", flexDirection: "column" }}>
           <Paper
             elevation={0}
             sx={{
-              height: "73vh",
+              height: "75vh",
               borderRadius: "20px",
               overflow: "auto",
               padding: 2,
@@ -74,6 +74,7 @@ export const MainView = () => {
         onRemoveCam={() => {}}
         text="salir"
         color="warning"
+        size="3.5vw"
       />
       {isLoading && (
         <div className="overlay">
