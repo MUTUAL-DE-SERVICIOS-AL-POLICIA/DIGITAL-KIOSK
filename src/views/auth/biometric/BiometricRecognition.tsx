@@ -1,24 +1,23 @@
-import { Card, Grid, styled } from "@mui/material";
-// @ts-expect-error
-import Hands from "@/assets/images/hands.png";
-import Fingerprint from "./Fingerprint";
-import { forwardRef, memo, useImperativeHandle } from "react";
-import { useLoading } from "@/hooks/useLoading";
-import { useBiometricStore } from "@/hooks/useBiometric";
+import { /*Card, */ Grid, styled } from "@mui/material";
+
+// import Fingerprint from "./Fingerprint";
 import { useCredentialStore } from "@/hooks";
+import { useBiometricStore } from "@/hooks/useBiometric";
+import { useLoading } from "@/hooks/useLoading";
 import { usePersonStore } from "@/hooks/usePersonStore";
-import { CardInfo } from "@/components/CardInfo";
+import { forwardRef, memo, useImperativeHandle } from "react";
+// import { CardInfo } from "@/components/CardInfo";
 import { useSweetAlert } from "@/hooks/useSweetAlert";
 // @ts-expect-error
 import FingerprintGif from "@/assets/images/fingerprint.gif";
 import { useEffect } from 'react';
 
-const text = (
-  <>
-    Por favor, presione <b>CONTINUAR</b> para comenzar el{" "}
-    <b>RECONOCIMIENTO DE HUELLAS DACTILARES</b>
-  </>
-);
+// const text = (
+//   <>
+//     Por favor, presione <b>CONTINUAR</b> para comenzar el{" "}
+//     <b>RECONOCIMIENTO DE HUELLAS DACTILARES</b>
+//   </>
+// );
 
 const StyledGridContainer = styled(Grid)(({ theme }) => ({
   marginBlock: theme.spacing(25),
@@ -26,11 +25,11 @@ const StyledGridContainer = styled(Grid)(({ theme }) => ({
   alignItems: "center",
 }));
 
-const StyledFingerprintCard = styled(Card)(({ theme }) => ({
-  marginInline: theme.spacing(10),
-  borderRadius: "30px",
-  padding: theme.spacing(2),
-}));
+// const StyledFingerprintCard = styled(Card)(({ theme }) => ({
+//   marginInline: theme.spacing(10),
+//   borderRadius: "30px",
+//   padding: theme.spacing(2),
+// }));
 
 const StyledOverlay = styled("div")(() => ({
   display: "flex",
@@ -57,7 +56,7 @@ export const BiometricRecognition = memo(
     }));
 
     const { isLoading, setLoading } = useLoading();
-    const { compareFingerprints, getFingerprints, fingerprints } =
+    const { compareFingerprints, getFingerprints, /*fingerprints*/ } =
       useBiometricStore();
     const { changeStep, changeIdentifyUser } = useCredentialStore();
     const { person } = usePersonStore();
