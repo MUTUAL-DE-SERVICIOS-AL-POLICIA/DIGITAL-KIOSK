@@ -7,7 +7,7 @@ const SERVICES = [
   {
     code: "ecoCom",
     title: "COMPLEMENTO ECONÓMICO",
-    subTitle: "Creación de trámites de Complemento Económico.",
+    subTitle: "Creación de trámites",
     message: "",
     canCreate: false,
     icon: <ExtensionOutlined />,
@@ -16,7 +16,7 @@ const SERVICES = [
   {
     code: "loans",
     title: "PRÉSTAMOS VIGENTES",
-    subTitle: "Seguimiento de trámites de Préstamos Vigentes",
+    subTitle: "Impresión de extractos",
     canCreate: true,
     icon: <AttachMoney />,
     view: <LoanView />,
@@ -24,7 +24,7 @@ const SERVICES = [
   {
     code: "contributions",
     title: "APORTES",
-    subTitle: "Seguimiento de aportes",
+    subTitle: "Impresión de certificaciones",
     canUse: true,
     icon: <Money />,
     view: <ContributionView />,
