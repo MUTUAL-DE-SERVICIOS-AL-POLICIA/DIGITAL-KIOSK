@@ -34,7 +34,7 @@ export const Chooser = () => {
   const action = useCallback(
     (code: string) => {
       saveSelection(code);
-      changeStep("instructionCard");
+      changeStep("recognitionCard");
     },
     [saveSelection, changeStep]
   );

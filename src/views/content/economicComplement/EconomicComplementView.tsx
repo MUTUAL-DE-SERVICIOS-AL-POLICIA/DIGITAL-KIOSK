@@ -105,14 +105,14 @@ export const EconomicComplementView = () => {
 
   return (
     <Box sx={{ padding: 1 }}>
-      <Typography
-        variant="h5"
-        sx={{ textAlign: "center", fontWeight: 800, mb: 1 }}
-        textTransform="uppercase"
-      >
-        Complemento Económico
-      </Typography>
+      
       <Grid container spacing={3} justifyContent="center">
+        {/* <Typography
+          variant="h3"
+          sx={{ textAlign: "center", fontWeight: 800, mb: 0.5 }}
+        >
+          COMPLEMENTO ECONÓMICO
+        </Typography> */}
         {checkSemesters &&
           !checkSemesters.error &&
           checkSemesters.canCreate &&
@@ -126,7 +126,7 @@ export const EconomicComplementView = () => {
                 alignItems: "center",
               }}
             >
-              <Card sx={{ width: "30%" }}>
+              <Card sx={{ width: "40%" }}>
                 <CardActionArea
                   onClick={() => {
                     if (checkSemesters.canCreate) {
@@ -141,17 +141,17 @@ export const EconomicComplementView = () => {
                   <CardHeader
                     titleTypographyProps={{
                       sx: {
-                        fontSize: "1.5rem",
-                        fontWeight: 700,
+                        fontSize: "3rem",
+                        fontWeight: 800,
                         color: "white",
                       },
                     }}
                     sx={{
                       backgroundColor: checkSemesters.error
                         ? "#B0BEC5"
-                        : "#008698",
+                        : "#37c563",
                       textAlign: "center",
-                      borderRadius: "7px",
+                      borderRadius: "15px",
                     }}
                     title="CREAR TRÁMITE"
                   />
@@ -161,10 +161,10 @@ export const EconomicComplementView = () => {
           )}
         {procesduresCreated.length > 0 &&
           procesduresCreated.map((procedure, index) => (
-            <Grid item xs={4} sm={4} md={4} key={index}>
+            <Grid item xs={4} sm={4} md={10} key={index}>
               <Card>
                 <CardHeader
-                  title="Trámite Creado"
+                  title="TRÁMITE DE COMPLEMENTO ECONÓMICO CREADO"
                   subheader={procedure.title}
                   sx={{
                     backgroundColor: "#008698",
@@ -173,28 +173,28 @@ export const EconomicComplementView = () => {
                   titleTypographyProps={{
                     sx: {
                       color: "white",
-                      fontWeight: 800,
+                      fontSize: "40px",
+                      fontWeight: 700,
                     },
                   }}
                   subheaderTypographyProps={{
                     sx: {
                       color: "white",
-                      fontSize: "20px",
+                      fontSize: "30px",
                       fontWeight: 600,
                     },
                   }}
                 />
                 <CardContent>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={1} rowSpacing={0}>
                     {procedure.display.map((info, idx) => (
                       <React.Fragment key={idx}>
                         <Grid item xs={12} sm={6}>
                           <Typography
                             variant="body1"
-                            sx={{ fontWeight: "bold", fontSize: "20px" }}
-                            align="right"
+                            sx={{ fontWeight: "bold", fontSize: "35px", display: "flex", justifyContent: "space-between" }}
                           >
-                            {info.key}
+                            {info.key} <span>:</span>
                           </Typography>
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -202,7 +202,7 @@ export const EconomicComplementView = () => {
                             variant="body1"
                             sx={{
                               fontWeight: "semibold",
-                              fontSize: "20px",
+                              fontSize: "34px",
                             }}
                             style={{
                               overflowWrap: "break-word",
@@ -225,7 +225,7 @@ export const EconomicComplementView = () => {
             size={50}
             sx={{
               color: "#42c9b7",
-              positio: "absolute",
+              position: "absolute",
               top: "50%",
               left: "50%",
             }}

@@ -34,9 +34,13 @@ const DEV_MODE = getEnvVariables().DEV_MODE === "true";
 
 const text = (
   <>
-    Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y
-    presione en <b>continuar</b>.<br />
+    Introduzca su <b>carnet de identidad</b> en la bandeja inferior y
+    presione <b>CONTINUAR</b><br/>
   </>
+  // <>
+  //   Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y
+  //   presione en <b>CONTINUAR</b><br />
+  // </>
 );
 
 const StyledBox = styled(Box)(({ theme }) => ({

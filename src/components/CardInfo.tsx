@@ -14,7 +14,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 const StyledTypography = styled(Typography)(({ theme }) => ({
   padding: theme.spacing(2),
   textAlign: "center",
-  fontSize: "2.5vw",
+  fontSize: "3vw",
   fontWeight: 500,
 }));
 

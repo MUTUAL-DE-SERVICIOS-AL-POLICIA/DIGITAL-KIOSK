@@ -1,19 +1,30 @@
 import { AppBar, Grid } from "@mui/material";
 import { ComponentButton } from ".";
 import { useCredentialStore } from "@/hooks";
-import { memo } from "react";
+import { useState, useEffect, memo } from "react";
 
 interface Props {
   action: () => void;
   onRemoveCam: () => void;
   text?: string;
   color?: string;
+  size?: string;
 }
 
-const fontSize = innerWidth > innerHeight ? "3.5vw" : "5.5vw";
 
-const Footer = memo((props: Props) => {
-  const { action, text, color } = props;
+const Footer = memo(({ action, text, color, size }: Props) => {
+  const [fontSize, setFontSize] = useState("6.5vw");
+  useEffect(() => {
+    const updateFontSize = () => {
+      const newSize = window.innerWidth > window.innerHeight ? "5.5vw" : "8vw";
+      setFontSize(newSize);
+    };
+
+    updateFontSize(); // Calcular al inicio
+    window.addEventListener("resize", updateFontSize);
+    
+    return () => window.removeEventListener("resize", updateFontSize);
+  }, []);
 
   const { loading } = useCredentialStore();
 
@@ -24,7 +35,7 @@ const Footer = memo((props: Props) => {
           <ComponentButton
             onClick={action}
             text={text ?? "continuar"}
-            sx={{ fontSize }}
+            sx={{ fontSize: size ?? fontSize, color}}
             loading={loading}
             color={color}
           />
