@@ -11,17 +11,18 @@ import { CardInfo } from "@/components/CardInfo";
 import { useSweetAlert } from "@/hooks/useSweetAlert";
 // @ts-expect-error
 import FingerprintGif from "@/assets/images/fingerprint.gif";
+import { useEffect } from 'react';
 
 const text = (
   <>
-    Por favor, presione en <b>continuar</b> y a continuación coloque uno de los{" "}
-    <b>dedo indicados</b> en la imagen para realizar el{" "}
-    <b>reconocimiento biométrico.</b>
+    Por favor, presione <b>CONTINUAR</b> para comenzar el{" "}
+    <b>RECONOCIMIENTO DE HUELLAS DACTILARES</b>
   </>
 );
 
 const StyledGridContainer = styled(Grid)(({ theme }) => ({
-  marginBlock: theme.spacing(5),
+  marginBlock: theme.spacing(25),
+  justifyContent: "center",
   alignItems: "center",
 }));
 
@@ -43,7 +44,7 @@ const StyledOverlay = styled("div")(() => ({
   left: 0,
   width: "100%",
   height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.85)",
+  backgroundColor: "rgba(0, 0, 0, 1)",
   zIndex: 1000,
 }));
 
@@ -61,6 +62,10 @@ export const BiometricRecognition = memo(
     const { changeStep, changeIdentifyUser } = useCredentialStore();
     const { person } = usePersonStore();
     const { showAlert } = useSweetAlert();
+
+    useEffect(() => {
+      handleBiometric();
+      }, []);
 
     const assembleAnswer = (fingers: any[]) => {
       if (fingers !== undefined) {
@@ -100,29 +105,26 @@ export const BiometricRecognition = memo(
 
     return (
       <StyledGridContainer container>
-        <Grid
+        {/* <Grid
           item
           container
-          sm={7}
+          sm={8}
           direction="column"
           justifyContent="space-between"
         >
           <CardInfo text={text} />
-        </Grid>
-        <Grid item container sm={5} direction="column">
+        </Grid> */}
+        {/* <Grid item container sm={5} direction="column">
           <StyledFingerprintCard variant="outlined">
             <Fingerprint fingerprints={fingerprints} />
           </StyledFingerprintCard>
-        </Grid>
+        </Grid> */}
         {isLoading && (
           <StyledOverlay>
             <div>
-              <span>Comparando huellas</span>
+              <span>Coloque su dedo en el biométrico</span>
               <br />
               <img src={FingerprintGif} alt="Cargando ... " />
-              {/* <span className="dot">.</span>
-              <span className="dot">.</span>
-              <span className="dot">.</span> */}
             </div>
           </StyledOverlay>
         )}
