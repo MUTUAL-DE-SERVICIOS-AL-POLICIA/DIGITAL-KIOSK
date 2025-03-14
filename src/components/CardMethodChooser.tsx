@@ -21,9 +21,9 @@ const CardMethodChooser = memo((props: CardMethodChooserProp) => {
   return (
     <Card
       sx={{
-        minWidth: 450,
+        maxWidth: 600,
         borderRadius: "40px",
-        backgroundColor: disabled ? "#d6dadb " : "#c9cdcf",
+        backgroundColor: disabled ? "#d6dadb " : "#8cc0af",
         color: disabled ? "text.disabled" : "text.primary",
         opacity: disabled ? 0.7 : 1,
         // pointerEvents: disabled ? "none" : "auto",
@@ -41,7 +41,7 @@ const CardMethodChooser = memo((props: CardMethodChooserProp) => {
           title={
             <Typography
               align="center"
-              style={{ fontSize: "1.6vw", fontWeight: 700 }}
+              style={{ fontSize: "2.5vw", fontWeight: 700 }}
             >
               {title}
             </Typography>
