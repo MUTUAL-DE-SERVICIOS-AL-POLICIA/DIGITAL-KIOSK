@@ -11,12 +11,12 @@ import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 const METHODS_AUTH = [
   {
-    title: "Reconocimiento Facial",
+    title: "RECONOCIMIENTO FACIAL",
     image: Face,
     action: "faceRecognition",
   },
   {
-    title: "Reconocimiento Dactilar",
+    title: "RECONOCIMIENTO DACTILAR",
     image: Fingerprint,
     action: "biometricRecognition",
   },
@@ -52,8 +52,8 @@ export const AuthMethodChooser = () => {
         });
       } else {
         showAlert({
-          title: "Sin fotografias registradas",
-          message: "Usted no cuenta con fotografias registradas",
+          title: "Sin fotografías registradas",
+          message: "Usted no cuenta con fotografías registradas",
         });
       }
     },
