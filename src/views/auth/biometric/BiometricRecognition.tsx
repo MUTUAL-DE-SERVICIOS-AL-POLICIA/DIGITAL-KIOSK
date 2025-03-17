@@ -6,18 +6,18 @@ import { useBiometricStore } from "@/hooks/useBiometric";
 import { useLoading } from "@/hooks/useLoading";
 import { usePersonStore } from "@/hooks/usePersonStore";
 import { forwardRef, memo, useImperativeHandle } from "react";
-// import { CardInfo } from "@/components/CardInfo";
+import { CardInfo } from "@/components/CardInfo";
 import { useSweetAlert } from "@/hooks/useSweetAlert";
 // @ts-expect-error
 import FingerprintGif from "@/assets/images/fingerprint.gif";
 import { useEffect } from 'react';
 
-// const text = (
-//   <>
-//     Por favor, presione <b>CONTINUAR</b> para comenzar el{" "}
-//     <b>RECONOCIMIENTO DE HUELLAS DACTILARES</b>
-//   </>
-// );
+const text = (
+  <>
+    Por favor, presione <b>CONTINUAR</b> para comenzar de nuevo el{" "}
+    <b>RECONOCIMIENTO DE HUELLAS DACTILARES</b>
+  </>
+);
 
 const StyledGridContainer = styled(Grid)(({ theme }) => ({
   marginBlock: theme.spacing(25),
@@ -104,7 +104,7 @@ export const BiometricRecognition = memo(
 
     return (
       <StyledGridContainer container>
-        {/* <Grid
+        <Grid
           item
           container
           sm={8}
@@ -112,7 +112,7 @@ export const BiometricRecognition = memo(
           justifyContent="space-between"
         >
           <CardInfo text={text} />
-        </Grid> */}
+        </Grid>
         {/* <Grid item container sm={5} direction="column">
           <StyledFingerprintCard variant="outlined">
             <Fingerprint fingerprints={fingerprints} />
