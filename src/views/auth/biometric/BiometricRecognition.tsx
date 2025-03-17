@@ -121,7 +121,7 @@ export const BiometricRecognition = memo(
         {isLoading && (
           <StyledOverlay>
             <div>
-              <span>Coloque su dedo en el biométrico</span>
+              <span>COLOQUE SU DEDO ÍNDICE O PULGAR EN EL LECTOR DE HUELLAS</span>
               <br />
               <img src={FingerprintGif} alt="Cargando ... " />
             </div>
