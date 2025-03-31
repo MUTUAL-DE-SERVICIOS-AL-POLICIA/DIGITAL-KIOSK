@@ -70,7 +70,7 @@ export const AuthMethodChooser = () => {
             step={method.action}
             onAction={handleAction}
             disabled={
-              method.title == "Reconocimiento Dactilar" &&
+              method.title == "RECONOCIMIENTO DACTILAR" &&
               fingerprints &&
               fingerprints.length === 0
                 ? true
