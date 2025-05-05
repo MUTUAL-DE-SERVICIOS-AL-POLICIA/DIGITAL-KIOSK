@@ -45,15 +45,10 @@ export const AuthMethodChooser = () => {
     (step: string, disabled: boolean, action: string) => {
       if (!disabled) {
         changeStep(step);
-      } else if (action == "Reconocimiento Dactilar") {
+      } else {
         showAlert({
           title: "Sin huellas registradas",
           message: "Usted no cuenta con huellas registradas",
-        });
-      } else {
-        showAlert({
-          title: "Sin fotografías registradas",
-          message: "Usted no cuenta con fotografías registradas",
         });
       }
     },
