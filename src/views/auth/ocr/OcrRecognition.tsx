@@ -245,27 +245,18 @@ export const OcrView = memo(
     const handleImageCapture = useCallback(
       (image: string, text: string[]) => {
         setImage(image);
-        if (isWithinErrorRange(identityCard, text)) {
-          changeStep("authMethodChooser");
-          changeRecognizedByOcr(true);
+        const isValid = isWithinErrorRange(identityCard, text);
+        if (isValid) {
+          changeRecognizedByOcr(isValid);
           changeImage(image);
           cleanup();
-          sendStatistics(true, foundRef.current.modified);
-          changeOcrState(true);
+          sendStatistics(isValid, foundRef.current.modified);
         } else {
           setImage(null);
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
           getLocalUserVideo();
-          changeOcrState(false);
-          sendStatistics(false);
-          showAlert({
-            title: "Intente de nuevo",
-            message: "Por favor, vuelve a colocar tu carnet de identidad",
-            icon: "warning",
-          });
+          sendStatistics(isValid);
         }
+        changeStep("authMethodChooser");
         savePhoto({
           personId: person.id,
           photoIdentityCard: base64toBlob(image),
