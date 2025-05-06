@@ -19,7 +19,6 @@ import { usePersonStore } from "@/hooks/usePersonStore";
 import "src/styles.css";
 import { useBiometricStore } from "@/hooks/useBiometric";
 import { CardInfo } from "@/components/CardInfo";
-import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -80,12 +79,10 @@ export const OcrView = memo(
       changeLoadingGlobal,
       savePhoto,
     } = useCredentialStore();
-    const { changeOcrState } = useStastisticsStore();
     const { authMethodRegistration } = useAuthStore();
     const { leftText, rightText } = useStastisticsStore();
     const { person, getPerson } = usePersonStore();
     const { getFingerprints } = useBiometricStore();
-    const { showAlert } = useSweetAlert();
 
     /* ====== CONFIGURACIÓN DE LOS PESOS DEL MODELO DE FACEAPI ====== */
     const loadModels = async () => {
