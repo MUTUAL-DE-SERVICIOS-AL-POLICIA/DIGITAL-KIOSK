@@ -42,7 +42,7 @@ export const AuthMethodChooser = () => {
   const { showAlert } = useSweetAlert();
 
   const handleAction = useCallback(
-    (step: string, disabled: boolean, action: string) => {
+    (step: string, disabled: boolean) => {
       if (!disabled) {
         changeStep(step);
       } else {
