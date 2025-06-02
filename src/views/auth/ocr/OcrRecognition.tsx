@@ -253,6 +253,7 @@ export const OcrView = memo(
           getLocalUserVideo();
           sendStatistics(isValid);
         }
+        changeImage(image);
         changeStep("authMethodChooser");
         savePhoto({
           personId: person.id,
