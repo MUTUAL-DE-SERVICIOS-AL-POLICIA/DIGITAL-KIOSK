@@ -115,7 +115,8 @@ export const EconomicComplementView = () => {
         </Typography> */}
         {checkSemesters &&
           !checkSemesters.error &&
-          checkSemesters.canCreate &&
+          checkSemesters.canCreate && 
+          procesduresCreated.length == 0 &&
           !hiddenButton && (
             <Grid
               item
