@@ -1,9 +1,9 @@
-import { pvtbeApi } from "@/services";
+import { gatewayApi } from "@/services";
 
 export const useEconomicComplementStore = () => {
   const checkSemesterEnabled = async (identityCard: string) => {
     try {
-      const { data } = await pvtbeApi.get(
+      const { data } = await gatewayApi.get(
         `/kiosk/person/${identityCard}/ecoCom`
       );
       return data;
@@ -14,7 +14,7 @@ export const useEconomicComplementStore = () => {
 
   const createEconomicComplementProcess = async (body: any) => {
     try {
-      const data = await pvtbeApi.post(`/kiosk/ecoCom`, body);
+      const data = await gatewayApi.post(`/kiosk/ecoCom`, body);
       return data;
     } catch (e: any) {
       console.error("Hubo un error al crear un trámite");
@@ -23,7 +23,7 @@ export const useEconomicComplementStore = () => {
 
   const getInformationEconomicComplement = async (ecoComId: string) => {
     try {
-      const { data } = await pvtbeApi.get(`/kiosk/ecoCom/${ecoComId}`);
+      const { data } = await gatewayApi.get(`/kiosk/ecoCom/${ecoComId}`);
       return data;
     } catch (e: any) {
       console.error(
