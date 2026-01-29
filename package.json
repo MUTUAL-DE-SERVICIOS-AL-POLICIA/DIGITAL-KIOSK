@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write 'src/**/*.tsx'",
+    "format-check": "prettier --check 'src/**/*.tsx'"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -17,6 +19,7 @@
     "@mui/material": "^5.14.18",
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^1.6.2",
+    "click-to-react-component": "^1.1.2",
     "face-api.js": "0.22.2",
     "i": "^0.3.7",
     "image-js": "^0.35.5",
@@ -39,8 +42,11 @@
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.0",
     "eslint": "^8.53.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
+    "prettier": "^3.4.1",
     "typescript": "^5.2.2",
     "vite": "^5.0.0",
     "vite-tsconfig-paths": "^4.2.1"

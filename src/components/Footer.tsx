@@ -1,52 +1,48 @@
-import { AppBar, Grid, Toolbar } from '@mui/material';
-import { ComponentButton } from '.';
-import { useCredentialStore } from '@/hooks';
-import { memo } from 'react';
+import { AppBar, Grid } from "@mui/material";
+import { ComponentButton } from ".";
+import { useCredentialStore } from "@/hooks";
+import { useState, useEffect, memo } from "react";
 
 interface Props {
   action: () => void;
   onRemoveCam: () => void;
+  text?: string;
+  color?: string;
+  size?: string;
 }
 
-const Footer = memo((props: Props) => {
 
-  const { action, /*onRemoveCam*/ } = props
+const Footer = memo(({ action, text, color, size }: Props) => {
+  const [fontSize, setFontSize] = useState("6.5vw");
+  useEffect(() => {
+    const updateFontSize = () => {
+      const newSize = window.innerWidth > window.innerHeight ? "5.5vw" : "8vw";
+      setFontSize(newSize);
+    };
 
-  const { loading, step, /*changeStep, changeIdentityCard*/ } = useCredentialStore()
+    updateFontSize(); // Calcular al inicio
+    window.addEventListener("resize", updateFontSize);
+    
+    return () => window.removeEventListener("resize", updateFontSize);
+  }, []);
 
-  // const resetStep = () => {
-  //   changeStep('identityCard')
-  //   changeIdentityCard('')
-  //   onRemoveCam()
-  // }
+  const { loading } = useCredentialStore();
 
   return (
-    <AppBar position="static" sx={{pb: 0, mb: 0, backgroundColor: '#EEEEEE'}} style={{flex: '0 0 20%'}}>
-      <Toolbar>
-        <Grid container
-          justifyContent="center"
-          spacing={3}
-        >
-          { step != 'identityCard' && <Grid item>
-            {/* <ComponentButton
-              onClick={() => resetStep()}
-              text="VOLVER"
-              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%', padding: "0px 25px" }}
-              color="warning"
-            /> */}
-          </Grid> }
-          <Grid item>
-            <ComponentButton
-              onClick={action}
-              text="CONTINUAR"
-              sx={{ fontSize: innerWidth > innerHeight ? '3.5vw' : '5.5vw', width: '100%', padding: "0px 25px" }}
-              loading={loading}
-            />
-          </Grid>
+    <AppBar position="static">
+      <Grid container justifyContent="center" spacing={3}>
+        <Grid item>
+          <ComponentButton
+            onClick={action}
+            text={text ?? "continuar"}
+            sx={{ fontSize: size ?? fontSize, color}}
+            loading={loading}
+            color={color}
+          />
         </Grid>
-      </Toolbar>
+      </Grid>
     </AppBar>
   );
-})
+});
 
 export default Footer;

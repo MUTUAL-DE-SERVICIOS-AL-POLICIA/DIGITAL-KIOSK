@@ -1,41 +1,76 @@
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Box, Grid, styled } from "@mui/material";
 // @ts-expect-error do not proceed
-import imageLogo from '@/assets/images/carnet.png';
+import imageLogo from "@/assets/images/carnet.png";
 import { useCredentialStore } from "@/hooks";
 import { forwardRef, useImperativeHandle, memo } from "react";
+import { CardInfo } from "@/components/CardInfo";
 
-export const InstructionCard = memo(forwardRef((_, ref) => {
+const text = (
+  <>
+    Introduzca su <b>carnet de identidad</b> en la bandeja inferior y
+    presione <b>CONTINUAR</b><br/>
+  </>
+);
 
-  const { changeIdentityCard, changeIdentifyUser, changeStateInstruction, changeStep } = useCredentialStore();
+const GridContainer = styled(Grid)({
+  alignItems: "center",
+  marginTop: "15vh",
+});
 
-  useImperativeHandle(ref, () => ({
-    action: (state: boolean) => {
-      if(state) {
-        changeStateInstruction(false)
-        changeStep('recognitionCard')
-      } else {
-        changeIdentityCard('')
-        changeIdentifyUser(false)
-        changeStateInstruction(true)
-      }
-    },
-    onRemoveCam: () => {}
-  }))
+const GridImageContainer = styled(Grid)({
+  display: "flex",
+  flexDirection: "column",
+});
 
-  return (
-    <Grid container alignItems="center" style={{ marginTop: '15vh' }}>
-      <Grid item container sm={6} direction="column" justifyContent="spacebetween">
-        <Card sx={{ ml: 10, borderRadius: '30px', p: 2}} variant="outlined">
-          <Typography sx={{ p: 2 }} align="center" style={{ fontSize: '2.5vw', fontWeight: 500 }}>
-            Introduzca su carnet de identidad en la bandeja de abajo y luego presione en <b>continuar</b>.<br/>
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item container sm={6} direction="column">
-        <Box display="flex" justifyContent="center">
-          <img src={imageLogo} alt="Descripción de la imagen" style={{ width: '30vw' }} />
-        </Box>
-      </Grid>
-    </Grid>
-  )
-}))
+const ImageContainer = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+});
+
+const StyledImage = styled("img")({
+  width: "30vw",
+});
+
+const GridTextContainer = styled(Grid)({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+});
+
+export const InstructionCard = memo(
+  forwardRef((_, ref) => {
+    const {
+      changeIdentityCard,
+      changeIdentifyUser,
+      changeStateInstruction,
+      changeStep,
+    } = useCredentialStore();
+
+    useImperativeHandle(ref, () => ({
+      action: (state: boolean) => {
+        if (state) {
+          changeStateInstruction(false);
+          changeStep("recognitionCard");
+        } else {
+          changeIdentityCard("");
+          changeIdentifyUser(false);
+          changeStateInstruction(true);
+        }
+      },
+      onRemoveCam: () => {},
+    }));
+
+    return (
+      <GridContainer container>
+        <GridTextContainer item container sm={6}>
+          <CardInfo text={text} />
+        </GridTextContainer>
+        <GridImageContainer item container sm={6}>
+          <ImageContainer>
+            <StyledImage src={imageLogo} alt="Descripción de la imagen" />
+          </ImageContainer>
+        </GridImageContainer>
+      </GridContainer>
+    );
+  })
+);

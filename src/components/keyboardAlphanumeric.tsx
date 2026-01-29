@@ -1,17 +1,15 @@
-import BackspaceIcon from '@mui/icons-material/Backspace';
+import BackspaceIcon from "@mui/icons-material/Backspace";
 import "./index.css";
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface KeyboardProps {
-  onClick: (key: string | ReactNode) => void
+  onClick: (key: string | ReactNode) => void;
 }
 
 const KeyboardAlphanumeric = (props: KeyboardProps) => {
+  const { onClick } = props;
 
-  const {
-    onClick
-  } = props
-
+  /* prettier-ignore */
   const keys = [
     '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
     'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
@@ -21,11 +19,17 @@ const KeyboardAlphanumeric = (props: KeyboardProps) => {
 
   return (
     <div className="keyboardAlphanumeric">
-      { keys.map((key, index) => (
-        <div className="keyalphanumeric" key={index} onClick={() => onClick(key)}>{key}</div>
+      {keys.map((key, index) => (
+        <div
+          className="keyalphanumeric"
+          key={index}
+          onClick={() => onClick(key)}
+        >
+          {key}
+        </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
 export default KeyboardAlphanumeric;

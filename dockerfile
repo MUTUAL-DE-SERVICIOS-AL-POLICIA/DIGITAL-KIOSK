@@ -4,7 +4,11 @@ FROM node:20.5.0 as build
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar los archivos del proyecto al contenedor
+# Copiar archivos de dependencias primero para aprovechar la cache
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Copiar el resto del código
 COPY . .
 
 # Instalar las dependencias utilizando Yarn
@@ -14,7 +18,7 @@ RUN yarn install
 RUN yarn build
 
 # Etapa de producción
-FROM nginx:alpine
+FROM nginx:alpine AS production
 
 # Copiar los archivos de compilación de la etapa de construcción al servidor web Nginx
 COPY --from=build /app/dist /usr/share/nginx/html

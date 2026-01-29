@@ -1,17 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const loanSlice = createSlice({
-  name: 'loan',
+  name: "loan",
   initialState: {
-    loans: <any>null
+    loans: <any>null,
   },
   reducers: {
     setLoans: (state, action) => {
-      state.loans = action.payload.loans
+      state.loans = action.payload.loans;
     },
-  }
+  },
 });
 
-
-// Action creators are generated for each case reducer function
 export const { setLoans } = loanSlice.actions;
