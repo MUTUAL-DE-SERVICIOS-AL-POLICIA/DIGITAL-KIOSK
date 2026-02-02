@@ -63,6 +63,18 @@ const html = (attempts: number) => {
   `;
 };
 
+const getCameras = async () => {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  return devices.filter(d => d.kind === "videoinput");
+};
+
+const getIntegratedCamera = async () => {
+  const cameras = await getCameras();
+  return cameras.find(c =>
+    c.label.toLowerCase().includes("camera")
+  );
+};
+
 export const FaceRecognition = memo(
   forwardRef((_, ref) => {
     useImperativeHandle(ref, () => ({
@@ -134,14 +146,20 @@ export const FaceRecognition = memo(
 
     const getLocalUserVideo = async () => {
       try {
-        const userStream = await navigator.mediaDevices.getUserMedia({
+        const cam = await getIntegratedCamera();
+        if (!cam) throw new Error("Cámara integrada no encontrada");
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            deviceId: { exact: cam.deviceId }
+          },
           audio: false,
-          video: { facingMode: "user" },
         });
-        setAutomaticFocus(userStream);
-        videoRef?.current && (videoRef.current.srcObject = userStream);
+
+        await setAutomaticFocus(stream);
+        videoRef.current.srcObject = stream;
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error cámara rostro:", error);
       }
     };
     /* =============================================================== */
