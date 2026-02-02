@@ -52,6 +52,18 @@ const StyledBox = styled(Box)(({ theme }) => ({
   },
 }));
 
+const getCameras = async () => {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  return devices.filter(d => d.kind === "videoinput");
+};
+
+const getUsbCamera = async () => {
+  const cameras = await getCameras();
+  return cameras.find(c =>
+    c.label.toLowerCase().includes("logitech")
+  );
+};
+
 export const OcrView = memo(
   forwardRef((_, ref) => {
     useImperativeHandle(ref, () => ({
@@ -117,17 +129,23 @@ export const OcrView = memo(
 
     const getLocalUserVideo = async () => {
       try {
-        const environmentStream = await navigator.mediaDevices.getUserMedia({
+        const cam = await getUsbCamera();
+        if (!cam) throw new Error("Cámara USB no encontrada");
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            deviceId: { exact: cam.deviceId },
+            width: 1920,
+            height: 1080,
+          },
           audio: false,
-          video: { facingMode: "environment", width: 1920, height: 1080 },
         });
-        setManualFocus(environmentStream, 120);
+
+        await setManualFocus(stream, 120);
         // @ts-expect-error type is not known
-        webcamRef?.current && (webcamRef.current.srcObject = environmentStream);
+        webcamRef.current!.srcObject = stream;
       } catch (error) {
-        console.error("Dispositivo no conectado");
-        // @ts-expect-error type is not known
-        if (webcamRef.current) webcamRef.current.srcObject = null;
+        console.error("Error cámara OCR:", error);
       }
     };
     /* ============================================================== */
