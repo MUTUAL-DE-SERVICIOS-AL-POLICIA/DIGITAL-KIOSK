@@ -1,21 +1,21 @@
+import { CardInfo } from "@/components/CardInfo";
+import { base64toBlob, getEnvVariables } from "@/helpers";
+import { useCredentialStore, useStastisticsStore } from "@/hooks";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { useBiometricStore } from "@/hooks/useBiometric";
+import { usePersonStore } from "@/hooks/usePersonStore";
+import { useSweetAlert } from "@/hooks/useSweetAlert";
+import { Box, Grid, Stack } from "@mui/material";
+import * as faceapi from "face-api.js";
 import {
   forwardRef,
+  memo,
   useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
-  memo,
   useState,
 } from "react";
-import * as faceapi from "face-api.js";
-import { Box, Grid, Stack } from "@mui/material";
-import { useCredentialStore, useStastisticsStore } from "@/hooks";
-import { useAuthStore } from "@/hooks/useAuthStore";
-import { base64toBlob, getEnvVariables } from "@/helpers";
-import { usePersonStore } from "@/hooks/usePersonStore";
-import { CardInfo } from "@/components/CardInfo";
-import { useBiometricStore } from "@/hooks/useBiometric";
-import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -61,6 +61,31 @@ const html = (attempts: number) => {
     </div>
     <p style="margin-top: 1rem;">Por favor, inténtalo de nuevo.</p>
   `;
+};
+
+const getCameras = async () => {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  return devices.filter(d => d.kind === "videoinput");
+};
+
+const getIntegratedCamera = async () => {
+  const cameras = await getCameras();
+
+  if (!cameras || cameras.length === 0) return null;
+
+  const integrated = cameras.find(c =>
+    c.label?.toLowerCase().includes("camera")
+  );
+
+  if (integrated) return integrated;
+
+  const logitech = cameras.find(c =>
+    c.label?.toLowerCase().includes("logitech")
+  );
+
+  if (logitech) return logitech;
+
+  return cameras[0];
 };
 
 export const FaceRecognition = memo(
@@ -134,14 +159,20 @@ export const FaceRecognition = memo(
 
     const getLocalUserVideo = async () => {
       try {
-        const userStream = await navigator.mediaDevices.getUserMedia({
+        const cam = await getIntegratedCamera();
+        if (!cam) throw new Error("Cámara integrada no encontrada");
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            deviceId: { exact: cam.deviceId }
+          },
           audio: false,
-          video: { facingMode: "user" },
         });
-        setAutomaticFocus(userStream);
-        videoRef?.current && (videoRef.current.srcObject = userStream);
+
+        await setAutomaticFocus(stream);
+        videoRef.current.srcObject = stream;
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error cámara rostro:", error);
       }
     };
     /* =============================================================== */
