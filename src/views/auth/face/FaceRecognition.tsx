@@ -1,21 +1,21 @@
+import { CardInfo } from "@/components/CardInfo";
+import { base64toBlob, getEnvVariables } from "@/helpers";
+import { useCredentialStore, useStastisticsStore } from "@/hooks";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { useBiometricStore } from "@/hooks/useBiometric";
+import { usePersonStore } from "@/hooks/usePersonStore";
+import { useSweetAlert } from "@/hooks/useSweetAlert";
+import { Box, Grid, Stack } from "@mui/material";
+import * as faceapi from "face-api.js";
 import {
   forwardRef,
+  memo,
   useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
-  memo,
   useState,
 } from "react";
-import * as faceapi from "face-api.js";
-import { Box, Grid, Stack } from "@mui/material";
-import { useCredentialStore, useStastisticsStore } from "@/hooks";
-import { useAuthStore } from "@/hooks/useAuthStore";
-import { base64toBlob, getEnvVariables } from "@/helpers";
-import { usePersonStore } from "@/hooks/usePersonStore";
-import { CardInfo } from "@/components/CardInfo";
-import { useBiometricStore } from "@/hooks/useBiometric";
-import { useSweetAlert } from "@/hooks/useSweetAlert";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -70,9 +70,22 @@ const getCameras = async () => {
 
 const getIntegratedCamera = async () => {
   const cameras = await getCameras();
-  return cameras.find(c =>
-    c.label.toLowerCase().includes("camera")
+
+  if (!cameras || cameras.length === 0) return null;
+
+  const integrated = cameras.find(c =>
+    c.label?.toLowerCase().includes("camera")
   );
+
+  if (integrated) return integrated;
+
+  const logitech = cameras.find(c =>
+    c.label?.toLowerCase().includes("logitech")
+  );
+
+  if (logitech) return logitech;
+
+  return cameras[0];
 };
 
 export const FaceRecognition = memo(
