@@ -1,24 +1,24 @@
 import { ImageCapture } from "@/components";
+import { CardInfo } from "@/components/CardInfo";
+import { base64toBlob, getEnvVariables } from "@/helpers";
+import { useCredentialStore, useStastisticsStore } from "@/hooks";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { useBiometricStore } from "@/hooks/useBiometric";
+import { usePersonStore } from "@/hooks/usePersonStore";
 import { Box, Grid, Stack, styled } from "@mui/material";
+import * as faceapi from "face-api.js";
 import {
   RefObject,
   forwardRef,
+  memo,
   useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
-  memo,
 } from "react";
-import { useCredentialStore, useStastisticsStore } from "@/hooks";
 import Webcam from "react-webcam";
-import * as faceapi from "face-api.js";
-import { useAuthStore } from "@/hooks/useAuthStore";
-import { base64toBlob, getEnvVariables } from "@/helpers";
-import { usePersonStore } from "@/hooks/usePersonStore";
 import "src/styles.css";
-import { useBiometricStore } from "@/hooks/useBiometric";
-import { CardInfo } from "@/components/CardInfo";
 
 const TINY_OPTIONS = {
   inputSize: 320,
@@ -34,7 +34,7 @@ const DEV_MODE = getEnvVariables().DEV_MODE === "true";
 const text = (
   <>
     Introduzca su <b>carnet de identidad</b> en la bandeja inferior y
-    presione <b>CONTINUAR</b><br/>
+    presione <b>CONTINUAR</b><br />
   </>
   // <>
   //   Deposite su <b>carnet de identidad</b> en el <b>soporte inferior</b> y
