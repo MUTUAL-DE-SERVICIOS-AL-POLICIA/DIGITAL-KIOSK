@@ -1,7 +1,7 @@
 import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
 import { CardComponent } from "@/components";
 import { useContext, useEffect } from "react";
-import { useRetirementStore } from "@/hooks/useRetirementStore";
+import { useRetFundQuotaAidStore } from "@/hooks/useRetFundQuotaAidStore";
 import { useCredentialStore } from "@/hooks";
 import { useLoading } from "@/hooks/useLoading";
 import { useSweetAlert } from "@/hooks/useSweetAlert";
@@ -28,7 +28,7 @@ const emptyStateSx = {
   lineHeight: 1.3,
 };
 
-export const BenefitsView = () => {
+export const RetFunQuotaAidView = () => {
   const {
     retFunds,
     quotaAids,
@@ -36,7 +36,7 @@ export const BenefitsView = () => {
     getQuotaAids,
     printRetFunLiquidation,
     printQuotaAidLiquidation,
-  } = useRetirementStore();
+  } = useRetFundQuotaAidStore();
   const { identityCard } = useCredentialStore();
   const { setLoading } = useLoading();
   const { showAlert } = useSweetAlert();

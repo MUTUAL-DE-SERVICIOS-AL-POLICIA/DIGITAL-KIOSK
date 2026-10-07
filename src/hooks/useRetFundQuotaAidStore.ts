@@ -6,8 +6,8 @@ import { useSweetAlert } from "./useSweetAlert";
 const api = gatewayApi;
 const apiExternal = externalApi;
 
-export const useRetirementStore = () => {
-  const { retFunds, quotaAids } = useSelector((state: any) => state.retirement);
+export const useRetFundQuotaAidStore = () => {
+  const { retFunds, quotaAids } = useSelector((state: any) => state.retFunQuotaAid);
   const dispatch = useDispatch();
   const { showAlert } = useSweetAlert();
 

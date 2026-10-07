@@ -2,7 +2,7 @@ import { AttachMoney, ExtensionOutlined, MonetizationOn, Money } from "@mui/icon
 import { LoanView } from "./loans/LoanView";
 import { ContributionView } from "./contributions/ContributionView";
 import { EconomicComplementView } from "./economicComplement/EconomicComplementView";
-import { BenefitsView } from "./benefits/BenefitsView";
+import { RetFunQuotaAidView } from "./ret_fund_quota_aid/RetFunQuotaAidView";
 
 const SERVICES = [
   {
@@ -36,7 +36,7 @@ const SERVICES = [
     subTitle: "Impresión de liquidaciones",
     canUse: true,
     icon: <MonetizationOn />,
-    view: <BenefitsView />,
+    view: <RetFunQuotaAidView />,
   },
 ];
 

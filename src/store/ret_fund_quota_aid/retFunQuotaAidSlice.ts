@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const retirementSlice = createSlice({
-  name: "retirement",
+export const retFunQuotaAidSlice = createSlice({
+  name: "retFunQuotaAid",
   initialState: {
     retFunds: <any>[],
     quotaAids: <any>[],
@@ -16,4 +16,4 @@ export const retirementSlice = createSlice({
   },
 });
 
-export const { setRetFunds, setQuotaAids } = retirementSlice.actions;
+export const { setRetFunds, setQuotaAids } = retFunQuotaAidSlice.actions;
