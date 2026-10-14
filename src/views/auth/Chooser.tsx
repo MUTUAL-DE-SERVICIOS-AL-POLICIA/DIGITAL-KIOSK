@@ -9,6 +9,9 @@ import { useCallback, useEffect, useState } from "react";
 // en una sola columna, asi que se pasan a un mosaico de dos columnas.
 const MOSAIC_THRESHOLD = 4;
 
+// El mosaico de 4 (las 4 opciones habilitadas) se agranda 40% en ambos ejes.
+const MOSAIC_SCALE = 1.4;
+
 const StyledBox = styled("div")({
   flexGrow: 1,
   minHeight: "80vh",
@@ -33,6 +36,12 @@ const StyledGrid = styled(Grid, {
   // horizontal se resuelve con padding del item y aqui solo queda el rowGap.
   columnGap: $mosaic ? 0 : theme.spacing(5),
   rowGap: theme.spacing($mosaic ? 3 : 5),
+  // El bloque de las 4 crece 40% (horizontal y vertical) sin alterar el layout
+  // del padre; el centrado se mantiene con transformOrigin.
+  ...($mosaic && {
+    transform: `scale(${MOSAIC_SCALE})`,
+    transformOrigin: "center center",
+  }),
 }));
 
 export const Chooser = () => {

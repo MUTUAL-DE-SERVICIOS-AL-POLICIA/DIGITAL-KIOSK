@@ -104,7 +104,7 @@ export const RetFunQuotaAidView = () => {
         sx={{ mb: 2 }}
       >
         <Typography variant="h4" sx={{ fontSize: 28, lineHeight: 1.2 }}>
-          Fondo de Retiro y Cuota Auxilio Mortuorio
+          Fondo de Retiro, Cuota Auxilio Mortuorio
         </Typography>
         <Typography variant="body1" sx={{ color: "text.secondary" }}>
           {totalPrintable === 0

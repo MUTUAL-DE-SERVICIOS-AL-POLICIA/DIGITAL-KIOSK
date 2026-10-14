@@ -31,8 +31,8 @@ const SERVICES = [
     view: <ContributionView />,
   },
   {
-    code: "retirementBenefits",
-    title: "FONDO DE RETIRO Y CUOTA AUXILIO MORTUORIO",
+    code: "retirementFundQuotaAid",
+    title: "FONDO DE RETIRO, CUOTA AUXILIO MORTUORIO",
     subTitle: "Impresión de liquidaciones",
     canUse: true,
     icon: <MonetizationOn />,
