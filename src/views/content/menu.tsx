@@ -1,7 +1,8 @@
-import { AttachMoney, ExtensionOutlined, Money } from "@mui/icons-material";
+import { AttachMoney, ExtensionOutlined, MonetizationOn, Money } from "@mui/icons-material";
 import { LoanView } from "./loans/LoanView";
 import { ContributionView } from "./contributions/ContributionView";
 import { EconomicComplementView } from "./economicComplement/EconomicComplementView";
+import { RetFunQuotaAidView } from "./ret_fund_quota_aid/RetFunQuotaAidView";
 
 const SERVICES = [
   {
@@ -28,6 +29,14 @@ const SERVICES = [
     canUse: true,
     icon: <Money />,
     view: <ContributionView />,
+  },
+  {
+    code: "retirementFundQuotaAid",
+    title: "FONDO DE RETIRO, CUOTA AUXILIO MORTUORIO",
+    subTitle: "Impresión de liquidaciones",
+    canUse: true,
+    icon: <MonetizationOn />,
+    view: <RetFunQuotaAidView />,
   },
 ];
 
