@@ -5,6 +5,13 @@ import { Container, Grid, styled } from "@mui/material";
 import SERVICES from "@/views/content/menu";
 import { useCallback, useEffect, useState } from "react";
 
+// Por encima de este cantidad de servicios las tarjetas dejan de caber apiladas
+// en una sola columna, asi que se pasan a un mosaico de dos columnas.
+const MOSAIC_THRESHOLD = 4;
+
+// El mosaico de 4 (las 4 opciones habilitadas) se agranda 40% en ambos ejes.
+const MOSAIC_SCALE = 1.4;
+
 const StyledBox = styled("div")({
   flexGrow: 1,
   minHeight: "80vh",
@@ -17,19 +24,33 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(8),
 }));
 
-const StyledGrid = styled(Grid)(({ theme }) => ({
+const StyledGrid = styled(Grid, {
+  shouldForwardProp: (prop) => prop !== "$mosaic",
+})<{ $mosaic?: boolean }>(({ theme, $mosaic }) => ({
   display: "flex",
   flexWrap: "wrap",
   justifyContent: "center",
-  alignItems: "center",
-  gap: theme.spacing(5),
+  alignItems: "stretch",
+  // En mosaico cada item ocupa el 50% exacto del ancho, asi que un columnGap
+  // sumaria mas del 100% y la segunda tarjeta saltaria de linea. La separacion
+  // horizontal se resuelve con padding del item y aqui solo queda el rowGap.
+  columnGap: $mosaic ? 0 : theme.spacing(5),
+  rowGap: theme.spacing($mosaic ? 3 : 5),
+  // El bloque de las 4 crece 40% (horizontal y vertical) sin alterar el layout
+  // del padre; el centrado se mantiene con transformOrigin.
+  ...($mosaic && {
+    transform: `scale(${MOSAIC_SCALE})`,
+    transformOrigin: "center center",
+  }),
 }));
 
 export const Chooser = () => {
   const { changeStep, identityCard } = useCredentialStore();
-  const { saveSelection, getValidProcedures, procedures } = useChooserStore();
+  const { saveSelection, getValidProcedures } = useChooserStore();
 
   const [enabledServices, setEnabledServices] = useState<any[]>([]);
+
+  const mosaic = enabledServices.length >= MOSAIC_THRESHOLD;
 
   const action = useCallback(
     (code: string) => {
@@ -63,9 +84,8 @@ export const Chooser = () => {
 
   return (
     <StyledBox>
-      {JSON.stringify(procedures)}
       <StyledContainer maxWidth="lg">
-        <StyledGrid container>
+        <StyledGrid container $mosaic={mosaic}>
           {enabledServices ? (
             enabledServices.map((service: any) => (
               <CardChooser
@@ -76,6 +96,7 @@ export const Chooser = () => {
                 canCreate={service.canCreate}
                 icon={service.icon}
                 code={service.code}
+                mosaic={mosaic}
                 onAction={action}
               />
             ))
